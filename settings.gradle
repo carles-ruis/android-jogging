@@ -1,0 +1,3 @@
+include ':jogging'
+include ':libraries:actionbarsherlock'
+include ':libraries:viewpagerindicator'

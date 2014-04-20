@@ -1,0 +1,8 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Theme.Jogging" parent="@style/Theme.Sherlock.Light">
+        <!-- Customize your theme here. -->
+    </style>
+
+</resources>

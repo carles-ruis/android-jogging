@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Jogging.iml" filepath="$PROJECT_DIR$/Jogging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/actionbarsherlock/actionbarsherlock.iml" filepath="$PROJECT_DIR$/libraries/actionbarsherlock/actionbarsherlock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jogging/jogging.iml" filepath="$PROJECT_DIR$/jogging/jogging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/viewpagerindicator/viewpagerindicator.iml" filepath="$PROJECT_DIR$/libraries/viewpagerindicator/viewpagerindicator.iml" />
+    </modules>
+  </component>
+</project>
+
