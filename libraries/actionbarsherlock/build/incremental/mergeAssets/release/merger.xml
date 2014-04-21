@@ -2,10 +2,10 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="C:\Archivos de programa\Android\Jogging\libraries\actionbarsherlock\src\main\assets" />
+        <source path="C:\android-jogging\libraries\actionbarsherlock\src\main\assets" />
     </dataSet>
     <dataSet config="release" >
-        <source path="C:\Archivos de programa\Android\Jogging\libraries\actionbarsherlock\src\release\assets" />
+        <source path="C:\android-jogging\libraries\actionbarsherlock\src\release\assets" />
     </dataSet>
 
 </merger>

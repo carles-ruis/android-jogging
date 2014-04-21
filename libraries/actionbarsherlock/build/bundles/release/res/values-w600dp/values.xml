@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/C:/Archivos%20de%20programa/Android/Jogging/libraries/actionbarsherlock/res/values-w600dp/abs__dimens.xml -->
+    <!-- From: file:/C:/android-jogging/libraries/actionbarsherlock/res/values-w600dp/abs__dimens.xml -->
     <eat-comment />
 
     <integer name="abs__max_action_buttons">5</integer>

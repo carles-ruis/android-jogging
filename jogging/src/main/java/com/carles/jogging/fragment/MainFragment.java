@@ -21,7 +21,6 @@ import com.carles.jogging.helper.ConversionHelper;
 public class MainFragment extends BaseFragment {
 
     private Spinner kmsEdit;
-    private boolean isStraightLine;
 
     public MainFragment() {}
 
@@ -60,9 +59,8 @@ public class MainFragment extends BaseFragment {
             String sKilometers = String.valueOf(kmsEdit.getSelectedItem());
             intent.putExtra(C.EXTRA_KILOMETERS_TEXT, sKilometers);
             intent.putExtra(C.EXTRA_METERS, ConversionHelper.textDistanceToMeters(getActivity(), sKilometers));
-            intent.putExtra(C.EXTRA_STRAIGHT_LINE, isStraightLine);
             startActivity(intent);
-        }
+          }
     }
 
 }

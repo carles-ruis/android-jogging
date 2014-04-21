@@ -29,7 +29,9 @@ public class NavigationDrawerFragment extends BaseFragment {
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
-    /** Helper component that ties the action bar to the navigation drawer. */
+    /**
+     * Helper component that ties the action bar to the navigation drawer.
+     */
     private ActionBarDrawerToggleCompat mDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
@@ -49,8 +51,11 @@ public class NavigationDrawerFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         /*- Read in the flag indicating whether or not the user has demonstrated awareness of the drawer */
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+
+        /*- open drawer anytime */
+        mUserLearnedDrawer = false;
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
@@ -70,11 +75,9 @@ public class NavigationDrawerFragment extends BaseFragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
 
-        if (mCurrentSelectedPosition != position) {
-            mCurrentSelectedPosition = position;
-            if (mCallbacks != null) {
-                mCallbacks.onNavigationDrawerItemSelected(position);
-            }
+        mCurrentSelectedPosition = position;
+        if (mCallbacks != null) {
+            mCallbacks.onNavigationDrawerItemSelected(position);
         }
     }
 
@@ -204,7 +207,9 @@ public class NavigationDrawerFragment extends BaseFragment {
     /*- ************************************************************************************************************** */
     /*- ************************************************************************************************************** */
     public static interface NavigationDrawerCallbacks {
-        /** Called when an item in the navigation drawer is selected. */
+        /**
+         * Called when an item in the navigation drawer is selected.
+         */
         void onNavigationDrawerItemSelected(int position);
     }
 

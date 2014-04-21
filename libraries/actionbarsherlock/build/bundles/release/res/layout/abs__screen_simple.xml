@@ -36,4 +36,4 @@ enabled.
          android:foregroundGravity="fill_horizontal|top"
          android:foreground="?attr/windowContentOverlay" />
 </LinearLayout>
-<!-- From: file:/C:/Archivos%20de%20programa/Android/Jogging/libraries/actionbarsherlock/res/layout/abs__screen_simple.xml -->
+<!-- From: file:/C:/android-jogging/libraries/actionbarsherlock/res/layout/abs__screen_simple.xml -->

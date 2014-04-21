@@ -71,7 +71,7 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
     }
 
     public void setActionBarTitle(String title) {
-       mTitle = title;
+        mTitle = title;
     }
 
     /*- ************************************************************************************************************** */

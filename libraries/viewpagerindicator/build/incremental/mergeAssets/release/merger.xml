@@ -2,10 +2,10 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="C:\Archivos de programa\Android\Jogging\libraries\viewpagerindicator\src\main\assets" />
+        <source path="C:\android-jogging\libraries\viewpagerindicator\src\main\assets" />
     </dataSet>
     <dataSet config="release" >
-        <source path="C:\Archivos de programa\Android\Jogging\libraries\viewpagerindicator\src\release\assets" />
+        <source path="C:\android-jogging\libraries\viewpagerindicator\src\release\assets" />
     </dataSet>
 
 </merger>

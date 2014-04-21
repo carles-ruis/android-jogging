@@ -24,4 +24,7 @@ public class C {
     /*- real world constants */
     public static final Integer HALF_MARATHON_METERS = 21097;
 
+    /*- tags for dialogs */
+    public static final String TAG_CONNECTION_FAILED_DIALOG = "tag_connection_failed_dialog";
+    public static final String TAG_GOOGLE_PLAY_SERVICES_ERROR_DIALOG = "tag_google_error_dialog";
 }
