@@ -5,4 +5,4 @@ import com.actionbarsherlock.app.SherlockDialogFragment;
 /**
  * Created by carles1 on 20/04/14.
  */
-public class CancelDialogFragment extends SherlockDialogFragment {}
+public class CancelRunningDialogFragment extends SherlockDialogFragment {}
