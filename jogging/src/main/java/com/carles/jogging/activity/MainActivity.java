@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -23,6 +24,8 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
+    private DrawerLayout drawerLayout;
+    private View navigationDrawerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +33,14 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        navigationDrawerView = findViewById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         /*- Set up the drawer. */
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*- this allows to override the drawer behaviour when back button is pressed */
+        drawerLayout.setFocusableInTouchMode(false);
+
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
@@ -74,6 +82,16 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
         mTitle = title;
     }
 
+    @Override
+    public void onBackPressed() {
+        /*- change the natural navigation to show the drawer when the back button is closed */
+        if (mNavigationDrawerFragment.isDrawerOpen()) {
+            finish();
+        } else {
+            drawerLayout.openDrawer(navigationDrawerView);
+        }
+    }
+
     /*- ************************************************************************************************************** */
     /*- ************************************************************************************************************** */
     @Override
@@ -97,6 +115,8 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
 
         /*- Insert the fragment by replacing any existing fragment */
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        /*- do i want to add the fragments into the back stack to navigate to them when back button is pressed? */
+        //        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(C.MAIN_ACTIVIY_BS).commit();
     }
 
 }

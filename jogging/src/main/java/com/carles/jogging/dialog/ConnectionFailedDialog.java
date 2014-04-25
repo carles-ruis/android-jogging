@@ -28,7 +28,7 @@ public class ConnectionFailedDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-    String connectionType = getArguments().getString(CONNECTION_TYPE);
+        String connectionType = getArguments().getString(CONNECTION_TYPE);
 
         /*- Use the Builder class for convenient dialog construction */
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

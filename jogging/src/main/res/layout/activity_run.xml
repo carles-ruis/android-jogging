@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/improve_your_time"
+        android:visibility="invisible"
         android:layout_above="@+id/on_your_marks"
         />
 
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:text="@string/cancel_run_button"
         android:visibility="invisible"/>
 
 </RelativeLayout>

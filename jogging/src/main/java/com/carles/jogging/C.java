@@ -12,6 +12,7 @@ public class C {
     public static final String GET_LOCATIONS_SERVICE_NAME = "GetLocationsService";
 
     public static final Integer HALF_MARATHON_METERS = 21097;
+    public static final int COUNTDOWN_STOP_MILLISECONDS = 1500;
 
     /*- arguments passed to fragments as bundle */
     public static final String ARGS_ACTION_BAR_TITLE = "args_action_bar_title";
@@ -29,5 +30,8 @@ public class C {
     public static final String TAG_CONNECTION_FAILED_DIALOG = "tag_connection_failed_dialog";
     public static final String TAG_GOOGLE_PLAY_SERVICES_ERROR_DIALOG = "tag_google_error_dialog";
     public static final String TAG_ACTIVATE_GPS_DIALOG = "tag_activate_gps_dialog";
+    public static final String TAG_CANCEL_RUN_DIALOG = "tag_cancel_run_dialog";
 
+    /*- fragment backstacks */
+    public static final String MAIN_ACTIVIY_BS = "backstack_main_activity";
 }

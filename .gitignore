@@ -7,3 +7,4 @@
 /extras
 *.apk
 *.ap_
+libraries/*/build/

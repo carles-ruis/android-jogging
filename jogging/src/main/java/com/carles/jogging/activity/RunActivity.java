@@ -6,15 +6,19 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.dialog.ConnectionFailedDialog;
-import com.carles.jogging.service.GetLocationsService;
 import com.carles.jogging.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -24,8 +28,15 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
  */
 public class RunActivity extends BaseActivity {
 
+    public static final float VOLUME = 1.0f;
+    private static final int MAX_SOUND_STREAMS = 1;
     private String sKilometers;
     private Integer meters;
+    private Button cancelRunButton;
+
+    private SoundPool soundPool;
+    private int startSoundId = -1;
+    private int endSoundId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,22 +51,32 @@ public class RunActivity extends BaseActivity {
         final TextView improveText = (TextView) findViewById(R.id.improve_your_time_text);
         improveText.setText(getString(R.string.improve_your_time, sKilometers));
 
-        servicesConnected();
+        cancelRunButton = (Button) findViewById(R.id.cancel_run_button);
+        cancelRunButton.findViewById(R.id.cancel_run_button);
+        cancelRunButton.setOnClickListener(new CancelRunButtonOnClickListener());
+
+        /*- Suggests an audio stream whose volume should be changed by the hardware volume controls. */
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+       /*- Load the sounds */
+        soundPool = new SoundPool(MAX_SOUND_STREAMS, AudioManager.STREAM_MUSIC, 0);
+        startSoundId = soundPool.load(this, R.raw.starting_pistol, 1);
+        endSoundId = soundPool.load(this, R.raw.crowd_sound, 1);
+
+        getSupportActionBar().setHomeButtonEnabled(false);
+
+        checkServicesConnected();
 
     }
 
-    private boolean servicesConnected() {
-        // Check that Google Play services is available
-        Log.i("Checking if google play services are available...");
+    private boolean checkServicesConnected() {
+        /*- Check that Google Play services is available */
         int resultCode = GooglePlayServicesUtil.
                 isGooglePlayServicesAvailable(this);
 
-        // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
             Log.i("Google Play services is available.");
             return true;
 
-            // Google Play services was not available for some reason
         } else {
             Log.i("Google Play services is not available.");
             // Get the error dialog from Google Play services
@@ -92,17 +113,6 @@ public class RunActivity extends BaseActivity {
         }
     }
 
-    private void startCountdown() {
-        Log.i("Start countdown...");
-
-        // TODO countdown
-
-        Intent intent = new Intent(this, GetLocationsService.class);
-        intent.putExtra(C.EXTRA_METERS, meters);
-        startService(intent);
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -129,9 +139,36 @@ public class RunActivity extends BaseActivity {
         gpsConnected();
     }
 
+    private void startCountdown() {
+        Log.i("Start countdown...");
+
+        findViewById(R.id.improve_your_time_text).setVisibility(View.VISIBLE);
+
+        /*- handler enqueues messages which will be executed in the UI thread */
+        final Handler handler = new Handler();
+        handler.postDelayed(new CountdownOnYourMarksThread(), C.COUNTDOWN_STOP_MILLISECONDS);
+        handler.postDelayed(new CountdownGetSetThread(), C.COUNTDOWN_STOP_MILLISECONDS * 2);
+        handler.postDelayed(new CountdownGoThread(), C.COUNTDOWN_STOP_MILLISECONDS * 3);
+
+    }
+
     private void showConnectionFailedDialog(String connectionType) {
         ConnectionFailedDialog connectionFailedDialog = ConnectionFailedDialog.newInstance(connectionType);
         connectionFailedDialog.show(getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
+    }
+
+    private void cancelRun() {
+        Log.i("Run cancelled");
+
+        // TODO stop service
+        // TODO show results
+    }
+
+    @Override
+    public void onBackPressed() {
+        /*- override the back button in order to show confirmation */
+        CancelRunDialog cancelRunDialog = new CancelRunDialog();
+        cancelRunDialog.show(getSupportFragmentManager(), C.TAG_CANCEL_RUN_DIALOG);
     }
 
     /*- ************************************************************************************************************** */
@@ -183,10 +220,85 @@ public class RunActivity extends BaseActivity {
                 }
             });
 
-            Dialog alertDialog = builder.create();
+            final Dialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            return dialog;
 
-            alertDialog.setCanceledOnTouchOutside(false);
-            return alertDialog;
+        }
+    }
+
+    /*- ************************************************************************************************************** */
+    /*- ************************************************************************************************************** */
+    private class CancelRunDialog extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setTitle(getString(R.string.cancel_run_title));
+            builder.setMessage(getString(R.string.cancel_run_msg));
+
+            builder.setPositiveButton(R.string.confirm_cancel_button, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    RunActivity.this.cancelRun();
+                }
+            });
+
+            builder.setNegativeButton(R.string.dont_cancel_button, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dismiss();
+                }
+            });
+
+            final Dialog dialog = builder.create();
+            return dialog;
+        }
+    }
+
+    /*- ************************************************************************************************************** */
+    /*- ************************************************************************************************************** */
+    private class CancelRunButtonOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            CancelRunDialog dialog = new CancelRunDialog();
+            dialog.show(getSupportFragmentManager(), C.TAG_CANCEL_RUN_DIALOG);
+        }
+    }
+
+    /*- ************************************************************************************************************** */
+    /*- ************************************************************************************************************** */
+    private class CountdownOnYourMarksThread extends Thread {
+        @Override
+        public void run() {
+            findViewById(R.id.on_your_marks).setVisibility(View.VISIBLE);
+        }
+    }
+
+    /*- ************************************************************************************************************** */
+    /*- ************************************************************************************************************** */
+    private class CountdownGetSetThread extends Thread {
+        @Override
+        public void run() {
+            findViewById(R.id.get_set).setVisibility(View.VISIBLE);
+        }
+    }
+
+    /*- ************************************************************************************************************** */
+    /*- ************************************************************************************************************** */
+    private class CountdownGoThread extends Thread {
+        @Override
+        public void run() {
+            findViewById(R.id.go).setVisibility(View.VISIBLE);
+            cancelRunButton.setVisibility(View.VISIBLE);
+
+            if (startSoundId != -1) {
+                soundPool.play(startSoundId, VOLUME, VOLUME, 1, 0, 1f);
+            }
+
+            //        Intent intent = new Intent(this, GetLocationsService.class);
+            //        intent.putExtra(C.EXTRA_METERS, meters);
+            //        startService(intent);
 
         }
     }
