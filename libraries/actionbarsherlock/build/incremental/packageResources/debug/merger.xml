@@ -4406,6 +4406,7 @@ true
             </file>
         </source>
         <source path="C:\android-jogging\libraries\actionbarsherlock\build\res\rs\debug" />
+        <source path="C:\android-jogging\libraries\actionbarsherlock\build\res\generated\debug" />
     </dataSet>
     <dataSet config="debug" >
         <source path="C:\android-jogging\libraries\actionbarsherlock\src\debug\res" />

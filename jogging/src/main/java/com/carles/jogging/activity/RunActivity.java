@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.dialog.ConnectionFailedDialog;
+import com.carles.jogging.service.GetLocationsService;
 import com.carles.jogging.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -32,11 +33,12 @@ public class RunActivity extends BaseActivity {
     private static final int MAX_SOUND_STREAMS = 1;
     private String sKilometers;
     private Integer meters;
+
     private Button cancelRunButton;
+    private boolean hasRunningStarted = false;
 
     private SoundPool soundPool;
     private int startSoundId = -1;
-    private int endSoundId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +47,8 @@ public class RunActivity extends BaseActivity {
         setContentView(R.layout.activity_run);
 
         final Bundle extras = getIntent().getExtras();
-        sKilometers = extras.getString(C.EXTRA_KILOMETERS_TEXT);
-        meters = extras.getInt(C.EXTRA_METERS);
+        sKilometers = extras.getString(C.EXTRA_DISTANCE_TEXT);
+        meters = extras.getInt(C.EXTRA_DISTANCE_IN_METERS);
 
         final TextView improveText = (TextView) findViewById(R.id.improve_your_time_text);
         improveText.setText(getString(R.string.improve_your_time, sKilometers));
@@ -55,12 +57,10 @@ public class RunActivity extends BaseActivity {
         cancelRunButton.findViewById(R.id.cancel_run_button);
         cancelRunButton.setOnClickListener(new CancelRunButtonOnClickListener());
 
-        /*- Suggests an audio stream whose volume should be changed by the hardware volume controls. */
+       /*- Load the starting sound */
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-       /*- Load the sounds */
         soundPool = new SoundPool(MAX_SOUND_STREAMS, AudioManager.STREAM_MUSIC, 0);
         startSoundId = soundPool.load(this, R.raw.starting_pistol, 1);
-        endSoundId = soundPool.load(this, R.raw.crowd_sound, 1);
 
         getSupportActionBar().setHomeButtonEnabled(false);
 
@@ -84,11 +84,8 @@ public class RunActivity extends BaseActivity {
 
             // If Google Play services can provide an error dialog
             if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
                 GooglePlayServicesErrorDialogFragment errorFragment = new GooglePlayServicesErrorDialogFragment();
-                // Set the dialog in the DialogFragment
                 errorFragment.setDialog(errorDialog);
-                // Show the error dialog in the DialogFragment
                 errorFragment.show(getSupportFragmentManager(), C.TAG_GOOGLE_PLAY_SERVICES_ERROR_DIALOG);
             }
             return false;
@@ -96,14 +93,14 @@ public class RunActivity extends BaseActivity {
     }
 
     private void gpsConnected() {
-        Log.i("Check if GPS is activated");
-
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (enabled) {
             Log.i("GPS is activated");
-            startCountdown();
+            if (hasRunningStarted == false) {
+                getStartingLocation();
+            }
 
         } else {
             Log.i("GPS is not activated");
@@ -139,6 +136,10 @@ public class RunActivity extends BaseActivity {
         gpsConnected();
     }
 
+    private void getStartingLocation() {
+
+    }
+
     private void startCountdown() {
         Log.i("Start countdown...");
 
@@ -150,6 +151,8 @@ public class RunActivity extends BaseActivity {
         handler.postDelayed(new CountdownGetSetThread(), C.COUNTDOWN_STOP_MILLISECONDS * 2);
         handler.postDelayed(new CountdownGoThread(), C.COUNTDOWN_STOP_MILLISECONDS * 3);
 
+        hasRunningStarted = true;
+
     }
 
     private void showConnectionFailedDialog(String connectionType) {
@@ -160,7 +163,8 @@ public class RunActivity extends BaseActivity {
     private void cancelRun() {
         Log.i("Run cancelled");
 
-        // TODO stop service
+        stopService(new Intent(this, GetLocationsService.class));
+
         // TODO show results
     }
 
@@ -169,6 +173,14 @@ public class RunActivity extends BaseActivity {
         /*- override the back button in order to show confirmation */
         CancelRunDialog cancelRunDialog = new CancelRunDialog();
         cancelRunDialog.show(getSupportFragmentManager(), C.TAG_CANCEL_RUN_DIALOG);
+    }
+
+    private void startGetLocationsService() {
+
+        Intent intent = new Intent(this, GetLocationsService.class);
+        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, meters);
+        startService(intent);
+
     }
 
     /*- ************************************************************************************************************** */
@@ -195,6 +207,8 @@ public class RunActivity extends BaseActivity {
     /*- ************************************************************************************************************** */
     /*- ************************************************************************************************************** */
     private class ActivateGpsDialogFragment extends DialogFragment {
+
+        public ActivateGpsDialogFragment() {}
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -230,6 +244,9 @@ public class RunActivity extends BaseActivity {
     /*- ************************************************************************************************************** */
     /*- ************************************************************************************************************** */
     private class CancelRunDialog extends DialogFragment {
+
+        public CancelRunDialog() {}
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -296,10 +313,9 @@ public class RunActivity extends BaseActivity {
                 soundPool.play(startSoundId, VOLUME, VOLUME, 1, 0, 1f);
             }
 
-            //        Intent intent = new Intent(this, GetLocationsService.class);
-            //        intent.putExtra(C.EXTRA_METERS, meters);
-            //        startService(intent);
+            startGetLocationsService();
 
         }
     }
+
 }

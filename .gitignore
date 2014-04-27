@@ -4,7 +4,9 @@
 .DS_Store
 
 # added files
-/extras
+#/extras/jogging_notes.xml
+#/extras/jogging_millores.xml
 *.apk
 *.ap_
-libraries/*/build/
+/libraries/*/build/
+/.idea/**/*.xml

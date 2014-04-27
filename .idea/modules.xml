@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Jogging.iml" filepath="$PROJECT_DIR$/Jogging.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/actionbarsherlock/actionbarsherlock.iml" filepath="$PROJECT_DIR$/libraries/actionbarsherlock/actionbarsherlock.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-jogging.iml" filepath="$PROJECT_DIR$/android-jogging.iml" />
       <module fileurl="file://$PROJECT_DIR$/jogging/jogging.iml" filepath="$PROJECT_DIR$/jogging/jogging.iml" />

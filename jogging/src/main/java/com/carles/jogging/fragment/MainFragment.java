@@ -57,8 +57,8 @@ public class MainFragment extends BaseFragment {
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), RunActivity.class);
             String sKilometers = String.valueOf(kmsEdit.getSelectedItem());
-            intent.putExtra(C.EXTRA_KILOMETERS_TEXT, sKilometers);
-            intent.putExtra(C.EXTRA_METERS, ConversionHelper.textDistanceToMeters(getActivity(), sKilometers));
+            intent.putExtra(C.EXTRA_DISTANCE_TEXT, sKilometers);
+            intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, ConversionHelper.textDistanceToMeters(getActivity(), sKilometers));
             startActivity(intent);
           }
     }

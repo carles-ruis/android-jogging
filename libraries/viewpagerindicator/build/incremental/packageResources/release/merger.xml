@@ -489,6 +489,7 @@ bold
             </file>
         </source>
         <source path="C:\android-jogging\libraries\viewpagerindicator\build\res\rs\release" />
+        <source path="C:\android-jogging\libraries\viewpagerindicator\build\res\generated\release" />
     </dataSet>
     <dataSet config="release" >
         <source path="C:\android-jogging\libraries\viewpagerindicator\src\release\res" />
