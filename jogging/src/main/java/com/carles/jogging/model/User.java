@@ -15,4 +15,28 @@ public class User {
 
     public User() {
     }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Jogging> getJoggings() {
+        return joggings;
+    }
+
+    public void setJoggings(List<Jogging> joggings) {
+        this.joggings = joggings;
+    }
 }

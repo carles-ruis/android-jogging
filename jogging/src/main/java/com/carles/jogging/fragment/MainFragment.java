@@ -11,9 +11,9 @@ import android.widget.Spinner;
 
 import com.carles.jogging.C;
 import com.carles.jogging.R;
+import com.carles.jogging.activity.CheckConnectionsActivity;
 import com.carles.jogging.activity.MainActivity;
-import com.carles.jogging.activity.RunActivity;
-import com.carles.jogging.helper.ConversionHelper;
+import com.carles.jogging.helper.LocationHelper;
 
 /**
  * Created by carles1 on 20/04/14.
@@ -36,10 +36,10 @@ public class MainFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final Button runButton = (Button) view.findViewById(R.id.run_button);
+        final Button runButton = (Button) view.findViewById(R.id.main_button_run);
         runButton.setOnClickListener(new OnRunButtonClickListener());
 
-        kmsEdit = (Spinner) view.findViewById(R.id.kilometers_edit);
+        kmsEdit = (Spinner) view.findViewById(R.id.main_spinner_kms);
 
         return view;
     }
@@ -55,10 +55,10 @@ public class MainFragment extends BaseFragment {
     private class OnRunButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), RunActivity.class);
+            Intent intent = new Intent(getActivity(), CheckConnectionsActivity.class);
             String sKilometers = String.valueOf(kmsEdit.getSelectedItem());
             intent.putExtra(C.EXTRA_DISTANCE_TEXT, sKilometers);
-            intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, ConversionHelper.textDistanceToMeters(getActivity(), sKilometers));
+            intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, LocationHelper.textDistanceToMeters(getActivity(), sKilometers));
             startActivity(intent);
           }
     }

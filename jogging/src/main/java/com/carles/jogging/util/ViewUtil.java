@@ -5,6 +5,9 @@ import android.content.res.Resources;
 
 public class ViewUtil {
 
+    /**
+     * Obtains the size in dips of a resource
+     */
     public static int getDps(Context ctx, int resId) {
         Resources res = ctx.getResources();
         return (int) (res.getDimension(resId) / res.getDisplayMetrics().density);

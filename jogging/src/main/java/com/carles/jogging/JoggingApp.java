@@ -36,14 +36,6 @@ public class JoggingApp extends Application {
         }
     }
 
-    public boolean getIsStraightCircuit() {
-        return getPreference(C.PREF_IS_STRAIGHT_CIRCUIT, Boolean.class);
-    }
-
-    public void setIsStraightCircuit(boolean isStraightCircuit) {
-        putPreference(C.PREF_IS_STRAIGHT_CIRCUIT, isStraightCircuit);
-    }
-
     public String getLastKilometersSelected() {
         return getPreference(C.PREF_LAST_KILOMETERS_SELECTED, String.class);
     }

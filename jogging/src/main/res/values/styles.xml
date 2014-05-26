@@ -1,5 +1,7 @@
 <resources>
 
+    <!-- THEMES -->
+
     <!-- Base application theme. -->
     <style name="Theme.Jogging" parent="@style/Theme.Sherlock.Light">
         <!-- Customize your theme here. -->
@@ -10,5 +12,9 @@
         <item name="android:windowEnterAnimation">@anim/zoom_in</item>
         <item name="android:windowExitAnimation">@anim/zoom_out</item>
     </style>
+
+    <!-- STYLES -->
+
+
 
 </resources>

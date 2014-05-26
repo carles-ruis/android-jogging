@@ -5,6 +5,14 @@ package com.carles.jogging.util;
  */
 public class LocationUtil {
 
+    public static boolean hasReachedKilometer(float distance, float previousDistance) {
+        if ((int) (distance / 1000.0f) > (int) (previousDistance / 1000.0f)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 //    private boolean servicesConnected() {
 //        // Check that Google Play services is available
 //        int resultCode = GooglePlayServicesUtil.
@@ -33,5 +41,3 @@ public class LocationUtil {
 //            }
 //        }
 //    }
-
-}

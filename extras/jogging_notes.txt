@@ -11,7 +11,7 @@ afegir a proguard per ABS
 estimacions
 ----------------------------
 setup: manifets, AB, ND, model, navegacio       16 2    (14)
-srikcy service i location i proves              12       (4)
+srikcy service i location i proves              12       (6)
 notificacions                                    4 4
 ormlite, sqlite i broadcast                     12 5.
 time detall i mapa                               8 6.
