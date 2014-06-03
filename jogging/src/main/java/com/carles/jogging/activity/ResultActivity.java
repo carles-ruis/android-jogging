@@ -2,41 +2,63 @@ package com.carles.jogging.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.util.Log;
+import com.carles.jogging.fragment.ResultDetailFragment;
+import com.carles.jogging.fragment.ResultMapFragment;
+import com.carles.jogging.helper.LocationHelper;
+import com.carles.jogging.model.PartialJogging;
+
+import java.util.ArrayList;
 
 /**
  * Created by carles1 on 20/04/14.
  */
 public class ResultActivity extends BaseActivity {
 
+    private ResultDetailFragment detailFragment = null;
+    private ResultMapFragment mapFragment = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("onCreate RESULT ACTIVITY");
-
         setContentView(R.layout.activity_result);
 
-        Bundle extras = getIntent().getExtras();
-        int minutes = (int) (extras.getLong(C.EXTRA_DISTANCE_IN_METERS) / 1000 / 60);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.title_result);
 
-        StringBuilder results = new StringBuilder();
-        results.append(extras.getString(C.EXTRA_DISTANCE_IN_METERS)).append(" - ");
-        results.append(extras.getFloat(C.EXTRA_DISTANCE_TEXT)).append(" - ");
-        results.append(extras.getLong(C.EXTRA_FOOTING_TIME)).append(" - ");
-        results.append(extras.getParcelableArray(C.EXTRA_PARTIALS));
-        results.append("" + minutes + "min - ");
+        /*- we're being restored from a previous state, so the fragments already exist */
+        if (savedInstanceState != null) {
+            return;
+        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(extras.getSerializable(C.EXTRA_FOOTING_RESULT).toString());
-        builder.setMessage(results.toString());
+        if (detailFragment == null) {
+            detailFragment = ResultDetailFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, detailFragment).commit();
+    }
 
-        Dialog dialog = builder.create();
-        dialog.show();
+    public void addResultMapFragment() {
+        if(mapFragment == null) {
+            mapFragment = ResultMapFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mapFragment).addToBackStack(null).commit();
+    }
 
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            /*- if it comes from LocationService, it's the only activity in the backstack*/
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else{
+            /*- it comes from another activity, go back to previous one in the back stack */
+            super.onBackPressed();
+        }
     }
 }

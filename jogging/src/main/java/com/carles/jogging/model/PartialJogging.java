@@ -7,9 +7,6 @@ import android.os.Parcelable;
 import com.carles.jogging.helper.LocationHelper;
 import com.carles.jogging.util.FormatUtil;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 /**
  * Created by carles1 on 20/04/14.
  */
@@ -26,7 +23,7 @@ public class PartialJogging implements Parcelable {
     };
     private Location location;
     private float meters;
-    private long time;
+    private long time; // TODO delete, obtain from Location
     private long timestamp;
 
     public PartialJogging() {
@@ -92,9 +89,9 @@ public class PartialJogging implements Parcelable {
     @Override
     public String toString() {
         String sLocation = LocationHelper.toString(location);
-         String sTime = LocationHelper.formatRunningTime(time);
+        String sTime = LocationHelper.formatRunningTime(time);
         String sTimeTwo = FormatUtil.time(time);
-         StringBuilder sb = new StringBuilder().append("PARTIAL JOGGING -> ").append(sLocation).append(" -> meters=").append(meters).append(" ---- time=").append(sTime);
+        StringBuilder sb = new StringBuilder().append("PARTIAL JOGGING -> ").append(sLocation).append(" -> meters=").append(meters).append(" ---- time=").append(sTime);
         return sb.toString();
     }
 }

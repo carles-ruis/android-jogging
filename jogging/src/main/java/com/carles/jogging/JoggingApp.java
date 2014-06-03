@@ -2,6 +2,7 @@ package com.carles.jogging;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 

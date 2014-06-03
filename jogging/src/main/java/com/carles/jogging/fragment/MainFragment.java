@@ -22,7 +22,7 @@ public class MainFragment extends BaseFragment {
 
     private Spinner kmsEdit;
 
-    public MainFragment() {}
+    private MainFragment() {}
 
     public static MainFragment newInstance(String title) {
         MainFragment fragment = new MainFragment();

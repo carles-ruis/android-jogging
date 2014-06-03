@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- color names -->
+   <color name="blue">#333399</color>
+
+    <!-- views -->
+    <color name="view_divider_color">@color/blue</color>
+
+
+
+</resources>

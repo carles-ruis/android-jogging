@@ -9,8 +9,6 @@ import com.carles.jogging.exception.JoggingAppError;
 import com.carles.jogging.util.Decimals;
 import com.carles.jogging.util.FormatUtil;
 
-import org.joda.time.format.DateTimeFormat;
-
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,6 +22,11 @@ public class LocationHelper {
 
         if (context.getString(R.string.main_half_marathon).equals(src)) {
             return C.HALF_MARATHON_METERS;
+        }
+
+        // TODO delete. 150 meters for TEST
+        if ("TEST".equals(src)) {
+            return 150;
         }
 
         if (src == null) {
@@ -51,13 +54,7 @@ public class LocationHelper {
         String lon = Decimals.n("LONGITUDE=", location.getLongitude(), 6);
         String acc = Decimals.n("ACCURACY=", location.getAccuracy(), 1);
         String t = "TIMESTAMP=" + FormatUtil.time(location.getTime());
-
-        String rt = "";
-        if (location.getExtras() != null && location.getExtras().getString(C.EXTRA_FOOTING_TIME) != null) {
-            rt = "FOOTING TIME="+location.getExtras().getString(C.EXTRA_FOOTING_TIME);
-        }
-
-        StringBuilder sb = new StringBuilder().append(lat).append(" ---- ").append(lon).append(" ---- ").append(acc).append(" ---- ").append(t).append(" --- ").append(rt);
+        StringBuilder sb = new StringBuilder().append(lat).append(" ---- ").append(lon).append(" ---- ").append(acc).append(" ---- ").append(t).append(" --- ");
         return sb.toString();
     }
 

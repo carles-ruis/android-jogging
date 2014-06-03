@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.dialog.CancelRunDialog;
+import com.carles.jogging.enums.FootingResult;
 import com.carles.jogging.service.LocationService;
 import com.carles.jogging.util.Log;
 
@@ -38,6 +39,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.OnK
         setContentView(R.layout.activity_jogging);
 
         getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setTitle(R.string.title_jogging);
     }
 
     @Override
@@ -54,11 +56,16 @@ public class JoggingActivity extends BaseActivity implements LocationService.OnK
     }
 
     public void cancelRun() {
+        Log.i("RUNNING WILL BE CANCELLED BY THE USER");
+        Intent intent = new Intent(this, LocationService.class);
+        intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.CANCELLED_BY_USER);
+        startService(intent);
+
         /*- stop the service in order to stop requesting locations */
-        stopService(new Intent(this, LocationService.class));
+        //        stopService(new Intent(this, LocationService.class));
 
         /*- jogging result will not be shown to the user, so get back to main */
-        finish();
+        //        finish();
     }
 
     @Override
@@ -81,4 +88,3 @@ public class JoggingActivity extends BaseActivity implements LocationService.OnK
     }
 
 }
-

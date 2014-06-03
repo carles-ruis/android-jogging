@@ -15,7 +15,7 @@ import com.carles.jogging.activity.MainActivity;
  */
 public class BestTimesFragment extends BaseFragment {
 
-    public BestTimesFragment() {}
+    private BestTimesFragment() {}
 
     public static BestTimesFragment newInstance(String title) {
         BestTimesFragment fragment = new BestTimesFragment();

@@ -8,9 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
-import com.carles.jogging.C;
-import com.carles.jogging.helper.LocationHelper;
-import com.carles.jogging.util.LocationUtil;
 import com.carles.jogging.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -19,6 +16,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Obtains first location before the user starts running.
@@ -48,6 +47,8 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
     private Handler handler = new Handler();
     private FirstLocationTimeout firstLocationTimeout = new FirstLocationTimeout();
+
+    private List<Float> accuracies = new ArrayList<Float>(); // TODO delete
 
     @Override
     public void onCreate() {
@@ -93,13 +94,16 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
     @Override
     public void onLocationChanged(Location location) {
+
+        accuracies.add(location.getAccuracy()); // TODO delete
+
         /*- first location obtained */
         if (bestLocation == null) {
             bestLocation = location;
         }
 
         /*- check if this is the best accurated location */
-        if (location.getAccuracy() < bestLocation.getAccuracy()) {
+        if (location.getAccuracy() <= bestLocation.getAccuracy()) {
             bestLocation = location;
         }
 
@@ -110,8 +114,11 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
         /*- sent best location obtained if it's enough accurated */
         if (bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
+
+            Log.i("LIST OF FIRST ACCURACIES OBTAINED = " + accuracies.toString());
+
             handler.removeCallbacks(firstLocationTimeout);
-             client.get().onLocationObtained(bestLocation);
+            client.get().onLocationObtained(bestLocation);
         }
     }
 

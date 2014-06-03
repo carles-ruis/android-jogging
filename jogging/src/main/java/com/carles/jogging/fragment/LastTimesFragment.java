@@ -15,7 +15,7 @@ import com.carles.jogging.activity.MainActivity;
  */
 public class LastTimesFragment extends BaseFragment {
 
-    public LastTimesFragment() {}
+    private LastTimesFragment() {}
 
     public static LastTimesFragment newInstance(String title) {
         LastTimesFragment fragment = new LastTimesFragment();
