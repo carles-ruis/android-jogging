@@ -6,7 +6,6 @@ package com.carles.jogging;
 public class C {
 
     public static final boolean DEBUG = true;
-    public static final String LOG_TAG = "JoggingApp";
     public static final int NOT_USED = -999;
 
     public static final int DEFAULT_DISTANCE = 2000;
@@ -17,7 +16,6 @@ public class C {
     /*- unique identifiers */
     public static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static final int ONGOING_NOTIFICATION_IS_RUNNING = 8000;
-    public static final String GET_LOCATIONS_SERVICE_NAME = "GetLocationsService";
 
     /*- arguments passed to fragments as bundle */
     public static final String ARGS_ACTION_BAR_TITLE = "args_action_bar_title";
@@ -28,10 +26,11 @@ public class C {
     public static final String EXTRA_FIRST_LOCATION = "extra_first_location";
     public static final String EXTRA_FOOTING_RESULT = "extra_footing_result";
     public static final String EXTRA_FOOTING_TIME = "extra_footing_time";
+    public static final String EXTRA_FOOTING_TIME_TEXT = "extra_footing_time_text";
     public static final String EXTRA_PARTIALS = "extra_partials";
 
     /*- intent filter actions */
-    public static final String ACTION_JOGGING_FINISHED = "com.carles.jogging.action_jogging_finished";
+    public static final String ACTION_UPDATE_KILOMETERS_RUN = "com.carles.jogging.KILOMETERS_RUN";
 
     /*- preferences keys */
     public static final String PREF_LAST_KILOMETERS_SELECTED = "pref_last_kms_selected";
@@ -44,6 +43,6 @@ public class C {
     public static final String TAG_FIRST_LOCATION_NOT_OBTAINED = "tag_first_location_dialog";
 
     /*- sound configuration */
-    public static final float VOLUME = 1.0f;
     public static final int MAX_SOUND_STREAMS = 1;
+    public static final float VOLUME = 1.0f;
 }

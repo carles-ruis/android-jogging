@@ -1,6 +1,6 @@
 package com.carles.jogging.test;
 
-import com.carles.jogging.helper.LocationHelper;
+import com.carles.jogging.common.LocationHelper;
 
 import junit.framework.TestCase;
 

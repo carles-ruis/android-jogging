@@ -41,6 +41,14 @@
         android:id="@+id/jogging_kilometers_run"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/jogging_time"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/jogging_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/jogging_button_cancel"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />

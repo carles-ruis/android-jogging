@@ -4,7 +4,7 @@
 
     <fragment
         android:id="@+id/fragment_jogging"
-        android:name="com.carles.jogging.fragment.JoggingFragment"
+        android:name="com.carles.jogging.jogging.JoggingFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

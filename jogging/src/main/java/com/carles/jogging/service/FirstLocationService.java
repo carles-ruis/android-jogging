@@ -7,8 +7,8 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
-import com.carles.jogging.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -30,13 +30,15 @@ import java.util.List;
  */
 public class FirstLocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
+    private static final String TAG = FirstLocationService.class.getName();
     private static final int MIN_REQUEST_TIME = 30 * 1000;
     private static final int MAX_REQUEST_TIME = 120 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
-    private static final float ACCURACY_LIMIT = 25.0f;
+    private static final float ACCURACY_LIMIT = 50.0f;
 
     private final IBinder binder = new FirstLocationServiceBinder();
-    /*- i used weak reference to the client activity because if this is recreated the reference becomes out of scope */
+    // i used weak reference to the client activity cause
+    // to avoid becoming out of scope when is recreated
     private WeakReference<OnFirstLocationResultListener> client;
 
     private LocationClient locationClient;
@@ -94,8 +96,8 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
     @Override
     public void onLocationChanged(Location location) {
-
         accuracies.add(location.getAccuracy()); // TODO delete
+        Log.i(TAG, "accuracy " + location.getAccuracy());
 
         /*- first location obtained */
         if (bestLocation == null) {
@@ -114,9 +116,6 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
         /*- sent best location obtained if it's enough accurated */
         if (bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
-
-            Log.i("LIST OF FIRST ACCURACIES OBTAINED = " + accuracies.toString());
-
             handler.removeCallbacks(firstLocationTimeout);
             client.get().onLocationObtained(bestLocation);
         }
@@ -146,15 +145,13 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
         client.get().onLocationFailed();
     }
 
-    /*- ************************************************************************************************************** */
-    /*- ************************************************************************************************************** */
     public interface OnFirstLocationResultListener {
         void onLocationObtained(Location location);
         void onLocationFailed();
     }
 
-    /*- ************************************************************************************************************** */
-    /*- ************************************************************************************************************** */
+    /*- ******************************************************************************** */
+    /*- ******************************************************************************** */
     private class FirstLocationTimeout implements Runnable {
         @Override
         public void run() {
@@ -162,9 +159,8 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
         }
     }
 
-    /*- ************************************************************************************************************** */
-    /*- ************************************************************************************************************** */
-
+    /*- ******************************************************************************** */
+    /*- ******************************************************************************** */
     /*
         Class used for the client Binder.  Because we know this service always
          runs in the same process as its clients, we don't need to deal with IPC.

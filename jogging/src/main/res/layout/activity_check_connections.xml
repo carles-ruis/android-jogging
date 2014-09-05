@@ -2,10 +2,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/fragment_check_connections"
-        android:name="com.carles.jogging.fragment.CheckConnectionsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </FrameLayout>

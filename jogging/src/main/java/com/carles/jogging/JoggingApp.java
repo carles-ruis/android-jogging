@@ -2,17 +2,18 @@ package com.carles.jogging;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
-import com.carles.jogging.util.Log;
-import com.carles.jogging.util.PrefUtil;
+import com.carles.jogging.common.PrefUtil;
 
 /**
  * Created by carles1 on 19/04/14.
  */
 public class JoggingApp extends Application {
+
+    private static final String TAG = JoggingApp.class.getName();
 
     private SharedPreferences prefs;
 
@@ -31,9 +32,6 @@ public class JoggingApp extends Application {
     private void configStrictMode() {
         if (C.DEBUG) {
             StrictMode.enableDefaults();
-            Log.i(C.LOG_TAG, "Strict Mode on");
-        } else {
-            Log.i(C.LOG_TAG, "Strict Mode off");
         }
     }
 

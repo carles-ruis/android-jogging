@@ -8,13 +8,15 @@
     </style>
 
     <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
-    <style name="Theme.Jogging.ZoomedDialog" parent="android:Theme.Holo.Light.Dialog">
-        <item name="android:windowEnterAnimation">@anim/zoom_in</item>
-        <item name="android:windowExitAnimation">@anim/zoom_out</item>
+    <style name="Theme.Jogging.ZoomedDialog" parent="android:Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:maxWidth">600dp</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 
     <!-- STYLES -->
-
-
 
 </resources>

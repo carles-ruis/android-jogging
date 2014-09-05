@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
+    <style name="Theme.Jogging.ZoomedDialog" parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:windowEnterAnimation">@anim/zoom_in</item>
+        <item name="android:windowExitAnimation">@anim/zoom_out</item>
+    </style>
+
+</resources>
