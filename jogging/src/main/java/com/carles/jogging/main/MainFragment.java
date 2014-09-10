@@ -1,6 +1,6 @@
 package com.carles.jogging.main;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,39 +13,34 @@ import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.BaseFragment;
 import com.carles.jogging.jogging.first_location.CheckConnectionsActivity;
-import com.carles.jogging.common.LocationHelper;
+import com.carles.jogging.util.FormatUtil;
+import com.carles.jogging.util.PrefUtil;
 
 /**
  * Created by carles1 on 20/04/14.
  */
 public class MainFragment extends BaseFragment {
 
+    private Context ctx;
     private Spinner kmsEdit;
 
-    public static MainFragment newInstance(String title) {
+    public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putString(C.ARGS_ACTION_BAR_TITLE, title);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
+        ctx = getActivity();
 
         final Button runButton = (Button) view.findViewById(R.id.main_button_run);
-        runButton.setOnClickListener(new OnRunButtonClickListener());
-
         kmsEdit = (Spinner) view.findViewById(R.id.main_spinner_kms);
 
-        return view;
-    }
+        runButton.setOnClickListener(new OnRunButtonClickListener());
+        kmsEdit.setSelection(PrefUtil.getLastKilometersSelectedPosition(getActivity()));
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).setActionBarTitle(getArguments().getString(C.ARGS_ACTION_BAR_TITLE));
+        return view;
     }
 
     /*- ********************************************************** */
@@ -54,10 +49,11 @@ public class MainFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             String sKilometers = String.valueOf(kmsEdit.getSelectedItem());
+            PrefUtil.setLastKilometersSelectedPosition(ctx, kmsEdit.getSelectedItemPosition());
 
             Intent intent = new Intent(getActivity(), CheckConnectionsActivity.class);
             intent.putExtra(C.EXTRA_DISTANCE_TEXT, sKilometers);
-            intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, LocationHelper.textDistanceToMeters(getActivity(), sKilometers));
+            intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, FormatUtil.textDistanceToMeters(getActivity(), sKilometers));
             startActivity(intent);
           }
     }

@@ -7,4 +7,8 @@ import com.actionbarsherlock.app.SherlockFragment;
  */
 public abstract class BaseFragment extends SherlockFragment {
 
+    protected JoggingApp getApplication() {
+        return (JoggingApp)getActivity().getApplication();
+    }
+
 }

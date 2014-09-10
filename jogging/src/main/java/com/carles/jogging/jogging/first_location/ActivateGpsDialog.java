@@ -1,6 +1,7 @@
 package com.carles.jogging.jogging.first_location;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 
+import com.carles.jogging.C;
 import com.carles.jogging.R;
 
 /**
@@ -25,16 +27,20 @@ public class ActivateGpsDialog extends DialogFragment {
 
             builder.setPositiveButton(getString(R.string.activate_gps_button_yes), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
+
                     // Show location settings when the user acknowledges the alert dialog
                     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
+
+                    // Don't invoke directly from the fragment, use getActivity()
+                    // If not, requestCode is wrong when onActivityResult() is called
+                    getActivity().startActivityForResult(intent, C.REQ_CODE_ENABLE_GPS);
                 }
             });
 
             builder.setNegativeButton(getString(R.string.activate_gps_button_no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    /*- user doesn't want to activate gps */
+                    // user doesn't want to activate gps
                     ((CheckConnectionsActivity)getActivity()).showConnectionFailedDialog(getString(R.string.connection_failed_gps));
                 }
             });

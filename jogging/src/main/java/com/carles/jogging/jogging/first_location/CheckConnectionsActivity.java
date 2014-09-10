@@ -2,7 +2,6 @@ package com.carles.jogging.jogging.first_location;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -14,14 +13,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
-import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.common.LocationHelper;
+import com.carles.jogging.util.LocationHelper;
 import com.carles.jogging.jogging.JoggingActivity;
 import com.carles.jogging.BaseActivity;
 import com.carles.jogging.service.FirstLocationService;
@@ -49,7 +46,9 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setTitle(R.string.title_check_connections);
 
-        checkServicesConnected();
+        if (checkServicesConnected()) {
+            checkGpsConnected();
+        }
 
     }
 
@@ -63,7 +62,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
         } else {
             // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this, C.CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this, C.REQ_CODE_GOOGLE_CONNECTION_FAILURE);
 
             // If Google Play services can provide an error dialog
             if (errorDialog != null) {
@@ -78,19 +77,23 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // avoids IllegalStateException when showing ActivateGpsDialog for the second time
+        super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
-            case C.CONNECTION_FAILURE_RESOLUTION_REQUEST:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
+            case C.REQ_CODE_GOOGLE_CONNECTION_FAILURE:
+                if (resultCode == Activity.RESULT_OK) {
                         /*- at the end device was able to connect */
-                        checkGpsConnected();
-                        break;
-                    default:
-                        Log.i(TAG, "Google Play services not available.");
+                    checkGpsConnected();
+                } else {
+                    Log.i(TAG, "Google Play services not available.");
                         /*- device was not able to connect to google play services */
-                        showConnectionFailedDialog(getString(R.string.connection_failed_google));
-                        break;
+                    showConnectionFailedDialog(getString(R.string.connection_failed_google));
                 }
+                break;
+            case C.REQ_CODE_ENABLE_GPS:
+                checkGpsConnected();
+                break;
         }
     }
 
@@ -104,30 +107,18 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (enabled) {
-            requestForFirstLocation();
+            showRequestForFirstLocationProgressDialog();
+            Intent intent = new Intent(this, FirstLocationService.class);
+
+        /*- BIND_AUTO_CREATE ties the service lifecycle with the binding */
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            serviceBound = true;
 
         } else {
             Log.i(TAG, "GPS is not activated");
             ActivateGpsDialog dialog = new ActivateGpsDialog();
             dialog.show(getSupportFragmentManager(), C.TAG_ACTIVATE_GPS_DIALOG);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /*- check it after onCreate, and also after returning from devices gps settings */
-        checkGpsConnected();
-    }
-
-    private void requestForFirstLocation() {
-        showRequestForFirstLocationProgressDialog();
-
-        Intent intent = new Intent(this, FirstLocationService.class);
-
-        /*- BIND_AUTO_CREATE ties the service lifecycle with the binding */
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        serviceBound = true;
     }
 
     private void showRequestForFirstLocationProgressDialog() {
@@ -146,8 +137,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
         if (serviceBound) {
             unbindService(serviceConnection);
             /*- unset serviceBound because onServiceDisconnected is not called when the service is unbound from code */
@@ -158,6 +148,8 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         if (dialog != null) {
             dialog.dismiss();
         }
+
+        super.onDestroy();
     }
 
     @Override
@@ -169,13 +161,9 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         }
 
         Log.i(TAG, "First location found:" + LocationHelper.toString(location));
-        /*- start next activity */
         Intent intent = new Intent(this, JoggingActivity.class);
         intent.putExtras(getIntent().getExtras());
         intent.putExtra(C.EXTRA_FIRST_LOCATION, location);
-        /*- when navigating away, the user cannot return to the activity with the back button */
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-
         startActivity(intent);
         finish();
     }
@@ -186,11 +174,17 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
         /*- destroy the service, stop requesting for  location */
         if (serviceBound) {
+            Log.e("carles","service is still bound. Let's try to unbind it");
             unbindService(serviceConnection);
             serviceBound = false;
         }
 
+        Log.e("carles","service was unbound");
+
         FirstLocationNotObtainedDialog dialog = new FirstLocationNotObtainedDialog();
+
+        Log.e("carles","FirsLocationNotObtainedDialog instanced");
+
         dialog.show(getSupportFragmentManager(), C.TAG_FIRST_LOCATION_NOT_OBTAINED);
     }
 

@@ -1,4 +1,4 @@
-package com.carles.jogging.common;
+package com.carles.jogging.util;
 
 import android.content.Context;
 import android.content.res.Resources;

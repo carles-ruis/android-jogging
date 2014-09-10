@@ -1,4 +1,4 @@
-package com.carles.jogging.common;
+package com.carles.jogging.util;
 
 /**
  * Created by carles1 on 26/04/14.

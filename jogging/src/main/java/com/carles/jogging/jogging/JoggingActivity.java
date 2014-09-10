@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
@@ -17,7 +18,7 @@ import com.carles.jogging.service.LocationService;
 /**
  * Created by carles1 on 20/04/14.
  */
-public class JoggingActivity extends BaseActivity {
+public class JoggingActivity extends BaseActivity implements JoggingFragment.OnCountdownFinishedListener {
 
     private static final String TAG = JoggingActivity.class.getName();
 
@@ -31,12 +32,6 @@ public class JoggingActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        /*- override the back button in order to show confirmation */
-        CancelRunDialog cancelRunDialog = new CancelRunDialog();
-        cancelRunDialog.show(getSupportFragmentManager(), C.TAG_CANCEL_RUN_DIALOG);
-    }
-
     public void startGetLocationsService() {
         Intent intent = new Intent(this, LocationService.class);
         intent.putExtras(getIntent().getExtras());
@@ -49,5 +44,23 @@ public class JoggingActivity extends BaseActivity {
         intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.CANCELLED_BY_USER);
         startService(intent);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        /*- override the back button in order to show confirmation */
+        CancelRunDialog cancelRunDialog = new CancelRunDialog();
+        cancelRunDialog.show(getSupportFragmentManager(), C.TAG_CANCEL_RUN_DIALOG);
+    }
+
 
 }

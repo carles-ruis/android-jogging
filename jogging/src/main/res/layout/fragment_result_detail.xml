@@ -3,67 +3,95 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- title and subtitle indicate if footing was successful or not -->
     <TextView
-        android:id="@+id/result_resume"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="@string/hello_kitty" />
-
-    <Button
-        android:id="@+id/result_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/result_resume"
-        android:text="@string/hello_kitty" />
-
-    <TextView
-        android:id="@+id/result_date"
+        android:id="@+id/txt_result_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/result_distance"
+        android:id="@+id/txt_result_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/result_time"
+        android:layout_below="@+id/txt_result_title"
         android:layout_centerHorizontal="true" />
 
+    <!-- text to show if no locations obtained -->
     <TextView
-        android:id="@+id/result_time"
+        android:id="@+id/txt_result_no_locations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:text="@string/result_no_locations"
+        android:visibility="gone" />
 
-    <FrameLayout
+    <!-- data to show if locations obtained -->
+    <RelativeLayout
+        android:id="@+id/lyt_result_data"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/result_time">
+        android:layout_height="match_parent"
+        android:layout_below="@id/txt_result_subtitle">
 
+        <!-- total time and total distance ran, congratulations if record achieved -->
         <TextView
-            android:id="@+id/result_info_rank"
+            android:id="@+id/txt_result_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
         <TextView
-            android:id="@+id/result_info_best_time"
+            android:id="@+id/txt_result_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/result_info_best_time"
-            android:visibility="invisible" />
+            android:layout_below="@id/txt_result_time"
+            android:layout_centerHorizontal="true" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/txt_result_best_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_result_distance"
+            android:layout_centerHorizontal="true"
+            android:text="@string/result_best_time"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/result_info_time_stored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/result_info_time_stored" />
+        <!-- real time and distance calculated -->
+        <TextView
+            android:id="@+id/txt_result_real_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_result_best_time"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/txt_result_real_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_result_real_time"
+            android:layout_centerHorizontal="true" />
+
+        <!-- list of partial results of this footing -->
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/txt_result_saved"
+            android:layout_below="@id/txt_result_real_distance"
+            android:dividerHeight="1dp"
+            android:divider="@android:color/black" />
+
+        <!-- inform the user his result was achieved -->
+        <TextView
+            android:id="@+id/txt_result_saved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/result_saved" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -88,18 +88,19 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
 
         switch (option) {
             case NEW:
-                fragment = MainFragment.newInstance(title);
+                fragment = MainFragment.newInstance();
                 break;
             case BEST_TIMES:
-                fragment = BestTimesFragment.newInstance(title);
+                fragment = BestTimesFragment.newInstance();
                 break;
             case LAST_TIMES:
-                fragment = LastTimesFragment.newInstance(title);
+                fragment = LastTimesFragment.newInstance();
                 break;
         }
 
         /*- Insert the fragment by replacing any existing fragment */
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        setActionBarTitle(title);
 
     }
 

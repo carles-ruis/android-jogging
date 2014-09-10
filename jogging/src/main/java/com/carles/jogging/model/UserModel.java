@@ -10,19 +10,20 @@ import java.util.List;
  */
 public class UserModel {
 
-    private String nickname;
+    private String name;
+    private String password;
     private String email;
     private List<JoggingModel> joggings = new ArrayList<JoggingModel>();
 
     public UserModel() {
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getName() {
+        return name;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -39,5 +40,13 @@ public class UserModel {
 
     public void setJoggings(List<JoggingModel> joggings) {
         this.joggings = joggings;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

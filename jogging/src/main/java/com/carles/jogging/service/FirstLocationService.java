@@ -7,8 +7,10 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
+import com.carles.jogging.jogging.FootingResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -28,14 +30,20 @@ import java.util.List;
  * <p/>
  * Created by carles1 on 26/04/14.
  */
-public class FirstLocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+public class FirstLocationService extends Service implements GpsConnectivityObserver, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = FirstLocationService.class.getName();
     private static final int MIN_REQUEST_TIME = 30 * 1000;
     private static final int MAX_REQUEST_TIME = 120 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
-    private static final float ACCURACY_LIMIT = 50.0f;
+    // TODO change accuracy limit
+    private static final float ACCURACY_LIMIT = 200.0f;
+    private static final float LOW_ACCURACY_LIMIT = 200.0f;
 
+    private static final String WAKE_LOCK_TAG = "wake_lock_tag";
+    private static PowerManager.WakeLock wakelock;
+
+    private long stopRequestingTime;
     private final IBinder binder = new FirstLocationServiceBinder();
     // i used weak reference to the client activity cause
     // to avoid becoming out of scope when is recreated
@@ -44,7 +52,6 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
     private LocationClient locationClient;
     private LocationRequest locationRequest;
 
-    private long stopRequestingTime;
     private Location bestLocation;
 
     private Handler handler = new Handler();
@@ -54,11 +61,20 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
     @Override
     public void onCreate() {
+        acquireWakelock();
+        GpsConnectivityManager.instance(this).addObserver(this);
+
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(UPDATE_INTERVAL);
         locationRequest.setFastestInterval(UPDATE_INTERVAL);
         locationClient = new LocationClient(this, this, this);
+    }
+
+    private void acquireWakelock() {
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG);
+        wakelock.acquire();
     }
 
     @Override
@@ -86,11 +102,9 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
 
     @Override
     public void onConnected(Bundle bundle) {
-
         stopRequestingTime = System.currentTimeMillis() + MIN_REQUEST_TIME;
         handler.postDelayed(firstLocationTimeout, MAX_REQUEST_TIME);
 
-        /*- don't use getLastLocation because could keep obsolete data */
         locationClient.requestLocationUpdates(locationRequest, this);
     }
 
@@ -99,13 +113,8 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
         accuracies.add(location.getAccuracy()); // TODO delete
         Log.i(TAG, "accuracy " + location.getAccuracy());
 
-        /*- first location obtained */
-        if (bestLocation == null) {
-            bestLocation = location;
-        }
-
-        /*- check if this is the best accurated location */
-        if (location.getAccuracy() <= bestLocation.getAccuracy()) {
+        // check if this is the first location or the best accurated location
+        if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {
             bestLocation = location;
         }
 
@@ -132,12 +141,28 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
         }
         locationClient.disconnect();
         locationClient = null;
+
+        GpsConnectivityManager.instance(this).removeObserver(this);
+        releaseWakeLock();
+    }
+
+    private void releaseWakeLock() {
+        if (wakelock != null) {
+            wakelock.release();
+        }
+    }
+
+    @Override
+    public void manageGpsConnectivityNotification(boolean connectionEnabled) {
+        if (!connectionEnabled) {
+            Log.i(TAG, "gps connection disabled");
+            client.get().onLocationFailed();
+        }
     }
 
     @Override
     public void onDisconnected() {
         client.get().onLocationFailed();
-
     }
 
     @Override
@@ -150,17 +175,23 @@ public class FirstLocationService extends Service implements GooglePlayServicesC
         void onLocationFailed();
     }
 
-    /*- ******************************************************************************** */
-    /*- ******************************************************************************** */
+    /*- ************************************************************** */
+    /*- ************************************************************** */
     private class FirstLocationTimeout implements Runnable {
         @Override
         public void run() {
-            client.get().onLocationFailed();
+            Log.i(TAG, "LIST OF ACCURACIES OBTAINED (BAD) = " + accuracies.toString());
+
+            if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
+                client.get().onLocationObtained(bestLocation);
+            } else {
+                client.get().onLocationFailed();
+            }
         }
     }
 
-    /*- ******************************************************************************** */
-    /*- ******************************************************************************** */
+    /*- ************************************************************* */
+    /*- ************************************************************* */
     /*
         Class used for the client Binder.  Because we know this service always
          runs in the same process as its clients, we don't need to deal with IPC.

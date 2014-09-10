@@ -4,8 +4,10 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.carles.jogging.common.LocationHelper;
+import com.carles.jogging.jogging.FootingResult;
+import com.carles.jogging.util.LocationHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,37 +19,68 @@ public class JoggingModel implements Parcelable {
     private Location start;
     private Location end;
     private UserModel user;
+    private FootingResult footingResult;
 
-    // Partial running time in milliseconds
-    private long time;
+    private long realTime;
     private long totalTime;
-    // Distances run in meters
-    private float partialDistance;
+    private float realDistance;
     private float totalDistance;
 
     // if this objecte represents a "full" run, partial results obtained
-    private List<JoggingModel> partials;
+    private List<JoggingModel> partials = new ArrayList<JoggingModel>();
     // if this object represents a "partial" run, id of the "full" run this object is part of
     private long parentId;
 
     public JoggingModel() {}
 
     public JoggingModel(Location start, Location end, long totalTime, float totalDistance) {
-        this.time = end.getTime() - start.getTime();
-        this.totalTime = totalTime;
         this.start = start;
         this.end = end;
-        this.partialDistance = end.distanceTo(start);
+        this.realTime = end.getTime() - start.getTime();
+        this.totalTime = totalTime;
+        this.realDistance = end.distanceTo(start);
         this.totalDistance = totalDistance;
     }
 
     public JoggingModel(Parcel source) {
-        this.time = source.readLong();
-        this.totalTime = source.readLong();
         this.start = source.readParcelable(Location.class.getClassLoader());
         this.end = source.readParcelable(Location.class.getClassLoader());
-        this.partialDistance = source.readFloat();
+        this.realTime = source.readLong();
+        this.totalTime = source.readLong();
+        this.realDistance = source.readFloat();
         this.totalDistance = source.readFloat();
+    }
+
+    /**
+     * Creates a JoggingModel from the info of each partial JoggingModel.
+     * The partials list should not be empty, check before constructing this object.
+     * Truncates totalDistance to the distance expected by the user if footing was successful
+     * Calculates totalTime relative to totalDistance if footing was successful
+     * @param partials
+     */
+    public JoggingModel(List<JoggingModel> partials, float goalDistance, FootingResult footingResult) {
+        this.id = System.currentTimeMillis();
+        this.start = partials.get(0).getStart();
+        this.end = partials.get(partials.size() - 1).getEnd();
+        this.realTime = getEnd().getTime() - getStart().getTime();
+        this.realDistance = partials.get(partials.size() - 1).getTotalDistance();
+        this.footingResult = footingResult;
+
+        // total distance and time. ReCalculate them if footing was successful
+        if (footingResult == FootingResult.SUCCESS) {
+            this.totalDistance = goalDistance;
+            this.totalTime = (long) ((float) getRealTime() * getTotalDistance() / getRealDistance());
+        } else {
+            this.totalDistance = this.realDistance;
+            this.totalTime = this.realTime;
+        }
+
+        // link this JoggingModel with its partials
+        this.partials = partials;
+        for (int i = 0; i < partials.size(); i++) {
+            partials.get(i).setParentId(getId());
+            partials.get(i).setId(Long.valueOf(String.format("%d%03d", getId(), i)));
+        }
     }
 
     @Override
@@ -55,9 +88,9 @@ public class JoggingModel implements Parcelable {
         return "JoggingModel{" +
                 "start=" + LocationHelper.toString(start) +
                 ", end=" + LocationHelper.toString(end) +
-                ", time=" + time +
-                ", partialDistance=" + partialDistance +
-                ", totalTime" + totalTime +
+                ", realTime=" + realTime +
+                ", realDistance=" + realDistance +
+                ", totalTime=" + totalTime +
                 ", totalDistance=" + totalDistance +
                 '}';
     }
@@ -70,16 +103,12 @@ public class JoggingModel implements Parcelable {
         this.id = id;
     }
 
-    public long getTimestamp() {
-        return end.getTime();
+    public long getRealTime() {
+        return realTime;
     }
 
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
+    public void setRealTime(long realTime) {
+        this.realTime = realTime;
     }
 
     public Location getStart() {
@@ -122,12 +151,12 @@ public class JoggingModel implements Parcelable {
         this.parentId = parentId;
     }
 
-    public float getPartialDistance() {
-        return partialDistance;
+    public float getRealDistance() {
+        return realDistance;
     }
 
-    public void setPartialDistance(float partialDistance) {
-        this.partialDistance = partialDistance;
+    public void setRealDistance(float realDistance) {
+        this.realDistance = realDistance;
     }
 
     public float getTotalDistance() {
@@ -150,6 +179,14 @@ public class JoggingModel implements Parcelable {
         this.totalTime = totalTime;
     }
 
+    public FootingResult getFootingResult() {
+        return footingResult;
+    }
+
+    public void setFootingResult(FootingResult footingResult) {
+        this.footingResult = footingResult;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -157,11 +194,11 @@ public class JoggingModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeLong(time);
-        parcel.writeLong(totalTime);
         parcel.writeParcelable(start, flags);
         parcel.writeParcelable(end, flags);
-        parcel.writeFloat(partialDistance);
+        parcel.writeLong(realTime);
+        parcel.writeLong(totalTime);
+        parcel.writeFloat(realDistance);
         parcel.writeFloat(totalDistance);
     }
 

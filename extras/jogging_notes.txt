@@ -1,3 +1,10 @@
+----------------------------
+TEST REPORTS
+----------------------------
+C:/android-jogging/jogging/build/outputs/reports/androidTests/connected/index.html
+
+
+----------------------------
 afegir a proguard per ABS
 ----------------------------
 -keep class android.support.v4.app.** { *; }
@@ -8,6 +15,7 @@ afegir a proguard per ABS
 -keepattributes *Annotation*
 
 
+----------------------------
 estimacions
 ----------------------------
 setup: manifets, AB, ND, model, navegacio       16 2    (14)

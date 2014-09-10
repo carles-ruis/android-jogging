@@ -1,12 +1,13 @@
 package com.carles.jogging.service;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.media.AudioManager;
-import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,15 +19,18 @@ import android.util.Log;
 
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.common.FormatUtil;
+import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.result.ResultDetailActivity;
+import com.carles.jogging.util.SystemUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +41,13 @@ import java.util.List;
 public class LocationService extends Service implements GpsConnectivityObserver, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = LocationService.class.getName();
+    private static final int NOTIFICATION_ID = 1;
+
     private static final long TIME_BETWEEN_REQUESTS = 30 * 1000;
     private static final long MIN_REQUEST_TIME = 30 * 1000;
     private static final long MAX_REQUEST_TIME = 90 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
     private static final float SMALLEST_DISPLACEMENT = 1.0f;
-
     private static final float ACCURACY_LIMIT = 25.0f;
     private static final float LOW_ACCURACY_LIMIT = 100.0f;
 
@@ -56,7 +61,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private float currentDistance;
     private float totalDistance;
     private String totalDistanceText;
-
     private Location startLocation;
     private Location previousLocation;
     private Location bestLocation;
@@ -70,25 +74,15 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private Runnable locationStartUpdating = new LocationStartUpdating();
     private long stopRequestingTime;
 
-    // sounds when running is over
-    private SoundPool soundPool;
-    private int stopSoundId = -1;
-    private int crowdSoundId = -1;
-
     private List<Float> accuracies = new ArrayList<Float>(); // TODO delete
 
     @Override
     public void onCreate() {
-          /*- request wakelock to avoid the device goes to sleep and misses location updates */
+          // request wakelock to avoid the device goes to sleep and misses location updates
         acquireWakelock();
 
-        /*- subscribe to gps connectivity changes */
+        // subscribe to gps connectivity changes
         GpsConnectivityManager.instance(this).addObserver(this);
-
-        /*- load sounds */
-        soundPool = new SoundPool(C.MAX_SOUND_STREAMS, AudioManager.STREAM_MUSIC, 0);
-        stopSoundId = soundPool.load(this, R.raw.alert_stop_footing, 1);
-        crowdSoundId = soundPool.load(this, R.raw.sound_crowd_cheering, 1);
 
         /*- configuring accuracy of timing of requests to gps */
         locationRequest = LocationRequest.create();
@@ -115,8 +109,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         if (FootingResult.CANCELLED_BY_USER == footingResult) {
             // case 1: running cancelled by the user from activity
             stopRunning(FootingResult.CANCELLED_BY_USER);
-            // if the system kills the service don't bother recreating it
-            return START_NOT_STICKY;
 
         } else {
             // case 2: countdown finished from activity: start running
@@ -124,28 +116,31 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
             previousLocation = startLocation;
             bestLocation = null;
-
             currentDistance = 0f;
             totalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
             totalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
             startTime = System.currentTimeMillis();
+            // first location time has to be "now" because user starts running now
+            previousLocation.setTime(startTime);
 
             startForegroundAndShowOngoingNotification();
 
             locationClient.connect();
 
-            return START_NOT_STICKY;
         }
+        // if the system kills the service don't bother recreating it
+        return START_NOT_STICKY;
     }
 
     private void startForegroundAndShowOngoingNotification() {
-        /*- notification will have an empty attachment */
-        PendingIntent emptyIntent = PendingIntent.getActivity(this, C.NOT_USED, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        // the PendingIntent won't have an attachment
+        PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_is_running).
                 setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
         Notification notification = builder.build();
 
-        startForeground(C.ONGOING_NOTIFICATION_IS_RUNNING, notification);
+        startForeground(NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -155,12 +150,11 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     }
 
     private void startRequestingLocationUpdates() {
-        long now = System.currentTimeMillis();
-        stopRequestingTime = now + MIN_REQUEST_TIME;
-
+        stopRequestingTime = System.currentTimeMillis() + MIN_REQUEST_TIME;
         handler.postDelayed(locationTimeoutUpdating, MAX_REQUEST_TIME);
 
         // start running: app requests location updates
+        // don't use getLastLocation because could keep obsolete data
         locationClient.requestLocationUpdates(locationRequest, this);
     }
 
@@ -168,7 +162,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     public void onLocationChanged(Location location) {
         accuracies.add(location.getAccuracy()); // TODO delete
 
-        /*- check if this is the first location or the best accurated location */
+        // check if this is the first location or the best accurated location
         if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {
            /*- ignore repeated locations */
             if (location.distanceTo(previousLocation) > 0.0f) {
@@ -176,8 +170,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             }
 
         /*- check if we should keeping requesting location updates */
-            long now = System.currentTimeMillis();
-            if (bestLocation == null || now < stopRequestingTime) {
+            if (bestLocation == null || System.currentTimeMillis() < stopRequestingTime) {
                 return;
             }
 
@@ -198,18 +191,19 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         totalTime = bestLocation.getTime() - startTime;
         JoggingModel partial = new JoggingModel(previousLocation, bestLocation, totalTime, currentDistance);
         partials.add(partial);
+
         previousLocation = bestLocation;
         bestLocation = null;
 
         // send intent to JoggingFragment to update the distance and kms ran
         Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
         intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.runningTime(totalTime));
-        intent.putExtra(C.EXTRA_DISTANCE_TEXT, String.valueOf((int)currentDistance));
+        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, (int)currentDistance);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         // TODO delete comments
         Log.e(TAG, "PARTIAL JOGGING STORED = " + partial.toString());
-        Log.i(TAG, "LIST OF ACCURACIES OBTAINED (GOOD) = " + accuracies.toString());
+        Log.i(TAG, "LIST OF ACCURACIES OBTAINED = " + accuracies.toString());
         accuracies.clear();
 
         // check if running is over
@@ -217,43 +211,61 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             handler.postDelayed(locationStartUpdating, TIME_BETWEEN_REQUESTS);
 
         } else {
-            totalTime = bestLocation.getTime() - startTime;
             stopRunning(FootingResult.SUCCESS);
         }
 
     }
 
     private void stopRunning(FootingResult footingResult) {
-    // TODO delete comments
-        Log.e(TAG, "FOOTING RESULT=" + footingResult.toString());
-        Log.i(TAG, "Partials:");
-        for (JoggingModel partial:partials) {
-            Log.i(TAG, partial.toString());
-        }
 
-        if (footingResult==FootingResult.SUCCESS) {
-            if (crowdSoundId != -1) {
-                soundPool.play(crowdSoundId, C.VOLUME, C.VOLUME, 1, 0, 1f);
-            }
-        } else {
-            if (stopSoundId!=-1) {
-                soundPool.play(stopSoundId, C.VOLUME, C.VOLUME, 1, 0, 1f);
-            }
-        }
-
-        // TODO Maybe it interrupts the user from something he's doing. Then use PendingIntent+Notification
-
-        // send intent to show the results
+        // prepare intent with the results
         Intent intent = new Intent(this, ResultDetailActivity.class);
-        intent.putExtra(C.EXTRA_DISTANCE_TEXT, totalDistanceText);
-        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, currentDistance);
-        intent.putExtra(C.EXTRA_FOOTING_TIME, totalTime);
         intent.putExtra(C.EXTRA_FOOTING_RESULT, footingResult);
-        intent.putParcelableArrayListExtra(C.EXTRA_PARTIALS, (ArrayList<JoggingModel>) partials);
+        if (partials.size()>0) {
+            intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
+            intent.putExtra(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult));
+        }
         // the activity will start a new task
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        Log.i(TAG, "Service about to start RESULT activity");
-        startActivity(intent);
+
+        if (footingResult == FootingResult.CANCELLED_BY_USER) {
+            // if user cancelled running, open Result activity without notifying with a sound
+            startActivity(intent);
+
+        } else {
+            // open Result activity and notify user with a sound
+            intent.putExtra(C.EXTRA_SHOULD_PLAY_SOUND, true);
+            startActivity(intent);
+
+//        } else {
+//            PendingIntent pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//            String notiTitle = "";
+//            String notiText = "";
+//            Uri sound = null;
+//            if (footingResult == FootingResult.SUCCESS) {
+//                notiTitle = getString(R.string.footing_result_success_title);
+//                notiText = getString(R.string.footing_result_success);
+//                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sound_crowd_cheering);
+//
+//            } else {
+//                notiTitle = getString(R.string.footing_result_failure_title);
+//                int resId = getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName());
+//                notiText = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName()));
+//                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.alert_stop_footing);
+//            }
+//
+//            if (StringUtils.isBlank(notiText) || StringUtils.isBlank(notiTitle) || sound == null) {
+//                return;
+//            }
+//
+//            NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_stop_running).
+//                    setContentTitle(notiTitle).setContentText(notiText).setContentIntent(pintent).setSound(sound);
+//            Notification notification = builder.build();
+//            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+//            final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.notify(NOTIFICATION_ID, notification);
+        }
 
         // stopping the service implies calling onDestroy
         stopSelf();
@@ -286,7 +298,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     @Override
     public void manageGpsConnectivityNotification(boolean connectionEnabled) {
         if (!connectionEnabled) {
-            Log.i(TAG, "gps_connectivity_observer off");
+            Log.i(TAG, "gps connection disabled");
             stopRunning(FootingResult.GPS_DISABLED);
         }
     }
@@ -308,24 +320,24 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         return null;
     }
 
-    /*- ************************************************************************************ */
-    /*- ************************************************************************************ */
+    /*- *************************************************************** */
+    /*- *************************************************************** */
     private class LocationTimeoutUpdating implements Runnable {
 
         @Override
         public void run() {
-            Log.i(TAG, "LIST OF ACCURACIES OBTAINED (BAD) = " + accuracies.toString());
 
             if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
                 onLocationObtained();
             } else {
+                Log.i(TAG, "LIST OF ACCURACIES OBTAINED (NOT ENOUGH) = " + accuracies.toString());
                 stopRunning(FootingResult.NO_LOCATION_UPDATES);
             }
         }
     }
 
-    /*- ************************************************************************************* */
-    /*- ************************************************************************************* */
+    /*- *********************************************************** */
+    /*- *********************************************************** */
     private class LocationStartUpdating implements Runnable {
         @Override
         public void run() {

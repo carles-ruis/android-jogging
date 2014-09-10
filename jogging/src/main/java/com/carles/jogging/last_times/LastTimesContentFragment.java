@@ -1,4 +1,4 @@
-package com.carles.jogging.best_times;
+package com.carles.jogging.last_times;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,11 +11,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.carles.jogging.BaseFragment;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.BaseFragment;
 import com.carles.jogging.jogging.FootingResult;
-import com.carles.jogging.main.MainActivity;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.model.UserModel;
@@ -25,56 +24,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by carles1 on 20/04/14.
+ * Created by carles1 on 10/09/14.
  */
-public class BestTimesFragment extends BaseFragment {
+public class LastTimesContentFragment extends BaseFragment {
+
+    private static final String ARGS_METERS = "args_meters";
 
     private Context ctx;
-    private List<JoggingModel> bestTimes;
+    private List<JoggingModel> joggings;
 
     private TextView txtNoResults;
     private ListView list;
 
-    public static BestTimesFragment newInstance() {
-        BestTimesFragment fragment = new BestTimesFragment();
+    public static LastTimesContentFragment newInstance(long meters) {
+        LastTimesContentFragment fragment = new LastTimesContentFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARGS_METERS, meters);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_best_times, container, false);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         ctx = getActivity();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_last_times_content, container, false);
 
         txtNoResults = (TextView) view.findViewById(R.id.txt_no_results);
         list = (ListView) view.findViewById(R.id.list);
 
-        // load best times from database
         loadData();
 
         return view;
     }
 
     private void loadData() {
-        // TODO delete
+
+        //TODO delete
         UserModel u = new UserModel();
         u.setName("u1");
 
-        bestTimes = JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(u);
-        if (bestTimes == null || bestTimes.isEmpty()) {
+        final long meters = getArguments().getLong(ARGS_METERS, -1);
+        final List<JoggingModel> joggings = JoggingSQLiteHelper.getInstance(ctx).queryLastTimes(u, meters);
+
+        if (joggings == null || joggings.isEmpty()) {
             txtNoResults.setVisibility(View.VISIBLE);
 
         } else {
-            BestTimesAdapter adapter = new BestTimesAdapter(ctx, bestTimes);
-            list.addHeaderView(View.inflate(ctx, R.layout.header_best_times, null));
-            list.setAdapter(adapter);
+
+            list.setAdapter(new LastTimesAdapter(ctx, joggings));
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    JoggingModel joggingSelected = bestTimes.get(position);
-                    List<JoggingModel> partials = JoggingSQLiteHelper.getInstance(ctx).queryPartials(joggingSelected);
+                    JoggingModel selectedJogging = joggings.get(position);
+                    List<JoggingModel> partials = JoggingSQLiteHelper.getInstance(ctx).queryPartials(selectedJogging);
 
                     Intent intent = new Intent(ctx, ResultDetailActivity.class);
-                    intent.putExtra(C.EXTRA_JOGGING_TOTAL, joggingSelected);
+                    intent.putExtra(C.EXTRA_JOGGING_TOTAL, selectedJogging);
                     intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList) partials);
                     intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS.toString());
                     startActivity(intent);
@@ -82,4 +92,5 @@ public class BestTimesFragment extends BaseFragment {
             });
         }
     }
+
 }

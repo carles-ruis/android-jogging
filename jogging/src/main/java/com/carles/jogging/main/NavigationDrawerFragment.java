@@ -46,13 +46,20 @@ public class NavigationDrawerFragment extends BaseFragment {
 
     public NavigationDrawerFragment() {}
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mCallbacks = (NavigationDrawerCallbacks) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*- Read in the flag indicating whether or not the user has demonstrated awareness of the drawer */
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         /*- open drawer anytime */
         mUserLearnedDrawer = false;
@@ -82,13 +89,6 @@ public class NavigationDrawerFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        /*- Indicate that this fragment would like to influence the set of actions in the action bar.*/
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -103,13 +103,10 @@ public class NavigationDrawerFragment extends BaseFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
-        }
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        /*- Indicate that this fragment would like to influence the set of actions in the action bar.*/
+        setHasOptionsMenu(true);
     }
 
     @Override
