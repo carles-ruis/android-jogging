@@ -111,7 +111,7 @@ public class ResultDetailFragment extends BaseFragment {
                 Log.e("carles","jogging is null");
             }
 
-            txtTime.setText(getString(R.string.jogging_time, String.valueOf(jogging.getTotalTime())));
+            txtTime.setText(getString(R.string.jogging_time, FormatUtil.time(jogging.getTotalTime())));
             txtDistance.setText(getString(R.string.jogging_kilometers_run, (int)jogging.getTotalDistance()));
 
             if (footingResult == FootingResult.SUCCESS)             {

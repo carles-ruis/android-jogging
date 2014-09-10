@@ -59,12 +59,19 @@ public class JoggingModel implements Parcelable {
      * @param partials
      */
     public JoggingModel(List<JoggingModel> partials, float goalDistance, FootingResult footingResult) {
+
+        //TODO
+        UserModel user = new UserModel();
+        user.setName("u1");
+
+
         this.id = System.currentTimeMillis();
         this.start = partials.get(0).getStart();
         this.end = partials.get(partials.size() - 1).getEnd();
         this.realTime = getEnd().getTime() - getStart().getTime();
         this.realDistance = partials.get(partials.size() - 1).getTotalDistance();
         this.footingResult = footingResult;
+        this.user = user;
 
         // total distance and time. ReCalculate them if footing was successful
         if (footingResult == FootingResult.SUCCESS) {
@@ -80,6 +87,7 @@ public class JoggingModel implements Parcelable {
         for (int i = 0; i < partials.size(); i++) {
             partials.get(i).setParentId(getId());
             partials.get(i).setId(Long.valueOf(String.format("%d%03d", getId(), i)));
+            partials.get(i).setUser(this.user);
         }
     }
 

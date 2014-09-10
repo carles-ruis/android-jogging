@@ -50,7 +50,7 @@ public class ResultMapFragment extends SupportMapFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_result_map, container, false);
+        final View view = super.onCreateView(inflater, container, savedInstanceState);
 
         Log.e("carles", "oncreateview");
 
@@ -63,17 +63,21 @@ public class ResultMapFragment extends SupportMapFragment {
             partials = new ArrayList<JoggingModel>();
         }
 
-        initMap();
+        // DON'T INIT THE MAP UNTIL ONCREATEVIEW DONE. So call initMap in onResume
 
         return view;
     }
 
     private void initMap() {
+
+        Log.e("carles","about to initMap...");
         map = getMap();
 
         if (map == null) {
             return;
         }
+
+        Log.e("carles","map not null. proceed");
 
         if (icon == null) {
             // TODO maybe not necessary
@@ -111,15 +115,18 @@ public class ResultMapFragment extends SupportMapFragment {
         // zooms camera according to the map dimensions
         final LatLngBounds latLngBounds = builder.build();
         map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, MAP_PADDING_IN_PX));
+
+        Log.e("carles","init map ending");
+
     }
 
     @Override
     public void onResume() {
+        Log.e("carles","about to call super.onresume");
         super.onResume();
-        Log.e("carles", "onresume");
+        Log.e("carles", "after calling super.onresume");
 
         if (map == null) {
-            // create the map if for some reason was not created before
             initMap();
         }
         centerToPosition();

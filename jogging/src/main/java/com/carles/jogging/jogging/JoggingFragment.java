@@ -57,16 +57,17 @@ public class JoggingFragment extends BaseFragment {
     private SoundPool soundPool;
     private int startSoundId = -1;
 
-    private Runnable countdownDoneUpdateTextsThread = new Runnable() {
+    private Runnable countdownOnYourMarksThread = new Runnable() {
         @Override
         public void run() {
-            txtOnYourMarks.setVisibility(View.GONE);
-            txtGetSet.setVisibility(View.GONE);
-            txtGo.setVisibility(View.GONE);
-            txtKilometers.setText(getString(R.string.jogging_kilometers_run, 0));
-            txtKilometers.setVisibility(View.VISIBLE);
-            txtTime.setText(getString(R.string.jogging_time, " 0:00:00"));
-            txtTime.setVisibility(View.VISIBLE);
+            txtOnYourMarks.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private Runnable countdownGetSetThread = new Runnable() {
+        @Override
+        public void run() {
+            txtGetSet.setVisibility(View.VISIBLE);
         }
     };
 
@@ -93,17 +94,16 @@ public class JoggingFragment extends BaseFragment {
         }
     };
 
-    private Runnable countdownOnYourMarksThread = new Runnable() {
+    private Runnable countdownDoneUpdateTextsThread = new Runnable() {
         @Override
         public void run() {
-            txtOnYourMarks.setVisibility(View.VISIBLE);
-        }
-    };
-
-    private Runnable countdownGetSetThread = new Runnable() {
-        @Override
-        public void run() {
-            txtGetSet.setVisibility(View.VISIBLE);
+            txtOnYourMarks.setVisibility(View.GONE);
+            txtGetSet.setVisibility(View.GONE);
+            txtGo.setVisibility(View.GONE);
+            txtKilometers.setText(getString(R.string.jogging_kilometers_run, 0));
+            txtKilometers.setVisibility(View.VISIBLE);
+            txtTime.setText(getString(R.string.jogging_time, " 0:00:00"));
+            txtTime.setVisibility(View.VISIBLE);
         }
     };
 
@@ -111,7 +111,7 @@ public class JoggingFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            callbacks = (OnCountdownFinishedListener)activity;
+            callbacks = (OnCountdownFinishedListener) activity;
             ctx = activity;
         } catch (ClassCastException e) {
             Log.e(TAG, "Error: activity must implement OnCountDownFinishedListeners");
@@ -183,6 +183,16 @@ public class JoggingFragment extends BaseFragment {
             LocalBroadcastManager.getInstance(ctx).unregisterReceiver(kilometerReceiver);
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        // avoid fragment not attached to activity IllegalStateException
+        handler.removeCallbacks(countdownOnYourMarksThread);
+        handler.removeCallbacks(countdownGetSetThread);
+        handler.removeCallbacks(countdownGoThread);
+        handler.removeCallbacks(countdownDoneUpdateTextsThread);
+        super.onDetach();
     }
 
     public interface OnCountdownFinishedListener {
