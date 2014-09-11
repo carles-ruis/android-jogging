@@ -38,7 +38,7 @@ public class BestTimesAdapter extends ArrayAdapter<JoggingModel> {
             holder = (Holder)convertView.getTag();
         }
 
-        holder.txtDistance.setText(new StringBuilder().append(jogging.getTotalDistance()).append(" m."));
+        holder.txtDistance.setText(new StringBuilder().append((int)jogging.getTotalDistance()).append(" m."));
         holder.txtTime.setText(FormatUtil.time(jogging.getTotalTime()));
         holder.txtDatetime.setText(FormatUtil.datetime(jogging.getId()));
 

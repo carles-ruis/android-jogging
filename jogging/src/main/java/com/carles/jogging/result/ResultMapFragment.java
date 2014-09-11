@@ -36,6 +36,8 @@ public class ResultMapFragment extends SupportMapFragment {
     private List<JoggingModel> partials = new ArrayList <JoggingModel>();
 
     private static final int MAP_PADDING_IN_PX = 50;
+    // GoogleMap zoom value range from 0 to 19. 0 is worldwide, 19 finest zoom
+    private static final float ZOOM = 15f;
     private GoogleMap map;
     private BitmapDescriptor icon;
 
@@ -52,8 +54,6 @@ public class ResultMapFragment extends SupportMapFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        Log.e("carles", "oncreateview");
-
         // retrieve arguments
         if (getArguments() != null) {
             position = getArguments().getInt(ARGS_KEY_POSITION, 0);
@@ -69,18 +69,14 @@ public class ResultMapFragment extends SupportMapFragment {
     }
 
     private void initMap() {
-
-        Log.e("carles","about to initMap...");
         map = getMap();
 
         if (map == null) {
             return;
         }
 
-        Log.e("carles","map not null. proceed");
-
         if (icon == null) {
-            // TODO maybe not necessary
+            // the "checkpoints" icon is different than the "start" icon
             icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
         }
 
@@ -95,59 +91,57 @@ public class ResultMapFragment extends SupportMapFragment {
         String sTime;
         String snippet;
 
-        final LatLngBounds.Builder builder = LatLngBounds.builder();
         if (!partials.isEmpty()) {
             partial = partials.get(0);
             point = new LatLng(partial.getStart().getLatitude(), partial.getStart().getLongitude());
             map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
-            builder.include(point);
         }
 
         for (int i=0; i<partials.size(); i++) {
             partial = partials.get(i);
             point = new LatLng(partial.getEnd().getLatitude(), partial.getEnd().getLongitude());
-            sTime = FormatUtil.runningTime(partial.getTotalTime());
+            sTime = FormatUtil.time(partial.getTotalTime());
             snippet = new StringBuilder().append(sTime).append("\n").append(partial.getTotalDistance()).append("m").toString();
-            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i+1)).snippet(snippet).icon(icon));
-            builder.include(point);
+            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
         }
 
-        // zooms camera according to the map dimensions
-        final LatLngBounds latLngBounds = builder.build();
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, MAP_PADDING_IN_PX));
-
-        Log.e("carles","init map ending");
-
+        // moveCamera may cause an IllegalStateException if the map has not been already sized
+        // use cameraChangeListener instead
+        //        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, MAP_PADDING_IN_PX));
+        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition arg0) {
+                centerToPosition();
+                map.setOnCameraChangeListener(null);
+            }
+        });
     }
 
     @Override
     public void onResume() {
-        Log.e("carles","about to call super.onresume");
         super.onResume();
-        Log.e("carles", "after calling super.onresume");
-
         if (map == null) {
             initMap();
         }
-        centerToPosition();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e("carles","onstart");
     }
 
     private void centerToPosition() {
-        Log.e("carles", "center to position");
         if (map != null && !partials.isEmpty()) {
-            Location location = position == 0 ? partials.get(0).getStart() : partials.get(position - 1).getEnd();
+            Location location = position == -1 ? partials.get(0).getStart() : partials.get(position).getEnd();
             LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-            map.animateCamera(CameraUpdateFactory.newLatLng(point));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, ZOOM));
         }
     }
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            centerToPosition();
+        }
     }
 }

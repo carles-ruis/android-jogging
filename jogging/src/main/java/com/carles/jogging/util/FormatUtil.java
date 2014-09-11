@@ -19,13 +19,9 @@ public class FormatUtil {
 
     private static final String TAG = FormatUtil.class.getName();
 
-    private static final DateTimeFormatter time = DateTimeFormat.forPattern("HH:mm:ss");
+    private static final DateTimeFormatter time = DateTimeFormat.forPattern("hh:mm:ss");
     private static final DateTimeFormatter date = DateTimeFormat.forPattern("dd/MM/yyyy");
-    private static final DateTimeFormatter datetime = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-
-    public static String time(long millis) {
-        return time.print(millis);
-    }
+    private static final DateTimeFormatter datetime = DateTimeFormat.forPattern("dd/MM/yyyy hh:mm:ss");
 
     public static String date(long millis) {
         return date.print(millis);
@@ -35,11 +31,10 @@ public class FormatUtil {
         return datetime.print(millis);
     }
 
-
     /**
      * Formats a timestamp to a user readable format containing the time in hours, minutes, and seconds
      */
-    public static String runningTime(long millis) {
+    public static String time(long millis) {
         String ret = "";
 
         long hours = TimeUnit.MILLISECONDS.toHours(millis);

@@ -1,13 +1,10 @@
 package com.carles.jogging.service;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,18 +16,15 @@ import android.util.Log;
 
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.result.ResultDetailActivity;
-import com.carles.jogging.util.SystemUtil;
+import com.carles.jogging.util.FormatUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,7 +191,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
         // send intent to JoggingFragment to update the distance and kms ran
         Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
-        intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.runningTime(totalTime));
+        intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.time(totalTime));
         intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, (int)currentDistance);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
@@ -221,21 +215,27 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         // prepare intent with the results
         Intent intent = new Intent(this, ResultDetailActivity.class);
         intent.putExtra(C.EXTRA_FOOTING_RESULT, footingResult);
+
         if (partials.size()>0) {
             intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
             intent.putExtra(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult));
         }
-        // the activity will start a new task
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
 
-        if (footingResult == FootingResult.CANCELLED_BY_USER) {
-            // if user cancelled running, open Result activity without notifying with a sound
-            startActivity(intent);
+        if (footingResult == FootingResult.SUCCESS) {
+            // only successful joggings will be saved
+            intent.putExtra(C.EXTRA_SHOULD_SAVE_RUNNING, true);
+        }
 
-        } else {
-            // open Result activity and notify user with a sound
+        if (footingResult != FootingResult.CANCELLED_BY_USER) {
+            // notify user with a sound
             intent.putExtra(C.EXTRA_SHOULD_PLAY_SOUND, true);
-            startActivity(intent);
+        }
+
+        // the activity will start a new task
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+
+        call
+        startActivity(intent);
 
 //        } else {
 //            PendingIntent pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -265,9 +265,10 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 //            notification.flags |= Notification.FLAG_AUTO_CANCEL;
 //            final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 //            notificationManager.notify(NOTIFICATION_ID, notification);
-        }
+//        }
 
         // stopping the service implies calling onDestroy
+        stopForeground(true);
         stopSelf();
     }
 

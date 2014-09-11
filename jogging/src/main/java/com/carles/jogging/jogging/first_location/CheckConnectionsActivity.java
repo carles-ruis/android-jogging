@@ -154,7 +154,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onLocationObtained(Location location) {
-        /*- destroy the service, stop requesting for  location */
+        // destroy the service, stop requesting for  location
         if (serviceBound) {
             unbindService(serviceConnection);
             serviceBound = false;
@@ -170,21 +170,15 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onLocationFailed() {
-        Log.i(TAG, "first-location-listener. onLocationFailed()");
+        Log.i(TAG, "OnFirstLocationResultListener onLocationFailed()");
 
         /*- destroy the service, stop requesting for  location */
         if (serviceBound) {
-            Log.e("carles","service is still bound. Let's try to unbind it");
             unbindService(serviceConnection);
             serviceBound = false;
         }
 
-        Log.e("carles","service was unbound");
-
         FirstLocationNotObtainedDialog dialog = new FirstLocationNotObtainedDialog();
-
-        Log.e("carles","FirsLocationNotObtainedDialog instanced");
-
         dialog.show(getSupportFragmentManager(), C.TAG_FIRST_LOCATION_NOT_OBTAINED);
     }
 
@@ -228,7 +222,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         @Override
         /*- onServiceDisconnected is only called when a crash cause a service unbind */
         public void onServiceDisconnected(ComponentName componentName) {
-            Log.i(TAG, "first-location-service-connection onServiceDisconnected");
+            Log.i(TAG, "FirstLocationServiceConnection onServiceDisconnected");
             serviceBound = false;
         }
     }

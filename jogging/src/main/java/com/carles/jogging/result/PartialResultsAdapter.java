@@ -1,6 +1,7 @@
 package com.carles.jogging.result;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +40,9 @@ public class PartialResultsAdapter extends ArrayAdapter<JoggingModel> {
             holder = (Holder) convertView.getTag();
         }
 
-        holder.txtCounter.setText(new StringBuilder().append(position).append("."));
-        holder.txtTime.setText(getContext().getString(R.string.partial_time, FormatUtil.runningTime(jogging.getTotalTime())));
-        holder.txtDistance.setText(getContext().getString(R.string.partial_distance, (int)jogging.getTotalDistance()));
+        holder.txtCounter.setText(new StringBuilder().append(position+1).append("."));
+        holder.txtTime.setText(getContext().getString(R.string.partial_time, FormatUtil.time(jogging.getRealTime())));
+        holder.txtDistance.setText(getContext().getString(R.string.partial_distance, (int)jogging.getRealDistance()));
 
         return convertView;
     }

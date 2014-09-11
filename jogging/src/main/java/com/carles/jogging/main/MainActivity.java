@@ -1,10 +1,10 @@
 package com.carles.jogging.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -12,7 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.R;
 import com.carles.jogging.best_times.BestTimesFragment;
-import com.carles.jogging.last_times.LastTimesFragment;
+import com.carles.jogging.last_times.LastTimesContentFragment;
 
 /**
  * Created by carles1 on 20/04/14.
@@ -24,6 +24,11 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
     private DrawerLayout drawerLayout;
     private View navigationDrawerView;
 
+    private int navigationMode = ActionBar.NAVIGATION_MODE_STANDARD;
+
+    // options for the distances selector
+    private String[] distanceEntries;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,50 +38,34 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
         navigationDrawerView = findViewById(R.id.navigation_drawer);
         mTitle = getTitle();
 
-        /*- Set up the drawer. */
+        // Set up the drawer.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        /*- this allows to override the drawer behaviour when back button is pressed */
+        // this allows to override the drawer behaviour when back button is pressed
         drawerLayout.setFocusableInTouchMode(false);
-
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // prepare navigation list for navigation between LastTimesFragment instances
+        setUpNavigationList();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            /*- Only show items in the action bar relevant to this screen */
-            getSupportMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+    private void setUpNavigationList() {
+        final String[] distanceEntries = getResources().getStringArray(R.array.main_entries_kms);
+        this.distanceEntries = distanceEntries;
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
 
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // fragment will handle the action bar items */
-        return super.onOptionsItemSelected(item);
+        ActionBar.OnNavigationListener callback = new ActionBar.OnNavigationListener() {
+            @Override
+            public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+                Fragment fragment = LastTimesContentFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+                return true;
+            }
+        };
+        getSupportActionBar().setListNavigationCallbacks(adapter, callback);
     }
 
     public void setActionBarTitle(String title) {
         mTitle = title;
-    }
-
-    @Override
-    public void onBackPressed() {
-        /*- change the natural navigation to show the drawer when the back button is closed */
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
-            finish();
-        } else {
-            drawerLayout.openDrawer(navigationDrawerView);
-        }
     }
 
     @Override
@@ -88,20 +77,53 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
 
         switch (option) {
             case NEW:
+                navigationMode = ActionBar.NAVIGATION_MODE_STANDARD;
                 fragment = MainFragment.newInstance();
                 break;
             case BEST_TIMES:
+                navigationMode = ActionBar.NAVIGATION_MODE_STANDARD;
                 fragment = BestTimesFragment.newInstance();
                 break;
             case LAST_TIMES:
-                fragment = LastTimesFragment.newInstance();
+                navigationMode = ActionBar.NAVIGATION_MODE_LIST;
+                fragment = LastTimesContentFragment.newInstance();
                 break;
         }
 
-        /*- Insert the fragment by replacing any existing fragment */
+        // Insert the fragment by replacing any existing fragment
+        getSupportActionBar().setNavigationMode(navigationMode);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         setActionBarTitle(title);
-
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+            // Only show items in the action bar relevant to this screen
+            getSupportMenuInflater().inflate(R.menu.main, menu);
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(mTitle);            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // fragment will handle the action bar items
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // change the natural navigation to show the drawer when the back button is clicked
+        if (mNavigationDrawerFragment.isDrawerOpen()) {
+            finish();
+        } else {
+            drawerLayout.openDrawer(navigationDrawerView);
+        }
+    }
+
 
 }

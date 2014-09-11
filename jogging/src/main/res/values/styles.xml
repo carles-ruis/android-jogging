@@ -7,6 +7,10 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.Jogging.NoActionBar" parent="@style/Theme.Sherlock.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
     <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
     <style name="Theme.Jogging.ZoomedDialog" parent="android:Theme.Light">
         <item name="android:windowNoTitle">true</item>

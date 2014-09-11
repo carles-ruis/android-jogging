@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
-import com.carles.jogging.jogging.FootingResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -80,11 +79,6 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_NOT_STICKY;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
     }
 
     public void setClient(OnFirstLocationResultListener client) {
@@ -192,6 +186,12 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     /*- ************************************************************* */
     /*- ************************************************************* */
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
     /*
         Class used for the client Binder.  Because we know this service always
          runs in the same process as its clients, we don't need to deal with IPC.

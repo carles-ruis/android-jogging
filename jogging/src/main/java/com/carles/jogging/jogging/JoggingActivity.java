@@ -1,18 +1,13 @@
 package com.carles.jogging.jogging;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.BaseActivity;
 import com.carles.jogging.service.LocationService;
 
 /**
@@ -43,6 +38,7 @@ public class JoggingActivity extends BaseActivity implements JoggingFragment.OnC
         Intent intent = new Intent(this, LocationService.class);
         intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.CANCELLED_BY_USER);
         startService(intent);
+        finish();
     }
 
     @Override

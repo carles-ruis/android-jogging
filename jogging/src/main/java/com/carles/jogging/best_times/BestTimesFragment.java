@@ -30,7 +30,6 @@ import java.util.List;
 public class BestTimesFragment extends BaseFragment {
 
     private Context ctx;
-    private List<JoggingModel> bestTimes;
 
     private TextView txtNoResults;
     private ListView list;
@@ -59,24 +58,24 @@ public class BestTimesFragment extends BaseFragment {
         UserModel u = new UserModel();
         u.setName("u1");
 
-        bestTimes = JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(u);
+        final List<JoggingModel> bestTimes = JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(u);
+
         if (bestTimes == null || bestTimes.isEmpty()) {
             txtNoResults.setVisibility(View.VISIBLE);
 
         } else {
-            BestTimesAdapter adapter = new BestTimesAdapter(ctx, bestTimes);
-            list.addHeaderView(View.inflate(ctx, R.layout.header_best_times, null));
-            list.setAdapter(adapter);
+            list.addHeaderView(LayoutInflater.from(ctx).inflate(R.layout.header_best_times, list, false), null, false);
+            list.setAdapter(new BestTimesAdapter(ctx, bestTimes));
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    JoggingModel joggingSelected = bestTimes.get(position);
+                    JoggingModel joggingSelected = bestTimes.get(position-1);
                     List<JoggingModel> partials = JoggingSQLiteHelper.getInstance(ctx).queryPartials(joggingSelected);
 
                     Intent intent = new Intent(ctx, ResultDetailActivity.class);
                     intent.putExtra(C.EXTRA_JOGGING_TOTAL, joggingSelected);
                     intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList) partials);
-                    intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS.toString());
+                    intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS);
                     startActivity(intent);
                 }
             });

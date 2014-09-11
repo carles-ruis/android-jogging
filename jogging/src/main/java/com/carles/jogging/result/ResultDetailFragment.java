@@ -77,10 +77,11 @@ public class ResultDetailFragment extends BaseFragment {
             footingResult = (FootingResult) extras.getSerializable(C.EXTRA_FOOTING_RESULT);
             if (footingResult == FootingResult.SUCCESS) {
                 title = getString(R.string.footing_result_success_title);
+                subtitle = getString(R.string.footing_result_success, (int)jogging.getTotalDistance());
             } else {
                 title = getString(R.string.footing_result_failure_title);
+                subtitle = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", ctx.getPackageName()));
             }
-            subtitle = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", ctx.getPackageName()));
         }
 
         hasObtainedLocations = partials != null && !partials.isEmpty() && jogging != null;
@@ -94,7 +95,7 @@ public class ResultDetailFragment extends BaseFragment {
         final TextView txtDistance = (TextView) view.findViewById(R.id.txt_result_distance);
         final TextView txtBestTime = (TextView) view.findViewById(R.id.txt_result_best_time);
         final TextView txtRealTime = (TextView) view.findViewById(R.id.txt_result_real_time);
-        final TextView txtRealDistance = (TextView) view.findViewById(R.id.txt_result_distance);
+        final TextView txtRealDistance = (TextView) view.findViewById(R.id.txt_result_real_distance);
         final ListView list = (ListView) view.findViewById(R.id.list);
         final TextView txtSaved = (TextView) view.findViewById(R.id.txt_result_saved);
 
@@ -103,47 +104,40 @@ public class ResultDetailFragment extends BaseFragment {
         txtSubtitle.setText(subtitle);
 
         if (hasObtainedLocations) {
+            txtTime.setText(getString(R.string.result_time, FormatUtil.time(jogging.getTotalTime())));
+            txtDistance.setText(getString(R.string.result_distance, (int)jogging.getTotalDistance()));
 
-            if (txtTime == null) {
-                Log.e("carles","txtTime is null");
-            }
-            if (jogging == null) {
-                Log.e("carles","jogging is null");
-            }
-
-            txtTime.setText(getString(R.string.jogging_time, FormatUtil.time(jogging.getTotalTime())));
-            txtDistance.setText(getString(R.string.jogging_kilometers_run, (int)jogging.getTotalDistance()));
-
-            if (footingResult == FootingResult.SUCCESS)             {
+            if (footingResult == FootingResult.SUCCESS) {
                 txtRealTime.setText(getString(R.string.result_real_time, FormatUtil.time(jogging.getRealTime())));
                 txtRealDistance.setText(getString(R.string.result_real_distance,(int)jogging.getRealDistance()));
+
                 // TODO delete
                 UserModel user = new UserModel();
                 user.setName("u1");
                 jogging.setUser(user);
-
                 if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(ctx).queryBestTimeByDistance(user, jogging.getTotalDistance())) {
                     // runner has achieve his record for this distance
                     txtBestTime.setVisibility(View.VISIBLE);
                 }
-
-                // if footing was successful, store it in the local database
-                JoggingSQLiteHelper.getInstance(ctx).insertJogging(jogging, partials);
+                if (extras.getBoolean(C.EXTRA_SHOULD_SAVE_RUNNING,false)) {
+                    txtSaved.setVisibility(View.VISIBLE);
+                }
 
             } else {
                 txtRealTime.setVisibility(View.GONE);
                 txtRealDistance.setVisibility(View.GONE);
-                txtSaved.setVisibility(View.GONE);
             }
 
             final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, partials);
-            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false));
+            // add a header with the isSelectable flag to false
+            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
             list.setAdapter(adapter);
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     if (callbacks != null) {
-                        callbacks.onLocationClicked(position);
+                        // -1 position because first position is the list header
+                        callbacks.onLocationClicked(position - 1);
                     }
                 }
             });
@@ -152,6 +146,9 @@ public class ResultDetailFragment extends BaseFragment {
             lytResultData.setVisibility(View.GONE);
             txtNoLocations.setVisibility(View.VISIBLE);
         }
+
+        getActivity().getIntent().removeExtra(C.EXTRA_SHOULD_PLAY_SOUND);
+        getActivity().getIntent().removeExtra(C.EXTRA_SHOULD_SAVE_RUNNING);
 
         return view;
     }

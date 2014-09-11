@@ -171,16 +171,13 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    public List<JoggingModel> queryLastTimes(UserModel user, long distance) {
+    public List<JoggingModel> queryLastTimes(UserModel user, int distance) {
         List<JoggingModel> ret = new ArrayList<JoggingModel>();
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery(SQL_QUERY_JOGGING_LIST_LAST, new String[]{user.getName(), String.valueOf(distance)});
         if (c != null && c.moveToFirst()) {
             do {
-
-                Log.e("carles", "cursor position:");
-
                 ret.add(getJogging(c, user));
             } while (c.moveToNext());
         }
@@ -198,8 +195,9 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         j.setEnd(gson.fromJson(end, Location.class));
         String start = c.getString(c.getColumnIndex(COLUMN_START));
         j.setStart(gson.fromJson(start, Location.class));
-        String footingResult = c.getString(c.getColumnIndex(COLUMN_FOOTING_RESULT));
-        j.setFootingResult(FootingResult.valueOf(footingResult));
+//        String footingResult = c.getString(c.getColumnIndex(COLUMN_FOOTING_RESULT));
+        // only successful footings will be saved
+        j.setFootingResult(FootingResult.SUCCESS);
 
         j.setRealDistance(c.getFloat(c.getColumnIndex(COLUMN_REALDISTANCE)));
         j.setRealTime(c.getLong(c.getColumnIndex(COLUMN_REALTIME)));

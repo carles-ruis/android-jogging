@@ -27,6 +27,7 @@ public class C {
     public static final String EXTRA_JOGGING_PARTIALS = "extra_partials";
     public static final String EXTRA_JOGGING_TOTAL = "extra_jogging_total";
     public static final String EXTRA_SHOULD_PLAY_SOUND = "extra_should_play_sound";
+    public static final String EXTRA_SHOULD_SAVE_RUNNING = "extra_should_save_running";
 
     // intent filter actions
     public static final String ACTION_UPDATE_KILOMETERS_RUN = "com.carles.jogging.KILOMETERS_RUN";
@@ -34,6 +35,7 @@ public class C {
     // preferences
     public static final String PREF_FILE = "shared_prefs_file_";
     public static final String PREF_LAST_KILOMETERS_SELECTED = "pref_last_kms_selected";
+    public static final String PREF_LOGGER_USER = "pref_logged_user";
 
     // tags for dialogs
     public static final String TAG_CONNECTION_FAILED_DIALOG = "tag_connection_failed_dialog";

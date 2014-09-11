@@ -4,25 +4,33 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.carles.jogging.R;
 import com.carles.jogging.BaseFragment;
+import com.carles.jogging.R;
+import com.carles.jogging.util.FormatUtil;
 
 import java.lang.reflect.Field;
 
 /**
  * Created by carles1 on 20/04/14.
  */
-public class LastTimesFragment extends BaseFragment {
+public class LastTimesFragment_unused extends BaseFragment {
+
+    private static final String ARGS_POSITION = "args_position";
 
     private Context ctx;
 
-    public static LastTimesFragment newInstance() {
-        LastTimesFragment fragment = new LastTimesFragment();
+    public static LastTimesFragment_unused newInstance(int position) {
+        LastTimesFragment_unused fragment = new LastTimesFragment_unused();
+        Bundle args = new Bundle();
+        args.putInt(ARGS_POSITION, position);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -56,6 +64,35 @@ public class LastTimesFragment extends BaseFragment {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    class LastTimesPagerAdapter extends FragmentPagerAdapter {
+
+        private Context ctx;
+        private String[] titles;
+
+        public LastTimesPagerAdapter(Context ctx, FragmentManager fm) {
+            super(fm);
+            this.ctx = ctx;
+            titles = ctx.getResources().getStringArray(R.array.main_entries_kms);
+        }
+
+        @Override
+        public int getCount() {
+            return titles.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles[position];
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            final int meters = FormatUtil.textDistanceToMeters(ctx, titles[position]);
+//            return LastTimesContentFragment.newInstance(meters);
+            return LastTimesContentFragment.newInstance();
         }
     }
 }

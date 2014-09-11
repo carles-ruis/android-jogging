@@ -4,18 +4,29 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.carles.jogging.C;
+import com.carles.jogging.model.UserModel;
 import com.google.gson.Gson;
 
 public class PrefUtil {
 
     public static int getLastKilometersSelectedPosition(Context ctx) {
         return ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).getInt(C.PREF_LAST_KILOMETERS_SELECTED, 0);
-        //        return getPreference(ctx.getSharedPreferenceS(),C.PREF_LAST_KILOMETERS_SELECTED, Integer.class);
     }
 
     public static void setLastKilometersSelectedPosition(Context ctx, int lastKilometersSelected) {
         ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).edit().putInt(C.PREF_LAST_KILOMETERS_SELECTED, lastKilometersSelected).commit();
-        //        putPreference(ctx.getSharedPreferences(), C.PREF_LAST_KILOMETERS_SELECTED, lastKilometersSelected);
+    }
+
+    public static UserModel getLoggedUser(Context ctx) {
+        return getPreference(ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE), C.PREF_LOGGER_USER, UserModel.class);
+    }
+
+    public static void setLoggedUser(Context ctx, UserModel user) {
+        putPreference(ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE), C.PREF_LOGGER_USER, user);
+    }
+
+    public static void removeLoggedUserFromPrefs(Context ctx) {
+        ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).edit().remove(C.PREF_LOGGER_USER).commit();
     }
 
     private static void putPreference(SharedPreferences prefs, String key, Object value) {
@@ -59,4 +70,5 @@ public class PrefUtil {
         }
         editor.commit();
     }
+
 }

@@ -15,6 +15,7 @@ import com.carles.jogging.BaseActivity;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.main.MainActivity;
 import com.carles.jogging.model.JoggingModel;
+import com.carles.jogging.model.JoggingSQLiteHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +43,16 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.title_result);
 
-        // if should play a sound, load it
+        // if should play a sound, load it to play it
         if (getIntent().getBooleanExtra(C.EXTRA_SHOULD_PLAY_SOUND, false)) {
             playSoundToNotifyTheUser();
+        }
+
+        // save results in the local database if required
+        List<JoggingModel> partials = getIntent().<JoggingModel>getParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS);
+        JoggingModel jogging = getIntent().getParcelableExtra(C.EXTRA_JOGGING_TOTAL);
+        if (partials!= null && jogging!=null && !partials.isEmpty() && getIntent().getBooleanExtra(C.EXTRA_SHOULD_SAVE_RUNNING, false)) {
+            JoggingSQLiteHelper.getInstance(this).insertJogging(jogging, partials);
         }
 
         // we're being restored from a previous state, so the fragments already exist
@@ -80,7 +88,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     @Override
     public void onLocationClicked(int position) {
-        addResultMapFragment(position+1);
+        addResultMapFragment(position);
     }
 
     private void addResultMapFragment(int position) {
@@ -109,29 +117,11 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                 // if we are showing the map, re-show results detail fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.show(detailFragment).hide(mapFragment).commit();
+                return;
             }
-
-        } else if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            // if it comes from LocationService it's the only activity in the backstack
-            // open MainActivity and finish this one
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-
-        } else{
-            // it comes from another activity, go back to previous one in the back stack
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getSupportMenuInflater().inflate(R.menu.menu_result_detail, menu);
-//        MenuItem shareItem = menu.findItem(R.id.action_share);
-//        shareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -145,7 +135,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                     return true;
 
                 case R.id.action_map:
-                    addResultMapFragment(0);
+                    addResultMapFragment(-1);
                     return true;
 
                 default:

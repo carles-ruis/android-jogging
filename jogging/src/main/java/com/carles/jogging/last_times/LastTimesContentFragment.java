@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.carles.jogging.BaseFragment;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
@@ -19,6 +24,7 @@ import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.model.UserModel;
 import com.carles.jogging.result.ResultDetailActivity;
+import com.carles.jogging.util.FormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +34,18 @@ import java.util.List;
  */
 public class LastTimesContentFragment extends BaseFragment {
 
-    private static final String ARGS_METERS = "args_meters";
+//    private static final String ARGS_METERS = "args_meters";
 
     private Context ctx;
-    private List<JoggingModel> joggings;
 
     private TextView txtNoResults;
     private ListView list;
 
-    public static LastTimesContentFragment newInstance(long meters) {
+    public static LastTimesContentFragment newInstance() {
         LastTimesContentFragment fragment = new LastTimesContentFragment();
-        Bundle args = new Bundle();
-        args.putLong(ARGS_METERS, meters);
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        args.putInt(ARGS_METERS, meters);
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -68,7 +73,15 @@ public class LastTimesContentFragment extends BaseFragment {
         UserModel u = new UserModel();
         u.setName("u1");
 
-        final long meters = getArguments().getLong(ARGS_METERS, -1);
+//        final int meters = getArguments().getInt(ARGS_METERS, -1);
+        // obtain the selected distance by the user in the actionBar navigation list
+        ((SherlockFragmentActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        int position = ((SherlockFragmentActivity)getActivity()).getSupportActionBar().getSelectedNavigationIndex();
+        if (position==-1) {
+            position = 0;
+        }
+        final String sMeters = getResources().getStringArray(R.array.main_entries_kms)[position];
+        final int meters = FormatUtil.textDistanceToMeters(ctx, sMeters);
         final List<JoggingModel> joggings = JoggingSQLiteHelper.getInstance(ctx).queryLastTimes(u, meters);
 
         if (joggings == null || joggings.isEmpty()) {
@@ -86,7 +99,7 @@ public class LastTimesContentFragment extends BaseFragment {
                     Intent intent = new Intent(ctx, ResultDetailActivity.class);
                     intent.putExtra(C.EXTRA_JOGGING_TOTAL, selectedJogging);
                     intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList) partials);
-                    intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS.toString());
+                    intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS);
                     startActivity(intent);
                 }
             });
