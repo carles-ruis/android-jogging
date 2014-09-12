@@ -1,3 +1,4 @@
 include ':jogging'
 include ':libraries:actionbarsherlock'
 include ':libraries:viewpagerindicator'
+include ':libraries:facebookSDK'

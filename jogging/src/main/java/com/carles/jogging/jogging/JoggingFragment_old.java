@@ -17,19 +17,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.carles.jogging.BaseFragment;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.BaseFragment;
 
 /**
  * Created by carles1 on 27/04/14.
  */
-public class JoggingFragment extends BaseFragment {
+public class JoggingFragment_old extends BaseFragment {
 
-    private static final String TAG = JoggingFragment.class.getName();
+    private static final String TAG = JoggingFragment_old.class.getName();
 
     private Context ctx;
-    private Callbacks callbacks;
+    private OnCountdownFinishedListener callbacks;
 
     private TextView txtImproveTime;
     private TextView txtOnYourMarks;
@@ -111,7 +111,7 @@ public class JoggingFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            callbacks = (Callbacks) activity;
+            callbacks = (OnCountdownFinishedListener) activity;
             ctx = activity;
         } catch (ClassCastException e) {
             Log.e(TAG, "Error: activity must implement OnCountDownFinishedListeners");
@@ -129,12 +129,7 @@ public class JoggingFragment extends BaseFragment {
         txtKilometers = (TextView) view.findViewById(R.id.txt_jogging_kilometers_run);
         txtTime = (TextView) view.findViewById(R.id.txt_jogging_time);
         btnCancelRun = (Button) view.findViewById(R.id.btn_jogging_cancel);
-        btnCancelRun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                callbacks.cancelRun();
-            }
-        });
+        btnCancelRun.setOnClickListener(new CancelRunButtonOnClickListener());
 
         String distanceInTxt = getActivity().getIntent().getStringExtra(C.EXTRA_DISTANCE_TEXT);
         txtImproveTime.setText(getString(R.string.jogging_improve_time, distanceInTxt));
@@ -200,9 +195,18 @@ public class JoggingFragment extends BaseFragment {
         super.onDetach();
     }
 
-    public interface Callbacks {
+    public interface OnCountdownFinishedListener {
         void startGetLocationsService();
-        void cancelRun();
+    }
+
+    /*- *********************************************************************************** */
+    /*- *********************************************************************************** */
+    private class CancelRunButtonOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+//            CancelRunDialog dialog = new CancelRunDialog();
+//            dialog.show(getFragmentManager(), C.TAG_CANCEL_RUN_DIALOG);
+        }
     }
 
 }

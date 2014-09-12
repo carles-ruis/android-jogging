@@ -5,12 +5,12 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.IntentCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -18,14 +18,17 @@ import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
+import com.carles.jogging.model.UserModel;
 import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.util.FormatUtil;
+import com.carles.jogging.util.PrefUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,29 +102,21 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        FootingResult footingResult = (FootingResult) intent.getSerializableExtra(C.EXTRA_FOOTING_RESULT);
-        if (FootingResult.CANCELLED_BY_USER == footingResult) {
-            // case 1: running cancelled by the user from activity
-            stopRunning(FootingResult.CANCELLED_BY_USER);
+        // init variables from the intent received
+        startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
+        previousLocation = startLocation;
+        bestLocation = null;
+        currentDistance = 0f;
+        totalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
+        totalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
+        startTime = System.currentTimeMillis();
+        // first location time has to be "now" because user starts running now
+        previousLocation.setTime(startTime);
 
-        } else {
-            // case 2: countdown finished from activity: start running
-            // init variables from the intent received
-            startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
-            previousLocation = startLocation;
-            bestLocation = null;
-            currentDistance = 0f;
-            totalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
-            totalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
-            startTime = System.currentTimeMillis();
-            // first location time has to be "now" because user starts running now
-            previousLocation.setTime(startTime);
+        startForegroundAndShowOngoingNotification();
 
-            startForegroundAndShowOngoingNotification();
+        locationClient.connect();
 
-            locationClient.connect();
-
-        }
         // if the system kills the service don't bother recreating it
         return START_NOT_STICKY;
     }
@@ -211,14 +206,14 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     }
 
     private void stopRunning(FootingResult footingResult) {
-
         // prepare intent with the results
         Intent intent = new Intent(this, ResultDetailActivity.class);
         intent.putExtra(C.EXTRA_FOOTING_RESULT, footingResult);
 
         if (partials.size()>0) {
+            UserModel user = PrefUtil.getLoggedUser(this);
             intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
-            intent.putExtra(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult));
+            intent.putExtra(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult, user));
         }
 
         if (footingResult == FootingResult.SUCCESS) {
@@ -234,8 +229,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         // the activity will start a new task
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
 
-        call
-        startActivity(intent);
+        client.get().onRunningFinished(intent);
+//        startActivity(intent);
 
 //        } else {
 //            PendingIntent pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -268,7 +263,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 //        }
 
         // stopping the service implies calling onDestroy
-        stopForeground(true);
         stopSelf();
     }
 
@@ -316,11 +310,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         stopRunning(FootingResult.GOOGLE_SERVICES_FAILURE);
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
     /*- *************************************************************** */
     /*- *************************************************************** */
     private class LocationTimeoutUpdating implements Runnable {
@@ -346,4 +335,35 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         }
     }
 
+    /*- *********************************************************** */
+    /*- *********************************************************** */
+    private final IBinder binder = new LocationServiceBinder();
+    private WeakReference<LocationService.Client> client;
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    public class LocationServiceBinder extends Binder {
+        public LocationService getService() {
+            return LocationService.this;
+        }
+    }
+
+    public void start(Intent intent) {
+        startService(intent);
+    }
+
+    public void cancelRun() {
+        stopRunning(FootingResult.CANCELLED_BY_USER);
+    }
+
+    public void setClient(LocationService.Client client) {
+        this.client = new WeakReference<Client>(client);
+    }
+
+    public interface Client {
+        void onRunningFinished(Intent intent);
+    }
 }

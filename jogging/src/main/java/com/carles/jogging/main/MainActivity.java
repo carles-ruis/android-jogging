@@ -1,5 +1,7 @@
 package com.carles.jogging.main;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -13,11 +15,15 @@ import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.R;
 import com.carles.jogging.best_times.BestTimesFragment;
 import com.carles.jogging.last_times.LastTimesContentFragment;
+import com.carles.jogging.login.LoginActivity;
+import com.carles.jogging.util.PrefUtil;
 
 /**
  * Created by carles1 on 20/04/14.
  */
 public class MainActivity extends SherlockFragmentActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private Context ctx;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
@@ -33,6 +39,7 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ctx = this;
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         navigationDrawerView = findViewById(R.id.navigation_drawer);
@@ -96,6 +103,11 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
         setActionBarTitle(title);
     }
 
+    public void actionLogout(View view) {
+        PrefUtil.removeLoggedUserFromPrefs(ctx);
+        startActivity(new Intent(ctx, LoginActivity.class));
+        finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,6 +136,5 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
             drawerLayout.openDrawer(navigationDrawerView);
         }
     }
-
 
 }

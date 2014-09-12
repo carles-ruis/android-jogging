@@ -21,6 +21,7 @@ import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.model.UserModel;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.util.FormatUtil;
+import com.carles.jogging.util.PrefUtil;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -111,10 +112,7 @@ public class ResultDetailFragment extends BaseFragment {
                 txtRealTime.setText(getString(R.string.result_real_time, FormatUtil.time(jogging.getRealTime())));
                 txtRealDistance.setText(getString(R.string.result_real_distance,(int)jogging.getRealDistance()));
 
-                // TODO delete
-                UserModel user = new UserModel();
-                user.setName("u1");
-                jogging.setUser(user);
+                UserModel user = PrefUtil.getLoggedUser(ctx);
                 if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(ctx).queryBestTimeByDistance(user, jogging.getTotalDistance())) {
                     // runner has achieve his record for this distance
                     txtBestTime.setVisibility(View.VISIBLE);

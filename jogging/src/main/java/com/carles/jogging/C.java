@@ -41,7 +41,6 @@ public class C {
     public static final String TAG_CONNECTION_FAILED_DIALOG = "tag_connection_failed_dialog";
     public static final String TAG_GOOGLE_PLAY_SERVICES_ERROR_DIALOG = "tag_google_error_dialog";
     public static final String TAG_ACTIVATE_GPS_DIALOG = "tag_activate_gps_dialog";
-    public static final String TAG_CANCEL_RUN_DIALOG = "tag_cancel_run_dialog";
     public static final String TAG_FIRST_LOCATION_NOT_OBTAINED = "tag_first_location_dialog";
 
     // sound configuration

@@ -58,13 +58,7 @@ public class JoggingModel implements Parcelable {
      * Calculates totalTime relative to totalDistance if footing was successful
      * @param partials
      */
-    public JoggingModel(List<JoggingModel> partials, float goalDistance, FootingResult footingResult) {
-
-        //TODO
-        UserModel user = new UserModel();
-        user.setName("u1");
-
-
+    public JoggingModel(List<JoggingModel> partials, float goalDistance, FootingResult footingResult, UserModel user) {
         this.id = System.currentTimeMillis();
         this.start = partials.get(0).getStart();
         this.end = partials.get(partials.size() - 1).getEnd();

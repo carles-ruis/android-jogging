@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.carles.jogging.BaseFragment;
 import com.carles.jogging.C;
@@ -22,9 +19,9 @@ import com.carles.jogging.R;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
-import com.carles.jogging.model.UserModel;
 import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.util.FormatUtil;
+import com.carles.jogging.util.PrefUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +30,6 @@ import java.util.List;
  * Created by carles1 on 10/09/14.
  */
 public class LastTimesContentFragment extends BaseFragment {
-
-//    private static final String ARGS_METERS = "args_meters";
 
     private Context ctx;
 
@@ -68,12 +63,6 @@ public class LastTimesContentFragment extends BaseFragment {
     }
 
     private void loadData() {
-
-        //TODO delete
-        UserModel u = new UserModel();
-        u.setName("u1");
-
-//        final int meters = getArguments().getInt(ARGS_METERS, -1);
         // obtain the selected distance by the user in the actionBar navigation list
         ((SherlockFragmentActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         int position = ((SherlockFragmentActivity)getActivity()).getSupportActionBar().getSelectedNavigationIndex();
@@ -82,7 +71,7 @@ public class LastTimesContentFragment extends BaseFragment {
         }
         final String sMeters = getResources().getStringArray(R.array.main_entries_kms)[position];
         final int meters = FormatUtil.textDistanceToMeters(ctx, sMeters);
-        final List<JoggingModel> joggings = JoggingSQLiteHelper.getInstance(ctx).queryLastTimes(u, meters);
+        final List<JoggingModel> joggings = JoggingSQLiteHelper.getInstance(ctx).queryLastTimes(PrefUtil.getLoggedUser(ctx), meters);
 
         if (joggings == null || joggings.isEmpty()) {
             txtNoResults.setVisibility(View.VISIBLE);

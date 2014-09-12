@@ -1,26 +1,22 @@
 package com.carles.jogging.result;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.carles.jogging.R;
-import com.carles.jogging.BaseFragment;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.util.FormatUtil;
-import com.carles.jogging.util.LocationHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +35,7 @@ public class ResultMapFragment extends SupportMapFragment {
     // GoogleMap zoom value range from 0 to 19. 0 is worldwide, 19 finest zoom
     private static final float ZOOM = 15f;
     private GoogleMap map;
-    private BitmapDescriptor icon;
+//    private BitmapDescriptor icon;
 
     public static ResultMapFragment newInstance(int position, ArrayList<JoggingModel> partials) {
         ResultMapFragment mapFragment = new ResultMapFragment();
@@ -75,10 +71,9 @@ public class ResultMapFragment extends SupportMapFragment {
             return;
         }
 
-        if (icon == null) {
-            // the "checkpoints" icon is different than the "start" icon
-            icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
-        }
+//        if (icon == null) {
+//            icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
+//        }
 
         // configurate map
         map.clear();
@@ -90,11 +85,13 @@ public class ResultMapFragment extends SupportMapFragment {
         LatLng point;
         String sTime;
         String snippet;
+        List<LatLng> points = new ArrayList<LatLng>();
 
         if (!partials.isEmpty()) {
             partial = partials.get(0);
             point = new LatLng(partial.getStart().getLatitude(), partial.getStart().getLongitude());
             map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
+            points.add(point);
         }
 
         for (int i=0; i<partials.size(); i++) {
@@ -102,8 +99,13 @@ public class ResultMapFragment extends SupportMapFragment {
             point = new LatLng(partial.getEnd().getLatitude(), partial.getEnd().getLongitude());
             sTime = FormatUtil.time(partial.getTotalTime());
             snippet = new StringBuilder().append(sTime).append("\n").append(partial.getTotalDistance()).append("m").toString();
-            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
+//            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
+            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
+            points.add(point);
         }
+
+        // draw lines between points
+        map.addPolyline(new PolylineOptions().addAll(points).width(10f).color(Color.BLUE));
 
         // moveCamera may cause an IllegalStateException if the map has not been already sized
         // use cameraChangeListener instead

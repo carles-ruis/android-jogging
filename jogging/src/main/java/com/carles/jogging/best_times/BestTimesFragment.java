@@ -1,6 +1,5 @@
 package com.carles.jogging.best_times;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,15 +10,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.carles.jogging.BaseFragment;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.BaseFragment;
 import com.carles.jogging.jogging.FootingResult;
-import com.carles.jogging.main.MainActivity;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
-import com.carles.jogging.model.UserModel;
 import com.carles.jogging.result.ResultDetailActivity;
+import com.carles.jogging.util.PrefUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +52,7 @@ public class BestTimesFragment extends BaseFragment {
     }
 
     private void loadData() {
-        // TODO delete
-        UserModel u = new UserModel();
-        u.setName("u1");
-
-        final List<JoggingModel> bestTimes = JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(u);
+        final List<JoggingModel> bestTimes = JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(PrefUtil.getLoggedUser(ctx));
 
         if (bestTimes == null || bestTimes.isEmpty()) {
             txtNoResults.setVisibility(View.VISIBLE);
