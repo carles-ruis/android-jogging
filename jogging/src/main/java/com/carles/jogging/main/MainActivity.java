@@ -9,19 +9,21 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.carles.jogging.BaseActivity;
 import com.carles.jogging.R;
 import com.carles.jogging.best_times.BestTimesFragment;
 import com.carles.jogging.last_times.LastTimesContentFragment;
 import com.carles.jogging.login.LoginActivity;
 import com.carles.jogging.util.PrefUtil;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 
 /**
  * Created by carles1 on 20/04/14.
  */
-public class MainActivity extends SherlockFragmentActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private Context ctx;
 
@@ -31,9 +33,6 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
     private View navigationDrawerView;
 
     private int navigationMode = ActionBar.NAVIGATION_MODE_STANDARD;
-
-    // options for the distances selector
-    private String[] distanceEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +54,14 @@ public class MainActivity extends SherlockFragmentActivity implements Navigation
         setUpNavigationList();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Send a screen view when the Activity is displayed to the user.
+        EasyTracker.getInstance(ctx).send(MapBuilder.createAppView().build());
+    }
+
     private void setUpNavigationList() {
-        final String[] distanceEntries = getResources().getStringArray(R.array.main_entries_kms);
-        this.distanceEntries = distanceEntries;
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
 
         ActionBar.OnNavigationListener callback = new ActionBar.OnNavigationListener() {

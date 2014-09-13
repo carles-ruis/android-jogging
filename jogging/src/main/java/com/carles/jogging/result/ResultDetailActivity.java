@@ -30,6 +30,8 @@ import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,8 +154,9 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
             @Override
             public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
-                Log.e("carles","FacebookDialog callback onComplete");
+                Log.e("carles", "FacebookDialog callback onComplete");
                 if (FacebookDialog.getNativeDialogDidComplete(data)) {
+                    trackSocialInteraction();
                     showShareSuccess();
                     Log.i(TAG, "Shared with facebook via ShareDialog");
                     Log.e("carles", "compartició amb facebook ok");
@@ -318,6 +321,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                     if (postId != null) {
                         Log.i(TAG, "Shared with facebook via FeedDialog. id=" + postId);
                         Log.e("carles", "Shared with facebook via FeedDialog. id=" + postId);
+                        trackSocialInteraction();
                         showShareSuccess();
                     } else {
                         // User clicked the Cancel button
@@ -339,6 +343,11 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         feedDialog.show();
 
         Log.e("carles", "... ShareWithFeedDialog");
+    }
+
+    private void trackSocialInteraction() {
+        EasyTracker.getInstance(this).send(MapBuilder.createSocial("Facebook", "Share",
+                PrefUtil.getLoggedUser(ctx).getName()+" running").build());
     }
 
     private void showShareSuccess() {

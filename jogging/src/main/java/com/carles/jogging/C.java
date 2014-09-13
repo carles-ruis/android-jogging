@@ -47,4 +47,7 @@ public class C {
     public static final int MAX_SOUND_STREAMS = 1;
     public static final float VOLUME = 1.0f;
 
+    // google analytics custom dimension indexes
+    public static final int GA_DIMENSION_USER = 1;
+
 }

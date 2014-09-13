@@ -1,14 +1,10 @@
 package com.carles.jogging;
 
-import android.app.ActivityManager;
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
-import com.carles.jogging.util.PrefUtil;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Logger;
 
 /**
  * Created by carles1 on 19/04/14.
@@ -23,8 +19,10 @@ public class JoggingApp extends Application {
 
         configStrictMode();
 
-        // TODO add issue tracker. google analytics ???
-
+        // set to true to disable google analytics
+        GoogleAnalytics.getInstance(this).setAppOptOut(false);
+        // Set the log level. Warning by default
+        GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
     }
 
     private void configStrictMode() {

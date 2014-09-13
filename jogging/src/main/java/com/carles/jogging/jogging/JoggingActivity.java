@@ -22,9 +22,13 @@ import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
+import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.service.LocationService;
 import com.carles.jogging.util.FormatUtil;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.Tracker;
 
 /**
  * Created by carles1 on 20/04/14.
@@ -236,7 +240,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */
-    class CancelRunDialog extends DialogFragment {
+    private class CancelRunDialog extends DialogFragment {
 
         public CancelRunDialog() {}
 
@@ -303,20 +307,18 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         if (checkServiceBound()) {
             Log.e("carles","creating new intent");
             Intent newIntent = new Intent(this, ResultDetailActivity.class);
-            if (extras.getSerializable(C.EXTRA_FOOTING_RESULT) == null) {
-                Log.e("carles","extra value footin result is null");
-            } else {
-                Log.e("carles", "extra footng result is " + extras.getSerializable(C.EXTRA_FOOTING_RESULT));
-            }
             newIntent.putExtras(extras);
-            if (newIntent.getSerializableExtra(C.EXTRA_FOOTING_RESULT) == null) {
-                Log.e("carles", "footing results' new intent value=null");
-            } else {
-                Log.e("carles", "footing results' new intent value" + newIntent.getSerializableExtra(C.EXTRA_FOOTING_RESULT).toString());
-            }
+            trackRunningFinished(extras);
             startActivity(newIntent);
             finish();
         }
+    }
+
+    private void trackRunningFinished(Bundle extras) {
+        Tracker tracker = EasyTracker.getInstance(ctx);
+        Long value = (long)(((JoggingModel)extras.getParcelable(C.EXTRA_JOGGING_TOTAL)).getTotalDistance());
+        MapBuilder builder = MapBuilder.createEvent("jogging", "finish", null, value);
+        tracker.send(builder.build());
     }
 
     private boolean checkServiceBound() {
