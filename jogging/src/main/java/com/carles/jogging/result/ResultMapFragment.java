@@ -80,6 +80,11 @@ public class ResultMapFragment extends SupportMapFragment {
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setIndoorEnabled(false);
 
+        // No position obtained. There are not markers to show
+        if (partials == null) {
+            return;
+        }
+
         // add markers
         JoggingModel partial;
         LatLng point;

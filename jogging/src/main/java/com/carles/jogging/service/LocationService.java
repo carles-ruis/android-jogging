@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.carles.jogging.C;
@@ -19,8 +18,6 @@ import com.carles.jogging.R;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.UserModel;
-import com.carles.jogging.result.ResultDetailActivity;
-import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.util.PrefUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -102,6 +99,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("carles","onStartCommand");
+
         // init variables from the intent received
         startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
         previousLocation = startLocation;
@@ -113,23 +112,19 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         // first location time has to be "now" because user starts running now
         previousLocation.setTime(startTime);
 
-        startForegroundAndShowOngoingNotification();
+        // PendingIntent won't have an attachment, there's no action to perform when user clicks it
+        PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_is_running).
+                setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
+        Notification notification = builder.build();
+        Log.e("carles", "service is going to start in foreground");
+        startForeground(NOTIFICATION_ID, notification);
 
+        // connect to the LocationClient that is going to request for locations
         locationClient.connect();
 
         // if the system kills the service don't bother recreating it
         return START_NOT_STICKY;
-    }
-
-    private void startForegroundAndShowOngoingNotification() {
-        // the PendingIntent won't have an attachment
-        PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_is_running).
-                setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
-        Notification notification = builder.build();
-
-        startForeground(NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -184,16 +179,12 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         previousLocation = bestLocation;
         bestLocation = null;
 
-        // send intent to JoggingFragment to update the distance and kms ran
-        Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
-        intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.time(totalTime));
-        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, (int)currentDistance);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-        // TODO delete comments
-        Log.e(TAG, "PARTIAL JOGGING STORED = " + partial.toString());
-        Log.i(TAG, "LIST OF ACCURACIES OBTAINED = " + accuracies.toString());
-        accuracies.clear();
+        // update the view with the distance ran and time passed
+        client.get().onLocationObtained(totalTime, currentDistance);
+        //        Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
+        //        intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.time(totalTime));
+        //        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, (int)currentDistance);
+        //        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         // check if running is over
         if (currentDistance < totalDistance) {
@@ -207,64 +198,70 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     private void stopRunning(FootingResult footingResult) {
         // prepare intent with the results
-        Intent intent = new Intent(this, ResultDetailActivity.class);
-        intent.putExtra(C.EXTRA_FOOTING_RESULT, footingResult);
+        Log.e("carles", "stop running with footingResult=" + footingResult.toString());
+        Bundle extras = new Bundle();
+        extras.putSerializable(C.EXTRA_FOOTING_RESULT, footingResult);
 
-        if (partials.size()>0) {
+        if (partials.size() > 0) {
             UserModel user = PrefUtil.getLoggedUser(this);
-            intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
-            intent.putExtra(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult, user));
+            extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
+            extras.putParcelable(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult, user));
         }
 
         if (footingResult == FootingResult.SUCCESS) {
             // only successful joggings will be saved
-            intent.putExtra(C.EXTRA_SHOULD_SAVE_RUNNING, true);
+            extras.putBoolean(C.EXTRA_SHOULD_SAVE_RUNNING, true);
         }
 
         if (footingResult != FootingResult.CANCELLED_BY_USER) {
             // notify user with a sound
-            intent.putExtra(C.EXTRA_SHOULD_PLAY_SOUND, true);
+            extras.putBoolean(C.EXTRA_SHOULD_PLAY_SOUND, true);
         }
 
         // the activity will start a new task
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
 
-        client.get().onRunningFinished(intent);
-//        startActivity(intent);
+        if (extras.getSerializable(C.EXTRA_FOOTING_RESULT)==null) {
+            Log.e("carles","before calling onrunningfinished extra footing result is null");
+        } else {
+            Log.e("carles", "before calling onrunningfinished extra footing result is " + extras.getSerializable(C.EXTRA_FOOTING_RESULT));
+        }
+            client.get().onRunningFinished(extras);
+            //        startActivity(intent);
 
-//        } else {
-//            PendingIntent pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            String notiTitle = "";
-//            String notiText = "";
-//            Uri sound = null;
-//            if (footingResult == FootingResult.SUCCESS) {
-//                notiTitle = getString(R.string.footing_result_success_title);
-//                notiText = getString(R.string.footing_result_success);
-//                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sound_crowd_cheering);
-//
-//            } else {
-//                notiTitle = getString(R.string.footing_result_failure_title);
-//                int resId = getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName());
-//                notiText = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName()));
-//                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.alert_stop_footing);
-//            }
-//
-//            if (StringUtils.isBlank(notiText) || StringUtils.isBlank(notiTitle) || sound == null) {
-//                return;
-//            }
-//
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_stop_running).
-//                    setContentTitle(notiTitle).setContentText(notiText).setContentIntent(pintent).setSound(sound);
-//            Notification notification = builder.build();
-//            notification.flags |= Notification.FLAG_AUTO_CANCEL;
-//            final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//            notificationManager.notify(NOTIFICATION_ID, notification);
-//        }
+            //        } else {
+            //            PendingIntent pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //
+            //            String notiTitle = "";
+            //            String notiText = "";
+            //            Uri sound = null;
+            //            if (footingResult == FootingResult.SUCCESS) {
+            //                notiTitle = getString(R.string.footing_result_success_title);
+            //                notiText = getString(R.string.footing_result_success);
+            //                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sound_crowd_cheering);
+            //
+            //            } else {
+            //                notiTitle = getString(R.string.footing_result_failure_title);
+            //                int resId = getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName());
+            //                notiText = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName()));
+            //                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.alert_stop_footing);
+            //            }
+            //
+            //            if (StringUtils.isBlank(notiText) || StringUtils.isBlank(notiTitle) || sound == null) {
+            //                return;
+            //            }
+            //
+            //            NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_stop_running).
+            //                    setContentTitle(notiTitle).setContentText(notiText).setContentIntent(pintent).setSound(sound);
+            //            Notification notification = builder.build();
+            //            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            //            final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            //            notificationManager.notify(NOTIFICATION_ID, notification);
+            //        }
 
-        // stopping the service implies calling onDestroy
-        stopSelf();
-    }
+            // stopping the service implies calling onDestroy
+            stopSelf();
+        }
 
     @Override
     public void onDestroy() {
@@ -364,6 +361,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     }
 
     public interface Client {
-        void onRunningFinished(Intent intent);
+        void onRunningFinished(Bundle extras);
+        void onLocationObtained(long time, float meters);
     }
 }
