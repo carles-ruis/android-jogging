@@ -3,8 +3,6 @@ package com.carles.jogging.result;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -15,7 +13,6 @@ import com.actionbarsherlock.widget.ShareActionProvider;
 import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.util.PrefUtil;
@@ -32,6 +29,7 @@ import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,9 +52,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     private UiLifecycleHelper uiHelper;
     private ShareActionProvider shareActionProvider;
 
-    // sound to notify user that running is over
-    private SoundPool soundPool;
-
     private JoggingModel jogging;
     private List<JoggingModel> partials = new ArrayList<JoggingModel>();
 
@@ -69,15 +64,16 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.title_result);
 
-        // if should play a sound, load it to play it
-        if (getIntent().getBooleanExtra(C.EXTRA_SHOULD_PLAY_SOUND, false)) {
-            playSoundToNotifyTheUser();
-        }
-
-        // save results in the local database if required
+         // save results in the local database if required
         partials = getIntent().<JoggingModel>getParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS);
         jogging = getIntent().getParcelableExtra(C.EXTRA_JOGGING_TOTAL);
-        if (partials!= null && jogging!=null && !partials.isEmpty() && getIntent().getBooleanExtra(C.EXTRA_SHOULD_SAVE_RUNNING, false)) {
+        if (partials != null && jogging != null && !partials.isEmpty() &&
+                getIntent().getBooleanExtra(C.EXTRA_SHOULD_SAVE_RUNNING, false)) {
+            Log.e("carles", "jogging user is " + new Gson().toJson(jogging.getUser()));
+            for (JoggingModel partial:partials) {
+                Log.e("carles", "partial jogging user is " + new Gson().toJson(partial.getUser()));
+
+            }
             JoggingSQLiteHelper.getInstance(this).insertJogging(jogging, partials);
         }
 
@@ -106,25 +102,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
             detailFragment = ResultDetailFragment.newInstance();
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, detailFragment).commit();
-    }
-
-    private void playSoundToNotifyTheUser() {
-        soundPool = new SoundPool(C.MAX_SOUND_STREAMS, AudioManager.STREAM_MUSIC, 0);
-        if (getIntent().getSerializableExtra(C.EXTRA_FOOTING_RESULT) == FootingResult.SUCCESS) {
-            soundPool.load(this, R.raw.sound_crowd_cheering, 1);
-        } else {
-            soundPool.load(this, R.raw.alert_stop_footing, 1);
-        }
-
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                // check if loading the sound was successful (status == 0)
-                if (status == 0) {
-                    soundPool.play(sampleId, C.VOLUME, C.VOLUME, 1, 0, 1f);
-                }
-            }
-        });
     }
 
     @Override
@@ -203,6 +180,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         }
         ft.hide(detailFragment);
         ft.commit();
+        overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
     }
 
     @Override
@@ -213,10 +191,12 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                 // if we are showing the map, re-show results detail fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.show(detailFragment).hide(mapFragment).commit();
+                overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
                 return;
             }
         }
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
     }
 
     @Override

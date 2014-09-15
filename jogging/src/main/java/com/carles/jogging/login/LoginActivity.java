@@ -29,8 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Created by carles1 on 11/09/14.
  */
-public class
-        LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity {
 
     private static final int MIN_WINDOW_VISIBLE_SPACE_TO_SHOW_LOGO = 400;
     
@@ -147,6 +146,7 @@ public class
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+        overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
     }
 
     /*- ********************************************************************************* */

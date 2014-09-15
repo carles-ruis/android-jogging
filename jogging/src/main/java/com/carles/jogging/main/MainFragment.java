@@ -55,7 +55,8 @@ public class MainFragment extends BaseFragment {
             intent.putExtra(C.EXTRA_DISTANCE_TEXT, sKilometers);
             intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, FormatUtil.textDistanceToMeters(getActivity(), sKilometers));
             startActivity(intent);
-          }
+            getActivity().overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
+        }
     }
 
 }

@@ -50,10 +50,17 @@
             android:layout_centerHorizontal="true" />
 
         <TextView
+            android:id="@+id/txt_result_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_result_distance"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
             android:id="@+id/txt_result_best_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_result_distance"
+            android:layout_below="@+id/txt_result_speed"
             android:layout_centerHorizontal="true"
             android:text="@string/result_best_time"
             android:visibility="gone" />

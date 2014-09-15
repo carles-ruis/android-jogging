@@ -4,7 +4,8 @@
 
     <!-- Base application theme. -->
     <style name="Theme.Jogging" parent="@style/Theme.Sherlock.Light">
-        <!-- Customize your theme here. -->
+        <!-- workaround to avoid that the tiled background disappear when the screen scrolls -->
+        <!--<item name="android:windowBackground">@drawable/main_background</item>-->
     </style>
 
     <style name="Theme.Jogging.NoActionBar" parent="@style/Theme.Sherlock.Light.NoActionBar">
@@ -22,5 +23,6 @@
     </style>
 
     <!-- STYLES -->
+
 
 </resources>

@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +38,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     private static final String TAG = LocationService.class.getName();
     private static final int NOTIFICATION_ID = 1;
+    private static final int SOUND_MAX_DURATION = 2000;
 
     private static final long TIME_BETWEEN_REQUESTS = 30 * 1000;
     private static final long MIN_REQUEST_TIME = 30 * 1000;
@@ -70,6 +73,12 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     private List<Float> accuracies = new ArrayList<Float>(); // TODO delete
 
+    // sound to notify user that running is over
+    private SoundPool soundPool;
+    private int cheerSoundId;
+    private int booSoundId;
+    private Handler soundHandler;
+
     @Override
     public void onCreate() {
           // request wakelock to avoid the device goes to sleep and misses location updates
@@ -78,7 +87,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         // subscribe to gps connectivity changes
         GpsConnectivityManager.instance(this).addObserver(this);
 
-        /*- configuring accuracy of timing of requests to gps */
+        // configuring accuracy of timing of requests to gps
         locationRequest = LocationRequest.create();
         // use PRIORITY_HIGH_ACCURACY to use all location providers
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -86,9 +95,13 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         locationRequest.setFastestInterval(UPDATE_INTERVAL);
         locationRequest.setSmallestDisplacement(SMALLEST_DISPLACEMENT);
 
-        /*- set the connection callbacks and location update callbacks */
+        // set the connection callbacks and location update callbacks
         locationClient = new LocationClient(this, this, this);
 
+        // load sounds
+        soundPool = new SoundPool(C.MAX_SOUND_STREAMS, AudioManager.STREAM_MUSIC, 0);
+        cheerSoundId = soundPool.load(this, R.raw.sound_crowd_cheering, 1);
+        booSoundId = soundPool.load(this, R.raw.alert_stop_footing, 1);
     }
 
     private void acquireWakelock() {
@@ -148,17 +161,19 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
         // check if this is the first location or the best accurated location
         if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {
-           /*- ignore repeated locations */
+           // ignore repeated locations
             if (location.distanceTo(previousLocation) > 0.0f) {
                 bestLocation = location;
+            } else {
+                Log.e("carles","Repeated location with accuracy " + location.getAccuracy());
             }
 
-        /*- check if we should keeping requesting location updates */
+        // check if we should keeping requesting location updates
             if (bestLocation == null || System.currentTimeMillis() < stopRequestingTime) {
                 return;
             }
 
-        /*- take best location obtained if it's enough accurated */
+        // take best location obtained if it's enough accurated
             if (bestLocation != null && bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
                 onLocationObtained();
             }
@@ -203,7 +218,10 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         extras.putSerializable(C.EXTRA_FOOTING_RESULT, footingResult);
 
         if (partials.size() > 0) {
+            Log.e("carles", "partials size > 0");
             UserModel user = PrefUtil.getLoggedUser(this);
+            Log.e("carles", "user is null?" + String.valueOf(user == null));
+            Log.e("carles", "username is " + user.getName());
             extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
             extras.putParcelable(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult, user));
         }
@@ -213,55 +231,33 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             extras.putBoolean(C.EXTRA_SHOULD_SAVE_RUNNING, true);
         }
 
-        if (footingResult != FootingResult.CANCELLED_BY_USER) {
-            // notify user with a sound
-            extras.putBoolean(C.EXTRA_SHOULD_PLAY_SOUND, true);
-        }
-
-        // the activity will start a new task
-        //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-
-        if (extras.getSerializable(C.EXTRA_FOOTING_RESULT)==null) {
-            Log.e("carles","before calling onrunningfinished extra footing result is null");
+        if (extras.getSerializable(C.EXTRA_FOOTING_RESULT) == null) {
+            Log.e("carles", "before calling onrunningfinished extra footing result is null");
         } else {
-            Log.e("carles", "before calling onrunningfinished extra footing result is " + extras.getSerializable(C.EXTRA_FOOTING_RESULT));
+            Log.e("carles", "before calling onrunningfinished extra footing result is " +
+                    extras.getSerializable(C.EXTRA_FOOTING_RESULT));
         }
-            client.get().onRunningFinished(extras);
-            //        startActivity(intent);
+        client.get().onRunningFinished(extras);
 
-            //        } else {
-            //            PendingIntent pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            //
-            //            String notiTitle = "";
-            //            String notiText = "";
-            //            Uri sound = null;
-            //            if (footingResult == FootingResult.SUCCESS) {
-            //                notiTitle = getString(R.string.footing_result_success_title);
-            //                notiText = getString(R.string.footing_result_success);
-            //                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sound_crowd_cheering);
-            //
-            //            } else {
-            //                notiTitle = getString(R.string.footing_result_failure_title);
-            //                int resId = getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName());
-            //                notiText = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", getPackageName()));
-            //                sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.alert_stop_footing);
-            //            }
-            //
-            //            if (StringUtils.isBlank(notiText) || StringUtils.isBlank(notiTitle) || sound == null) {
-            //                return;
-            //            }
-            //
-            //            NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_notification_stop_running).
-            //                    setContentTitle(notiTitle).setContentText(notiText).setContentIntent(pintent).setSound(sound);
-            //            Notification notification = builder.build();
-            //            notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            //            final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            //            notificationManager.notify(NOTIFICATION_ID, notification);
-            //        }
-
-            // stopping the service implies calling onDestroy
-            stopSelf();
+        // play sound to notify the user
+        if (footingResult == FootingResult.SUCCESS) {
+            soundPool.play(cheerSoundId, C.VOLUME, C.VOLUME, 1, 0, 1f);
+        } else {
+            soundPool.play(booSoundId, C.VOLUME, C.VOLUME, 1, 0, 1f);
         }
+
+        // wait for the sound to play and stop the service
+        soundHandler = new Handler();
+        soundHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                soundPool.stop(cheerSoundId);
+                soundPool.stop(booSoundId);
+                stopSelf();
+            }
+        }, SOUND_MAX_DURATION);
+
+    }
 
     @Override
     public void onDestroy() {
@@ -315,9 +311,15 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         public void run() {
 
             if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
+                Log.e("carles", "best Location's accuracy better than low_accuracy_limit : " + bestLocation.getAccuracy());
                 onLocationObtained();
             } else {
                 Log.i(TAG, "LIST OF ACCURACIES OBTAINED (NOT ENOUGH) = " + accuracies.toString());
+                if (bestLocation!= null) {
+                    Log.e("carles", " bestLocation's accuracy was " + bestLocation.getAccuracy());
+                } else {
+                    Log.e("carles","best location is null");
+                }
                 stopRunning(FootingResult.NO_LOCATION_UPDATES);
             }
         }
@@ -335,7 +337,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     /*- *********************************************************** */
     /*- *********************************************************** */
     private final IBinder binder = new LocationServiceBinder();
-    private WeakReference<LocationService.Client> client;
+    private WeakReference<Client> client;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -356,7 +358,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         stopRunning(FootingResult.CANCELLED_BY_USER);
     }
 
-    public void setClient(LocationService.Client client) {
+    public void setClient(Client client) {
         this.client = new WeakReference<Client>(client);
     }
 

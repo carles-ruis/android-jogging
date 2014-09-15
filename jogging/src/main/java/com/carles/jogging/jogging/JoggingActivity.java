@@ -12,6 +12,7 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
@@ -93,7 +94,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             Intent intent = new Intent(JoggingActivity.this, LocationService.class);
             intent.putExtras(getIntent());
             // TODO delete this? only invoke with bindService? service is going to keep foreground?
-            startService(intent);
+            //startService(intent);
             bindService(intent, serviceConnection, BIND_AUTO_CREATE);
             isRunning = true;
 
@@ -212,15 +213,9 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 //            isKilometerReceiverRegistered = false;
 //            LocalBroadcastManager.getInstance(ctx).unregisterReceiver(kilometerReceiver);
 //        }
-        Log.e("carles", "is service bound?" + isServiceBound);
-        if (isServiceBound) {
-            Log.e("carles","unbind service before destroying the activity");
-            unbindService(serviceConnection);
-            isServiceBound = false;
-        }
+        unbindService();
         super.onDestroy();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -268,6 +263,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             });
 
             final Dialog dialog = builder.create();
+            dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
             return dialog;
         }
     }
@@ -305,20 +301,40 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
     public void onRunningFinished(Bundle extras) {
         Log.e("carles","on running finished");
         if (checkServiceBound()) {
-            Log.e("carles","creating new intent");
+            unbindService();
+            Log.e("carles", "creating new intent");
             Intent newIntent = new Intent(this, ResultDetailActivity.class);
+            Log.e("carles", "footing result is " + (FootingResult) extras.getSerializable(C.EXTRA_FOOTING_RESULT));
             newIntent.putExtras(extras);
             trackRunningFinished(extras);
             startActivity(newIntent);
             finish();
+            overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
+        }
+    }
+
+    private void unbindService() {
+        Log.e("carles", "is service bound?" + isServiceBound);
+        if (isServiceBound) {
+            Log.e("carles","unbind service before destroying the activity");
+            unbindService(serviceConnection);
+            isServiceBound = false;
         }
     }
 
     private void trackRunningFinished(Bundle extras) {
-        Tracker tracker = EasyTracker.getInstance(ctx);
-        Long value = (long)(((JoggingModel)extras.getParcelable(C.EXTRA_JOGGING_TOTAL)).getTotalDistance());
-        MapBuilder builder = MapBuilder.createEvent("jogging", "finish", null, value);
-        tracker.send(builder.build());
+        Parcelable parcel = extras.getParcelable(C.EXTRA_JOGGING_TOTAL);
+        if (parcel != null) {
+            JoggingModel jogging = (JoggingModel) parcel;
+            if (jogging.getFootingResult() == FootingResult.SUCCESS) {
+                Tracker tracker = EasyTracker.getInstance(ctx);
+                Long value = (long) jogging.getTotalDistance();
+                MapBuilder builder = MapBuilder.createEvent("jogging", "finish", null, value);
+                tracker.send(builder.build());
+
+                Log.i(TAG, "Tracking running finished for FootingResult success. Distance = " + value);
+            }
+        }
     }
 
     private boolean checkServiceBound() {

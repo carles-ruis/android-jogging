@@ -166,6 +166,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         intent.putExtra(C.EXTRA_FIRST_LOCATION, location);
         startActivity(intent);
         finish();
+        overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
     }
 
     @Override

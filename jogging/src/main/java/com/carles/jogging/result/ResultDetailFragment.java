@@ -13,13 +13,13 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.carles.jogging.BaseFragment;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.BaseFragment;
 import com.carles.jogging.jogging.FootingResult;
+import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.model.UserModel;
-import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.util.PrefUtil;
 
@@ -36,6 +36,8 @@ public class ResultDetailFragment extends BaseFragment {
     private Context ctx;
     private OnLocationClickedListener callbacks;
     private boolean hasObtainedLocations;
+
+    private FootingResult footingResult = FootingResult.UNKNOWN_ERROR;
 
     public static ResultDetailFragment newInstance() {
         ResultDetailFragment detailFragment = new ResultDetailFragment();
@@ -66,7 +68,6 @@ public class ResultDetailFragment extends BaseFragment {
         JoggingModel jogging = extras.getParcelable(C.EXTRA_JOGGING_TOTAL);
 
         // obtain title and subtitle
-        FootingResult footingResult;
         String title;
         String subtitle;
         if (extras.getSerializable(C.EXTRA_FOOTING_RESULT) == null) {
@@ -94,6 +95,7 @@ public class ResultDetailFragment extends BaseFragment {
         final View lytResultData = view.findViewById(R.id.lyt_result_data);
         final TextView txtTime = (TextView) view.findViewById(R.id.txt_result_time);
         final TextView txtDistance = (TextView) view.findViewById(R.id.txt_result_distance);
+        final TextView txtSpeed = (TextView) view.findViewById(R.id.txt_result_speed);
         final TextView txtBestTime = (TextView) view.findViewById(R.id.txt_result_best_time);
         final TextView txtRealTime = (TextView) view.findViewById(R.id.txt_result_real_time);
         final TextView txtRealDistance = (TextView) view.findViewById(R.id.txt_result_real_distance);
@@ -111,6 +113,7 @@ public class ResultDetailFragment extends BaseFragment {
             if (footingResult == FootingResult.SUCCESS) {
                 txtRealTime.setText(getString(R.string.result_real_time, FormatUtil.time(jogging.getRealTime())));
                 txtRealDistance.setText(getString(R.string.result_real_distance,(int)jogging.getRealDistance()));
+                txtSpeed.setText(getString(R.string.result_speed, getSpeed(jogging)));
 
                 UserModel user = PrefUtil.getLoggedUser(ctx);
                 if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(ctx).queryBestTimeByDistance(user, jogging.getTotalDistance())) {
@@ -122,6 +125,7 @@ public class ResultDetailFragment extends BaseFragment {
                 }
 
             } else {
+                txtSpeed.setVisibility(View.GONE);
                 txtRealTime.setVisibility(View.GONE);
                 txtRealDistance.setVisibility(View.GONE);
             }
@@ -145,15 +149,27 @@ public class ResultDetailFragment extends BaseFragment {
             txtNoLocations.setVisibility(View.VISIBLE);
         }
 
-        getActivity().getIntent().removeExtra(C.EXTRA_SHOULD_PLAY_SOUND);
         getActivity().getIntent().removeExtra(C.EXTRA_SHOULD_SAVE_RUNNING);
 
         return view;
     }
 
+    private Float getSpeed(JoggingModel jogging) {
+        float kms = jogging.getTotalDistance() / 1000f;
+        float h = jogging.getTotalTime() / (1000f * 3600f);
+        Log.e("carles", "speed " + kms / h);
+        return kms/h;
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result_detail, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(R.id.action_facebook).setVisible(footingResult == FootingResult.SUCCESS);
+        menu.getItem(R.id.action_map).setVisible(hasObtainedLocations);
     }
 
     public interface OnLocationClickedListener {

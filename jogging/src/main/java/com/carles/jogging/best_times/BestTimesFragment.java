@@ -71,6 +71,7 @@ public class BestTimesFragment extends BaseFragment {
                     intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList) partials);
                     intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
                 }
             });
         }

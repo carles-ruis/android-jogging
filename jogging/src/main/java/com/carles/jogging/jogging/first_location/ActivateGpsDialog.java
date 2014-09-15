@@ -1,7 +1,5 @@
 package com.carles.jogging.jogging.first_location;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -50,6 +48,7 @@ public class ActivateGpsDialog extends DialogFragment {
             this.setCancelable(false);
 
             final Dialog dialog = builder.create();
+            dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
             return dialog;
         }
 }

@@ -27,6 +27,12 @@ public abstract class BaseActivity extends SherlockFragmentActivity {
         String username = PrefUtil.getLoggedUser(this) == null ? "NONE" : PrefUtil.getLoggedUser(this).getName();
         tracker.set(Fields.customDimension(C.GA_DIMENSION_USER), username);
         EasyTracker.getInstance(this).send(MapBuilder.createAppView().build());
+
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        params.put(Fields.HIT_TYPE, "appview");
+//        params.put(Fields.SCREEN_NAME, this.getClass().getName());
+//        params.put(Fields.DESCRIPTION,"Activity created");
+//        EasyTracker.getInstance(this).send(params);
     }
 
 //    @Override

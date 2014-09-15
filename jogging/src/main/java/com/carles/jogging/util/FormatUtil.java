@@ -6,6 +6,7 @@ import android.util.Log;
 import com.carles.jogging.C;
 import com.carles.jogging.JoggingAppError;
 import com.carles.jogging.R;
+import com.carles.jogging.model.JoggingModel;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -80,4 +81,5 @@ public class FormatUtil {
         }
         return ret;
     }
+
 }

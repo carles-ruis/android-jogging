@@ -111,6 +111,7 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         PrefUtil.removeLoggedUserFromPrefs(ctx);
         startActivity(new Intent(ctx, LoginActivity.class));
         finish();
+        overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
     }
 
     @Override

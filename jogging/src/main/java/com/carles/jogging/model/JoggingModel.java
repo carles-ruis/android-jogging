@@ -3,6 +3,7 @@ package com.carles.jogging.model;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.util.LocationHelper;
@@ -65,6 +66,8 @@ public class JoggingModel implements Parcelable {
         this.realTime = getEnd().getTime() - getStart().getTime();
         this.realDistance = partials.get(partials.size() - 1).getTotalDistance();
         this.footingResult = footingResult;
+
+        Log.e("carles", "populating jogging model with user " + user.getName());
         this.user = user;
 
         // total distance and time. ReCalculate them if footing was successful

@@ -36,10 +36,7 @@ public class FirstLocationNotObtainedDialog extends DialogFragment {
 
         Dialog alert = builder.create();
         alert.setCanceledOnTouchOutside(true);
-
-    /*- Workaround to make animation work in api<11 */
         alert.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
-
         return alert;
 
     }

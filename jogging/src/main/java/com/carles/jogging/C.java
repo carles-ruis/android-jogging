@@ -26,7 +26,6 @@ public class C {
     public static final String EXTRA_FOOTING_TIME_TEXT = "extra_footing_time_text";
     public static final String EXTRA_JOGGING_PARTIALS = "extra_partials";
     public static final String EXTRA_JOGGING_TOTAL = "extra_jogging_total";
-    public static final String EXTRA_SHOULD_PLAY_SOUND = "extra_should_play_sound";
     public static final String EXTRA_SHOULD_SAVE_RUNNING = "extra_should_save_running";
 
     // intent filter actions
