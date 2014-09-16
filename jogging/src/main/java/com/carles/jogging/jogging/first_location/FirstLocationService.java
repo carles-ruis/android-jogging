@@ -1,4 +1,4 @@
-package com.carles.jogging.service;
+package com.carles.jogging.jogging.first_location;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import com.carles.jogging.jogging.gps_connectivity.GpsConnectivityManager;
+import com.carles.jogging.jogging.gps_connectivity.GpsConnectivityObserver;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -100,14 +102,10 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
         handler.postDelayed(firstLocationTimeout, MAX_REQUEST_TIME);
 
         locationClient.requestLocationUpdates(locationRequest, this);
-        Log.e("carles","startRequestingLocations");
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        accuracies.add(location.getAccuracy()); // TODO delete
-        Log.e("carles", "accuracy " + location.getAccuracy());
-
         // check if this is the first location or the best accurated location
         if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {
             bestLocation = location;
@@ -150,24 +148,32 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     @Override
     public void manageGpsConnectivityNotification(boolean connectionEnabled) {
         if (!connectionEnabled) {
-            Log.i(TAG, "gps connection disabled");
-            client.get().onLocationFailed();
+            Log.i(TAG, "gps connection lost");
+            if (client != null){
+                client.get().onLocationFailed(Error.GPS_LOST);
+            }
         }
     }
 
     @Override
     public void onDisconnected() {
-        client.get().onLocationFailed();
+        Log.i(TAG, "google play services disconnected");
+        if (client != null) {
+            client.get().onLocationFailed(Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE);
+        }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        client.get().onLocationFailed();
+        Log.i(TAG, "google play services connection failed");
+        if (client != null) {
+            client.get().onLocationFailed(Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE);
+        }
     }
 
     public interface OnFirstLocationResultListener {
         void onLocationObtained(Location location);
-        void onLocationFailed();
+        void onLocationFailed(Error error);
     }
 
     /*- ************************************************************** */
@@ -175,12 +181,10 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     private class FirstLocationTimeout implements Runnable {
         @Override
         public void run() {
-            Log.i(TAG, "LIST OF ACCURACIES OBTAINED (BAD) = " + accuracies.toString());
-
             if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
                 client.get().onLocationObtained(bestLocation);
             } else {
-                client.get().onLocationFailed();
+                client.get().onLocationFailed(Error.NO_LOCATIONS);
             }
         }
     }

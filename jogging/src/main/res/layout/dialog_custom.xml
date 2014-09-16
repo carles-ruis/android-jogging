@@ -1,18 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/almost_white"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/dlg_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/location_not_obtained_title" />
+        android:gravity="center_horizontal"
+        style="@style/dialog_title" />
 
     <include layout="@layout/view_divider" />
 
     <TextView
+        android:id="@+id/dlg_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/location_not_obtained_msg" />
+        style="@style/dialog_msg" />
 
 </LinearLayout>

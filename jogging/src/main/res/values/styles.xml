@@ -28,7 +28,7 @@
     </style>
 
     <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
-    <style name="Theme.Jogging.ZoomedDialog" parent="android:Theme.Light">
+    <style name="Theme.Jogging.ZoomedDialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
@@ -36,7 +36,6 @@
         <item name="android:maxWidth">600dp</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
-
 
     <!-- STYLES -->
     <style name="text_login_error">
@@ -84,6 +83,19 @@
     <style name="text_drawer_desc">
         <item name="android:textSize">@dimen/text_small</item>
         <item name="android:textColor">@color/text_blur_selector</item>
+    </style>
+
+    <style name="dialog_title">
+        <item name="android:textSize">@dimen/text_big</item>
+        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">@dimen/padding</item>
+    </style>
+
+    <style name="dialog_msg">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/text_blur</item>
+        <item name="android:padding">@dimen/padding</item>
     </style>
 
 </resources>

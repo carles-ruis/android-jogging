@@ -16,12 +16,11 @@ import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
+import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.util.LocationHelper;
 import com.carles.jogging.jogging.JoggingActivity;
-import com.carles.jogging.BaseActivity;
-import com.carles.jogging.service.FirstLocationService;
+import com.carles.jogging.util.LocationHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -88,18 +87,13 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
                 } else {
                     Log.i(TAG, "Google Play services not available.");
                         /*- device was not able to connect to google play services */
-                    showConnectionFailedDialog(getString(R.string.connection_failed_google));
+                    FirstLocationFailedDialog.newInstance(Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE).show(getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
                 }
                 break;
             case C.REQ_CODE_ENABLE_GPS:
                 checkGpsConnected();
                 break;
         }
-    }
-
-    public void showConnectionFailedDialog(String connectionType) {
-        ConnectionFailedDialog connectionFailedDialog = ConnectionFailedDialog.newInstance(connectionType);
-        connectionFailedDialog.show(getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
     }
 
     private void checkGpsConnected() {
@@ -171,7 +165,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
     }
 
     @Override
-    public void onLocationFailed() {
+    public void onLocationFailed(Error error) {
         Log.i(TAG, "OnFirstLocationResultListener onLocationFailed()");
 
         /*- destroy the service, stop requesting for  location */
@@ -180,8 +174,12 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
             isServiceBound = false;
         }
 
-        FirstLocationNotObtainedDialog dialog = new FirstLocationNotObtainedDialog();
-        dialog.show(getSupportFragmentManager(), C.TAG_FIRST_LOCATION_NOT_OBTAINED);
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+            dialog = null;
+        }
+
+        FirstLocationFailedDialog.newInstance(error).show(getSupportFragmentManager(), C.TAG_FIRST_LOCATION_NOT_OBTAINED);
     }
 
     /*- ********************************************************************************* */

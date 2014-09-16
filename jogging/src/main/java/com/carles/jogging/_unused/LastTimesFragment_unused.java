@@ -1,4 +1,4 @@
-package com.carles.jogging.last_times;
+package com.carles.jogging._unused;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.carles.jogging.BaseFragment;
 import com.carles.jogging.R;
+import com.carles.jogging.last_times.LastTimesContentFragment;
 import com.carles.jogging.util.FormatUtil;
 
 import java.lang.reflect.Field;

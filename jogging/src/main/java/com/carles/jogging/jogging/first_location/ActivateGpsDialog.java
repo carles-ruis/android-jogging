@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.carles.jogging.C;
 import com.carles.jogging.R;
@@ -18,10 +21,15 @@ public class ActivateGpsDialog extends DialogFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.activate_gps_title));
-            builder.setMessage(getString(R.string.activate_gps_msg));
+
+            final LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View view = inflater.inflate(R.layout.dialog_custom, null);
+            final TextView title = (TextView) view.findViewById(R.id.dlg_title);
+            final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
+
+            title.setText(getString(R.string.activate_gps_title));
+            msg.setText(getString(R.string.activate_gps_msg));
 
             builder.setPositiveButton(getString(R.string.activate_gps_button_yes), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -39,9 +47,11 @@ public class ActivateGpsDialog extends DialogFragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // user doesn't want to activate gps
-                    ((CheckConnectionsActivity)getActivity()).showConnectionFailedDialog(getString(R.string.connection_failed_gps));
+                    FirstLocationFailedDialog.newInstance(Error.GPS_DISABLED).show(getActivity().getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
                 }
             });
+
+            builder.setView(view);
 
             // should invoke setCancelable in the DialogFragment directly, not in the inner Dialog
             // in order to avoid dismissing the dialog when user presses back button

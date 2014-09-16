@@ -14,30 +14,40 @@ import com.carles.jogging.R;
 /**
  * Created by carles1 on 21/04/14.
  */
-public class ConnectionFailedDialog extends DialogFragment {
+public class FirstLocationFailedDialog extends DialogFragment {
 
     private static final String CONNECTION_TYPE = "connection_type";
 
-    public static ConnectionFailedDialog newInstance(String connectionType) {
-        ConnectionFailedDialog ret = new ConnectionFailedDialog();
+    public static FirstLocationFailedDialog newInstance(Error error) {
+        FirstLocationFailedDialog ret = new FirstLocationFailedDialog();
         Bundle args = new Bundle();
-        args.putString(CONNECTION_TYPE, connectionType);
+        args.putSerializable(CONNECTION_TYPE, error);
         ret.setArguments(args);
         return ret;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String connectionType = getArguments().getString(CONNECTION_TYPE);
+        Error error = (Error)getArguments().getSerializable(CONNECTION_TYPE);
 
         /*- Use the Builder class for convenient dialog construction */
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_connection_failed, null);
+        final View view = inflater.inflate(R.layout.dialog_custom, null);
+        final TextView title = (TextView) view.findViewById(R.id.dlg_title);
+        final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
 
-        final TextView msg = (TextView) view.findViewById(R.id.connection_failed_msg);
-        msg.setText(getString(R.string.connection_failed_msg, connectionType));
+        title.setText(getString(R.string.connection_failed_title));
+        if (error == Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE) {
+            msg.setText(getString(R.string.connection_failed_google));
+        } else if (error == Error.GPS_DISABLED) {
+            msg.setText(getString(R.string.connection_failed_gps));
+        } else if (error==Error.GPS_LOST) {
+            msg.setText(getString(R.string.connection_failed_gps_lost));
+        } else {
+            msg.setText(getString(R.string.connection_failed_gps_location));
+        }
 
         builder.setView(view);
 
@@ -63,3 +73,8 @@ public class ConnectionFailedDialog extends DialogFragment {
     }
 
 }
+
+enum Error {
+    GOOGLE_PLAY_SERVICES_UNAVAILABLE, GPS_DISABLED, GPS_LOST, NO_LOCATIONS;
+}
+

@@ -25,7 +25,6 @@ import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.result.ResultDetailActivity;
-import com.carles.jogging.service.LocationService;
 import com.carles.jogging.util.FormatUtil;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
