@@ -8,10 +8,20 @@
     <dimen name="navigation_drawer_width">240dp</dimen>
 
     <!-- font sizes -->
+    <dimen name="text_small">16sp</dimen>
+    <dimen name="text_normal">18sp</dimen>
+    <dimen name="text_big">20sp</dimen>
+    <dimen name="text_title">32sp</dimen>
 
     <!-- margin and padding -->
+    <dimen name="margin_big">24dp</dimen>
+    <dimen name="margin">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="btn_padding">12dp</dimen>
+    <dimen name="padding">8dp</dimen>
 
     <!-- view sizes -->
-    <dimen name="view_divider_height">2dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="drawer_item_height">80dp</dimen>
 
 </resources>

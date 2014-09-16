@@ -34,8 +34,8 @@ public class MainFragment extends BaseFragment {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
         ctx = getActivity();
 
-        final Button runButton = (Button) view.findViewById(R.id.main_button_run);
-        kmsEdit = (Spinner) view.findViewById(R.id.main_spinner_kms);
+        final Button runButton = (Button) view.findViewById(R.id.btn_main_run);
+        kmsEdit = (Spinner) view.findViewById(R.id.spin_main_kms);
 
         runButton.setOnClickListener(new OnRunButtonClickListener());
         kmsEdit.setSelection(PrefUtil.getLastKilometersSelectedPosition(getActivity()));

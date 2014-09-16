@@ -57,10 +57,8 @@ public class ResultDetailFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.e("carles","on create view");
         final View view = inflater.inflate(R.layout.fragment_result_detail, container, false);
-
-        // allows this fragment to inflate its own menu in the action bar
-        setHasOptionsMenu(true);
 
         // obtain extras to show the results
         Bundle extras = getActivity().getIntent().getExtras();
@@ -87,6 +85,9 @@ public class ResultDetailFragment extends BaseFragment {
         }
 
         hasObtainedLocations = partials != null && !partials.isEmpty() && jogging != null;
+
+        // allows this fragment to inflate its own menu in the action bar
+        setHasOptionsMenu(true);
 
         // map views
         final TextView txtTitle = (TextView) view.findViewById(R.id.txt_result_title);
@@ -163,13 +164,15 @@ public class ResultDetailFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.e("carles","on create options menu");
         inflater.inflate(R.menu.menu_result_detail, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.getItem(R.id.action_facebook).setVisible(footingResult == FootingResult.SUCCESS);
-        menu.getItem(R.id.action_map).setVisible(hasObtainedLocations);
+        Log.e("carles","on prepare options menu");
+        menu.findItem(R.id.action_facebook).setVisible(footingResult == FootingResult.SUCCESS);
+        menu.findItem(R.id.action_map).setVisible(hasObtainedLocations);
     }
 
     public interface OnLocationClickedListener {

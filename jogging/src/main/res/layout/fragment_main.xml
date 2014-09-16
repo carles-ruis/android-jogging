@@ -8,32 +8,62 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.carles.jogging.main.MainActivity$PlaceholderFragment">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_above="@+id/txt_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:padding="@dimen/padding"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_running_girl" />
+
+    <TextView
+        android:id="@+id/txt_app_name"
+        android:layout_above="@+id/lyt_main_kms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/main_button_run"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:text="@string/app_name"
+        style="@style/text_login_title"
+        android:layout_marginBottom="@dimen/margin_big"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:id="@+id/lyt_main_kms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:weightSum="2">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/txt_main_kms"
+            android:gravity="right"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:paddingBottom="4dp"
+            style="@style/spinner_label"
             android:text="@string/main_text_run" />
 
         <Spinner
-            android:id="@+id/main_spinner_kms"
-            android:layout_width="wrap_content"
+            android:id="@+id/spin_main_kms"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
+            style="@style/spinner"
             android:entries="@array/main_entries_kms" />
-
     </LinearLayout>
 
     <Button
-        android:id="@+id/main_button_run"
-        android:layout_width="wrap_content"
+        android:id="@+id/btn_main_run"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        style="@style/button"
         android:text="@string/main_button_run" />
 
 </RelativeLayout>

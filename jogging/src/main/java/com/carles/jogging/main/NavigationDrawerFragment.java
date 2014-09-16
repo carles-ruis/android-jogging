@@ -17,8 +17,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.carles.jogging.R;
 import com.carles.jogging.BaseFragment;
+import com.carles.jogging.R;
 import com.limecreativelabs.sherlocksupport.ActionBarDrawerToggleCompat;
 
 /**

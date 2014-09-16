@@ -154,7 +154,8 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onLocationObtained(Location location) {
-        // destroy the service, stop requesting for  location
+        // destroy the service, stop requesting for location
+        Log.e("carles","first location obtained");
         if (isServiceBound) {
             unbindService(serviceConnection);
             isServiceBound = false;

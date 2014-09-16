@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.Jogging" parent="@style/Theme.Sherlock.Light">
+        <!-- Action bar Style Generator and Support Library-->
+        <item name="android:actionBarStyle">@style/Theme.Jogging.ActionBar</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Jogging</item>
+        <item name="actionBarItemBackground">@drawable/selectable_background_jogging</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Jogging</item>
+    </style>
+
     <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
     <style name="Theme.Jogging.ZoomedDialog" parent="android:Theme.Holo.Light.Dialog">
         <item name="android:windowEnterAnimation">@anim/zoom_in</item>

@@ -1,6 +1,7 @@
 package com.carles.jogging.main;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,12 @@ public class DrawerAdapter extends ArrayAdapter<DrawerOption> {
         final DrawerOption item = getItem(position);
 
         final ImageView img = (ImageView) convertView.findViewById(R.id.img_item_icon);
+        if (Build.VERSION.SDK_INT >= 16) {
+            img.setImageAlpha(238); //#ee
+        } else {
+            img.setAlpha(238);
+        }
+
         img.setImageDrawable(ctx.getResources().getDrawable(item.iconId));
 
         final TextView txtTitle = (TextView) convertView.findViewById(R.id.txt_item_title);

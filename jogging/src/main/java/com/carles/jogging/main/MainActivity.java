@@ -17,8 +17,6 @@ import com.carles.jogging.best_times.BestTimesFragment;
 import com.carles.jogging.last_times.LastTimesContentFragment;
 import com.carles.jogging.login.LoginActivity;
 import com.carles.jogging.util.PrefUtil;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
 
 /**
  * Created by carles1 on 20/04/14.
@@ -52,13 +50,6 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
 
         // prepare navigation list for navigation between LastTimesFragment instances
         setUpNavigationList();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Send a screen view when the Activity is displayed to the user.
-        EasyTracker.getInstance(ctx).send(MapBuilder.createAppView().build());
     }
 
     private void setUpNavigationList() {
@@ -121,7 +112,9 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
             getSupportMenuInflater().inflate(R.menu.main, menu);
             ActionBar actionBar = getSupportActionBar();
             actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(mTitle);            return true;
+            actionBar.setTitle(mTitle);
+            actionBar.setNavigationMode(navigationMode);
+            return true;
         }
         return super.onCreateOptionsMenu(menu);
     }

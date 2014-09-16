@@ -100,12 +100,13 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
         handler.postDelayed(firstLocationTimeout, MAX_REQUEST_TIME);
 
         locationClient.requestLocationUpdates(locationRequest, this);
+        Log.e("carles","startRequestingLocations");
     }
 
     @Override
     public void onLocationChanged(Location location) {
         accuracies.add(location.getAccuracy()); // TODO delete
-        Log.i(TAG, "accuracy " + location.getAccuracy());
+        Log.e("carles", "accuracy " + location.getAccuracy());
 
         // check if this is the first location or the best accurated location
         if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {

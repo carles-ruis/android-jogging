@@ -1,11 +1,41 @@
 <resources>
 
     <!-- color names -->
-   <color name="blue">#333399</color>
+    <color name="blue">#333399</color>
+    <color name="red_light">#ffacaa</color>
+    <color name="red_normal">#d46d6a</color>
+    <color name="red_normal_translucent">#eed46d6a</color>
+    <color name="red_light_pressed">#aa3c39</color>
+    <color name="red_normal_pressed">#801815</color>
+    <color name="red_dark">#801815</color>
 
-    <!-- views -->
-    <color name="view_divider_color">@color/blue</color>
+    <color name="grey_lighter">#e7e7e7</color>
+    <color name="grey_light">#d6d6d6</color>
 
+    <color name="almost_black">#ee000000</color>
+    <color name="grey">#77000000</color>
+    <color name="almost_white">#eeeeee</color>
+    <color name="green">#00ff00</color>
+    <color name="red">#ff0000</color>
 
+    <!-- color uses -->
+    <color name="flat_background">@color/almost_white</color>
+    <color name="divider">@color/red_dark</color>
+    <color name="login_warning">@color/red</color>
+    <color name="login_ok">@color/green</color>
+    <color name="text">@color/almost_black</color>
+    <color name="text_title">@color/red_dark</color>
+    <color name="text_blur">@color/grey</color>
+    <color name="text_inverse">@color/almost_white</color>
+    <color name="text_error">@color/red</color>
+
+    <!-- action bar -->
+    <color name="action_bar">@color/red_light</color>
+    <color name="action_bar_pressed">@color/red_light_pressed</color>
+
+    <!-- navigation drawer -->
+    <color name="drawer_background">@color/red_normal_translucent</color>
+    <color name="drawer_item_normal">@color/red_normal</color>
+    <color name="drawer_item_pressed">@color/red_normal_pressed</color>
 
 </resources>

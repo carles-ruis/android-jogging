@@ -1,15 +1,30 @@
 <resources>
 
     <!-- THEMES -->
-
-    <!-- Base application theme. -->
     <style name="Theme.Jogging" parent="@style/Theme.Sherlock.Light">
-        <!-- workaround to avoid that the tiled background disappear when the screen scrolls -->
-        <!--<item name="android:windowBackground">@drawable/main_background</item>-->
+        <!-- Action bar Style Generator and Support Library-->
+        <item name="actionBarStyle">@style/Theme.Jogging.ActionBar</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Jogging</item>
+        <item name="actionBarItemBackground">@drawable/selectable_background_jogging</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Jogging</item>
     </style>
 
-    <style name="Theme.Jogging.NoActionBar" parent="@style/Theme.Sherlock.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="Theme.Jogging.ActionBar" parent="Widget.Sherlock.ActionBar">
+        <!-- Action bar Style Generator -->
+        <item name="android:background">@drawable/ab_solid_jogging</item>
+        <item name="background">@drawable/ab_solid_jogging</item>
+    </style>
+
+    <style name="Theme.Jogging.NoActionBar" parent="@style/Theme.Sherlock.Light.NoActionBar" />
+
+    <style name="DropDownListView.Jogging" parent="@style/Widget.Sherlock.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_jogging</item>
+    </style>
+
+    <style name="DropDownNav.Jogging" parent="Widget.Sherlock.Light.Spinner.DropDown.ActionBar">
+    <item name="android:background">@drawable/spinner_background_ab_jogging</item>
+    <item name="android:popupBackground">@drawable/menu_dropdown_panel_jogging</item>
+    <item name="android:dropDownSelector">@drawable/selectable_background_jogging</item>
     </style>
 
     <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
@@ -22,7 +37,53 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 
-    <!-- STYLES -->
 
+    <!-- STYLES -->
+    <style name="text_login_error">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/text_error</item>
+    </style>
+
+    <style name="text_login_title">
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <style name="edit_login">
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHint">@color/text_blur</item>
+    </style>
+
+    <style name="button">
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:textColor">@color/text_selector</item>
+        <item name="android:padding">@dimen/btn_padding</item>
+        <item name="android:background">@drawable/btn_selector</item>
+    </style>
+
+    <style name="spinner_label">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/text_blur</item>
+        <item name="android:capitalize">characters</item>
+    </style>
+
+    <style name="spinner" parent="@style/DropDownNav.Jogging">
+    <!--<style name="spinner" parent="@style/Widget.AppCompat.Light.Base.Spinner">-->
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingRight">48dp</item>
+    </style>
+
+    <style name="text_drawer">
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:textColor">@color/text_selector</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="text_drawer_desc">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/text_blur_selector</item>
+    </style>
 
 </resources>
