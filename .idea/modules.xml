@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/libraries/actionbarsherlock/actionbarsherlock.iml" filepath="$PROJECT_DIR$/libraries/actionbarsherlock/actionbarsherlock.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-jogging.iml" filepath="$PROJECT_DIR$/android-jogging.iml" />
-      <module fileurl="file://$PROJECT_DIR$/facebookSDK/facebookSDK.iml" filepath="$PROJECT_DIR$/facebookSDK/facebookSDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/facebookSDK/facebookSDK.iml" filepath="$PROJECT_DIR$/libraries/facebookSDK/facebookSDK.iml" />
       <module fileurl="file://$PROJECT_DIR$/jogging/jogging.iml" filepath="$PROJECT_DIR$/jogging/jogging.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/viewpagerindicator/viewpagerindicator.iml" filepath="$PROJECT_DIR$/libraries/viewpagerindicator/viewpagerindicator.iml" />
     </modules>
