@@ -335,7 +335,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
         // PendingIntent won't have an attachment, there's no action to perform when user clicks it
         PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_running_girl).
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.notification).
                 setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
         Notification notification = builder.build();
         Log.e("carles", "service is going to start in foreground");
