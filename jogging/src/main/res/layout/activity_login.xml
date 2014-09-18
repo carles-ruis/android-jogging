@@ -80,6 +80,7 @@
             android:layout_marginLeft="@dimen/margin_big"
             android:layout_marginRight="@dimen/margin_big"
             android:paddingBottom="36dp"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <ImageView
@@ -106,6 +107,7 @@
             android:layout_height="wrap_content"
             android:weightSum="2"
             android:padding="@dimen/padding"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <Button
@@ -132,6 +134,17 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:onClick="actionNewUser" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_login_with_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/margin"
+            android:enabled="false"
+            style="@style/button"
+            android:onClick="actionLoginWithUsername"
+            android:text="@string/login_button" />
 
     </RelativeLayout>
 </FrameLayout>

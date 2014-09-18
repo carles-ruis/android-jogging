@@ -45,6 +45,7 @@ public class LoginActivity extends BaseActivity {
     private TextView txtError;
     private Button btnLogin;
     private Button btnNewUser;
+    private Button btnLoginWithUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +65,10 @@ public class LoginActivity extends BaseActivity {
             txtError = (TextView) findViewById(R.id.txt_error);
             btnLogin = (Button) findViewById(R.id.btn_login);
             btnNewUser = (Button) findViewById(R.id.btn_new_user);
+            btnLoginWithUsername = (Button) findViewById(R.id.btn_login_with_username);
 
-            txtUsername.addTextChangedListener(new LoginTextWatcher(imgUsername));
-            txtPassword.addTextChangedListener(new LoginTextWatcher(imgPassword));
+            txtUsername.addTextChangedListener(new LoginTextWatcher());
+            txtPassword.addTextChangedListener(new LoginTextWatcher());
 
             // perform changes in the view if keyboard is shown
             lytRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -121,15 +123,16 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void actionNewUser(final View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtPassword.getWindowToken(), 0);
 
         long id;
         UserModel user = new UserModel();
-            user.setName(txtUsername.getText().toString());
-            user.setPassword(txtPassword.getText().toString());
-            user.setEmail("");
-            id = JoggingSQLiteHelper.getInstance(ctx).insertUser(user);
+        user.setName(txtUsername.getText().toString());
+        // user.setPassword(txtPassword.getText().toString());
+        user.setPassword("");
+        user.setEmail("");
+        id = JoggingSQLiteHelper.getInstance(ctx).insertUser(user);
 
         if (id != -1) {
             PrefUtil.setLoggedUser(ctx, user);
@@ -143,6 +146,33 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    public void actionLoginWithUsername(final View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(txtPassword.getWindowToken(), 0);
+
+        // UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(txtUsername.getText().toString(), txtPassword.getText().toString());
+        UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(txtUsername.getText().toString(), "");
+        if (user == null) {
+            // new user
+            user = new UserModel();
+            user.setName(txtUsername.getText().toString());
+            user.setPassword("");
+            user.setEmail("");
+
+            if (JoggingSQLiteHelper.getInstance(ctx).insertUser(user) == -1) {
+                // this should never happen
+                txtError.setText(R.string.login_error_unknown);
+                txtError.setVisibility(View.VISIBLE);
+                imgUsername.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                return;
+            }
+
+        } else {
+            PrefUtil.setLoggedUser(ctx, user);
+            startMainActivity();
+        }
+    }
+
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
@@ -153,11 +183,7 @@ public class LoginActivity extends BaseActivity {
     /*- ********************************************************************************* */
     class LoginTextWatcher implements TextWatcher {
 
-        private ImageView img;
-
-        public LoginTextWatcher(ImageView img) {
-            this.img = img;
-        }
+        public LoginTextWatcher() { }
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
@@ -180,12 +206,14 @@ public class LoginActivity extends BaseActivity {
             }
 
             // disable buttons if a text is empty
-            if (usernameIsEmpty || passwordIsEmpty) {
+            if (usernameIsEmpty /*|| passwordIsEmpty*/) {
                 btnLogin.setEnabled(false);
                 btnNewUser.setEnabled(false);
+                btnLoginWithUsername.setEnabled(false);
             } else {
                 btnLogin.setEnabled(true);
                 btnNewUser.setEnabled(true);
+                btnLoginWithUsername.setEnabled(true);
             }
 
             // hide validation error text
