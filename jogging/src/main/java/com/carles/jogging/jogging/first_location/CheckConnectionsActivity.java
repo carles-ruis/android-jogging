@@ -202,6 +202,12 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
+
+        /*- a dialog is cancelled when the user presses the back button*/
+        public void onCancel(DialogInterface dialog) {
+            getActivity().finish();
+        }
+
     }
 
     /*- ********************************************************************************* */

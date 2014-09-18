@@ -1,12 +1,12 @@
 package com.carles.jogging.jogging.first_location;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.carles.jogging.R;
@@ -31,7 +31,7 @@ public class FirstLocationFailedDialog extends DialogFragment {
         Error error = (Error)getArguments().getSerializable(CONNECTION_TYPE);
 
         /*- Use the Builder class for convenient dialog construction */
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        Dialog dialog = new Dialog(getActivity());
 
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_custom, null);
@@ -49,7 +49,8 @@ public class FirstLocationFailedDialog extends DialogFragment {
             msg.setText(getString(R.string.connection_failed_gps_location));
         }
 
-        builder.setView(view);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(view);
 
         /*- cancel the dialog if the user touches inside it as well as outside it */
         view.setOnClickListener(new View.OnClickListener() {
@@ -60,10 +61,9 @@ public class FirstLocationFailedDialog extends DialogFragment {
             }
         });
 
-        final Dialog alert = builder.create();
-        alert.setCanceledOnTouchOutside(true);
-        alert.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
-        return alert;
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
+        return dialog;
     }
 
     @Override
