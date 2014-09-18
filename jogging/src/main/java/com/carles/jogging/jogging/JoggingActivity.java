@@ -66,7 +66,6 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
     // handler for timing the countdown before start running
     final Handler handler = new Handler();
-    private boolean isRunning = false;
     private SoundPool soundPool;
     private int startSoundId = -1;
 
@@ -94,8 +93,8 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             intent.putExtras(getIntent());
             // TODO delete this? only invoke with bindService? service is going to keep foreground?
             //startService(intent);
+            Log.e("carles","about to bind service");
             bindService(intent, serviceConnection, BIND_AUTO_CREATE);
-            isRunning = true;
 
             // update view
             txtGo.setVisibility(View.VISIBLE);
@@ -165,7 +164,8 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
     public void onResume() {
         super.onResume();
 
-        if (!isRunning) {
+        if (!isServiceBound) {
+            Log.e("carles","user is not running, restart countdown");
             // restart the countdown if countdown was not completed, restart it
             txtOnYourMarks.setVisibility(View.INVISIBLE);
             txtGetSet.setVisibility(View.INVISIBLE);
@@ -186,7 +186,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
     @Override
     public void onPause() {
-        if (!isRunning) {
+        if (!isServiceBound) {
             handler.removeCallbacks(countdownOnYourMarksThread);
             handler.removeCallbacks(countdownGetSetThread);
             handler.removeCallbacks(countdownGoThread);
@@ -277,7 +277,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             LocationService.LocationServiceBinder binder = (LocationService.LocationServiceBinder) iBinder;
             service = binder.getService();
             service.setClient(JoggingActivity.this);
-            service.start(getIntent());
+//            service.start(getIntent());
             isServiceBound = true;
         }
 

@@ -3,6 +3,7 @@ package com.carles.jogging.result;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,8 +83,11 @@ public class ResultMapFragment extends SupportMapFragment {
 
         // No position obtained. There are not markers to show
         if (partials == null) {
+            // this shouldn't happen. Map option shouldn't be enabled if no locations found
+            Log.e("carles", "partials are null. no position obtain. This shouldn't happen");
             return;
         }
+        Log.e("carles", "partials are not null, showing locations");
 
         // add markers
         JoggingModel partial;

@@ -82,6 +82,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public void onCreate() {
+        Log.e("carles","service onCreate");
           // request wakelock to avoid the device goes to sleep and misses location updates
         acquireWakelock();
 
@@ -106,39 +107,9 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     }
 
     private void acquireWakelock() {
-       PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG);
         wakelock.acquire();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("carles","onStartCommand");
-
-        // init variables from the intent received
-        startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
-        previousLocation = startLocation;
-        bestLocation = null;
-        currentDistance = 0f;
-        totalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
-        totalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
-        startTime = System.currentTimeMillis();
-        // first location time has to be "now" because user starts running now
-        previousLocation.setTime(startTime);
-
-        // PendingIntent won't have an attachment, there's no action to perform when user clicks it
-        PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_running_girl).
-                setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
-        Notification notification = builder.build();
-        Log.e("carles", "service is going to start in foreground");
-        startForeground(NOTIFICATION_ID, notification);
-
-        // connect to the LocationClient that is going to request for locations
-        locationClient.connect();
-
-        // if the system kills the service don't bother recreating it
-        return START_NOT_STICKY;
     }
 
     @Override
@@ -195,12 +166,14 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         previousLocation = bestLocation;
         bestLocation = null;
 
-        // update the view with the distance ran and time passed
-        client.get().onLocationObtained(totalTime, currentDistance);
-        //        Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
-        //        intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.time(totalTime));
-        //        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, (int)currentDistance);
-        //        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        if (client != null) {
+            // update the view with the distance ran and time passed
+            client.get().onLocationObtained(totalTime, currentDistance);
+            //        Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
+            //        intent.putExtra(C.EXTRA_FOOTING_TIME_TEXT, FormatUtil.time(totalTime));
+            //        intent.putExtra(C.EXTRA_DISTANCE_IN_METERS, (int)currentDistance);
+            //        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
 
         // check if running is over
         if (currentDistance < totalDistance) {
@@ -238,7 +211,12 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             Log.e("carles", "before calling onrunningfinished extra footing result is " +
                     extras.getSerializable(C.EXTRA_FOOTING_RESULT));
         }
-        client.get().onRunningFinished(extras);
+
+        if (client != null) {
+            client.get().onRunningFinished(extras);
+        } else {
+            createClientOnRunningFinished(extras);
+        }
 
         // play sound to notify the user
         if (footingResult == FootingResult.SUCCESS) {
@@ -342,6 +320,30 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.e("carles", "Service onbind");
+
+        // init variables from the intent received
+        startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
+        previousLocation = startLocation;
+        bestLocation = null;
+        currentDistance = 0f;
+        totalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
+        totalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
+        startTime = System.currentTimeMillis();
+        // first location time has to be "now" because user starts running now
+        previousLocation.setTime(startTime);
+
+        // PendingIntent won't have an attachment, there's no action to perform when user clicks it
+        PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_running_girl).
+                setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
+        Notification notification = builder.build();
+        Log.e("carles", "service is going to start in foreground");
+        startForeground(NOTIFICATION_ID, notification);
+
+        // connect to the LocationClient that is going to request for locations
+        locationClient.connect();
+
         return binder;
     }
 
@@ -351,9 +353,10 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         }
     }
 
-    public void start(Intent intent) {
-        startService(intent);
-    }
+//    public void start(Intent intent) {
+//        Log.e("carles","service starts");
+//        startService(intent);
+//    }
 
     public void cancelRun() {
         stopRunning(FootingResult.CANCELLED_BY_USER);
@@ -367,4 +370,10 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         void onRunningFinished(Bundle extras);
         void onLocationObtained(long time, float meters);
     }
+
+    public void createClientOnRunningFinished(Bundle extras) {
+        Log.e("carles", "client is null, create and send running finished intent");
+        // TODO handle client null
+    }
+
 }
