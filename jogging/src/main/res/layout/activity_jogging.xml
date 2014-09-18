@@ -1,5 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/almost_white"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:layout_height="match_parent">
 
     <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
@@ -19,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:textColor="@color/text_blur"
         android:layout_centerHorizontal="true" />
 
     <!-- countdown texts -->
@@ -29,6 +35,7 @@
         android:layout_above="@+id/txt_jogging_get_set"
         android:layout_centerHorizontal="true"
         android:text="@string/jogging_on_your_marks"
+        style="@style/text_jogging"
         android:visibility="invisible" />
 
     <TextView
@@ -38,6 +45,7 @@
         android:layout_above="@+id/txt_jogging_go"
         android:layout_centerHorizontal="true"
         android:text="@string/jogging_get_set"
+        style="@style/text_jogging"
         android:visibility="invisible" />
 
     <TextView
@@ -46,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/jogging_go"
+        style="@style/text_jogging"
         android:visibility="invisible" />
 
     <!-- partial results that will be updated periodically -->
@@ -55,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/txt_jogging_time"
         android:layout_centerHorizontal="true"
+        style="@style/text_jogging"
         android:visibility="invisible" />
 
     <TextView
@@ -62,16 +72,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        style="@style/text_jogging"
         android:visibility="invisible" />
 
     <!-- cancel run button in the bottom -->
     <Button
         android:id="@+id/btn_jogging_cancel"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:text="@string/jogging_button_cancel"
+        style="@style/button"
         android:visibility="invisible" />
 
 </RelativeLayout>

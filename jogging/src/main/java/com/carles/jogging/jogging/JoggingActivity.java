@@ -1,10 +1,8 @@
 package com.carles.jogging.jogging;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
@@ -15,7 +13,9 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -165,7 +165,6 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         super.onResume();
 
         if (!isServiceBound) {
-            Log.e("carles","user is not running, restart countdown");
             // restart the countdown if countdown was not completed, restart it
             txtOnYourMarks.setVisibility(View.INVISIBLE);
             txtGetSet.setVisibility(View.INVISIBLE);
@@ -207,7 +206,6 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
     @Override
     protected void onDestroy() {
-        Log.e("carles","ondestroy activity");
 //        if (isKilometerReceiverRegistered) {
 //            isKilometerReceiverRegistered = false;
 //            LocalBroadcastManager.getInstance(ctx).unregisterReceiver(kilometerReceiver);
@@ -240,32 +238,71 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            Dialog dialog = new Dialog(getActivity());
 
-            builder.setTitle(getString(R.string.cancel_run_title));
-            builder.setMessage(getString(R.string.cancel_run_msg));
+            final LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View view = inflater.inflate(R.layout.dialog_alert_custom, null);
+            final TextView title = (TextView) view.findViewById(R.id.dlg_title);
+            final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
+            final Button btnOk = (Button) view.findViewById(R.id.btn_yes);
+            final Button btnNo = (Button) view.findViewById(R.id.btn_no);
 
-            builder.setPositiveButton(R.string.cancel_run_button_yes, new DialogInterface.OnClickListener() {
+            title.setText(getString(R.string.cancel_run_title));
+            msg.setText(getString(R.string.cancel_run_msg));
+            btnOk.setText(getString(R.string.cancel_run_button_yes));
+            btnNo.setText(getString(R.string.cancel_run_button_no));
+
+            btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                public void onClick(View view) {
+                    dismiss();
                     if (checkServiceBound()) {
                         service.cancelRun();
                     }
                 }
             });
 
-            builder.setNegativeButton(R.string.cancel_run_button_no, new DialogInterface.OnClickListener() {
+            btnNo.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                public void onClick(View view) {
                     dismiss();
                 }
             });
 
-            final Dialog dialog = builder.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(view);
             dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
             return dialog;
         }
     }
+//    @Override
+//    public Dialog onCreateDialog(Bundle savedInstanceState) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//
+//        builder.setTitle(getString(R.string.cancel_run_title));
+//        builder.setMessage(getString(R.string.cancel_run_msg));
+//
+//        builder.setPositiveButton(R.string.cancel_run_button_yes, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                if (checkServiceBound()) {
+//                    service.cancelRun();
+//                }
+//            }
+//        });
+//
+//        builder.setNegativeButton(R.string.cancel_run_button_no, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dismiss();
+//            }
+//        });
+//
+//        final Dialog dialog = builder.create();
+//        dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
+//        return dialog;
+//    }
+//}
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */
