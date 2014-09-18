@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class LocationService extends Service implements GpsConnectivityObserver, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
-    private static final String TAG = LocationService.class.getName();
+    private static final String TAG = LocationService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 1;
     private static final int SOUND_MAX_DURATION = 2000;
 

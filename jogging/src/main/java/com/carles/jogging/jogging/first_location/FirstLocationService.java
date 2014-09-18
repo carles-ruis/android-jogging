@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class FirstLocationService extends Service implements GpsConnectivityObserver, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
-    private static final String TAG = FirstLocationService.class.getName();
+    private static final String TAG = FirstLocationService.class.getSimpleName();
     private static final int MIN_REQUEST_TIME = 30 * 1000;
     private static final int MAX_REQUEST_TIME = 120 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;

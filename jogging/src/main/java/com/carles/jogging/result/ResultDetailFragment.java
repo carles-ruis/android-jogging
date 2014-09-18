@@ -31,7 +31,7 @@ import java.util.concurrent.CancellationException;
  */
 public class ResultDetailFragment extends BaseFragment {
 
-    private static final String TAG = ResultDetailFragment.class.getName();
+    private static final String TAG = ResultDetailFragment.class.getSimpleName();
 
     private Context ctx;
     private OnLocationClickedListener callbacks;

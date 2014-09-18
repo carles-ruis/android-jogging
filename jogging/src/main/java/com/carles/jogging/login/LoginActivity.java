@@ -59,9 +59,9 @@ public class LoginActivity extends BaseActivity {
             imgLogo = (ImageView) findViewById(R.id.img_logo);
             txtAppName = (TextView) findViewById(R.id.txt_app_name);
             imgUsername = (ImageView) findViewById(R.id.img_username);
-            txtUsername = (EditText) findViewById(R.id.txt_username);
+            txtUsername = (EditText) findViewById(R.id.et_username);
             imgPassword = (ImageView) findViewById(R.id.img_password);
-            txtPassword = (EditText) findViewById(R.id.txt_password);
+            txtPassword = (EditText) findViewById(R.id.et_password);
             txtError = (TextView) findViewById(R.id.txt_error);
             btnLogin = (Button) findViewById(R.id.btn_login);
             btnNewUser = (Button) findViewById(R.id.btn_new_user);

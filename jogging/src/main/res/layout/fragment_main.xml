@@ -50,7 +50,7 @@
             android:text="@string/main_text_run" />
 
         <Spinner
-            android:id="@+id/spin_main_kms"
+            android:id="@+id/sp_main_kms"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

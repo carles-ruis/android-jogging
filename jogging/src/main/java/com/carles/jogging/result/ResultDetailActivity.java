@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class ResultDetailActivity extends BaseActivity implements ResultDetailFragment.OnLocationClickedListener {
 
-    private static final String TAG = ResultDetailActivity.class.getName();
+    private static final String TAG = ResultDetailActivity.class.getSimpleName();
     private static final String FACEBOOK_OPEN_GRAPH_OBJECT = "run";
     private Context ctx;
 

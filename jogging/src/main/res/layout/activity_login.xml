@@ -59,7 +59,7 @@
                 android:src="@drawable/ic_user" />
 
             <EditText
-                android:id="@+id/txt_username"
+                android:id="@+id/et_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_hint_username"
@@ -92,7 +92,7 @@
                 android:src="@drawable/ic_password" />
 
             <EditText
-                android:id="@+id/txt_password"
+                android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_hint_password"

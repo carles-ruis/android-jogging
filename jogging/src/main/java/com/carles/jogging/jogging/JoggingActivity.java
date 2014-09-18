@@ -35,7 +35,7 @@ import com.google.analytics.tracking.android.Tracker;
  */
 public class JoggingActivity extends BaseActivity implements LocationService.Client {
 
-    private static final String TAG = JoggingActivity.class.getName();
+    private static final String TAG = JoggingActivity.class.getSimpleName();
     private static final String TAG_CANCEL_RUN_DIALOG = "tag_cancel_run_dialog";
 
     private Context ctx;

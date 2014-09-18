@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
-    private static final String TAG = JoggingSQLiteHelper.class.getName();
+    private static final String TAG = JoggingSQLiteHelper.class.getSimpleName();
 
     private static JoggingSQLiteHelper INSTANCE;
     private static final Gson gson = new Gson();

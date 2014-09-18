@@ -11,7 +11,7 @@ import com.google.analytics.tracking.android.Logger;
  */
 public class JoggingApp extends Application {
 
-    private static final String TAG = JoggingApp.class.getName();
+    private static final String TAG = JoggingApp.class.getSimpleName();
 
     @Override
     public void onCreate() {

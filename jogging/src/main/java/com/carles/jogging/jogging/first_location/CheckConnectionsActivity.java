@@ -29,7 +29,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
  */
 public class CheckConnectionsActivity extends BaseActivity implements FirstLocationService.OnFirstLocationResultListener {
 
-    private static final String TAG = CheckConnectionsActivity.class.getName();
+    private static final String TAG = CheckConnectionsActivity.class.getSimpleName();
 
     private ProgressDialog dialog;
 
