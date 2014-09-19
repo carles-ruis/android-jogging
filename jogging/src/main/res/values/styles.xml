@@ -108,6 +108,43 @@
 
     <style name="text_jogging">
         <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:paddingBottom">@dimen/padding</item>
+    </style>
+
+    <style name="text_result_title">
+        <item name="android:textSize">@dimen/text_big</item>
+        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:capitalize">characters</item>
+        <item name="android:paddingBottom">@dimen/padding</item>
+    </style>
+
+    <style name="text_no_locations">
+        <item name="android:textSize">@dimen/text_big</item>
+    </style>
+
+    <style name="text_result">
+        <item name="android:textSize">@dimen/text_big</item>
+        <item name="android:textColor">@color/red_dark</item>
+    </style>
+
+    <style name="text_result_blur">
+        <item name="android:textColor">@color/text_blur</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:paddingBottom">@dimen/padding</item>
+    </style>
+
+    <style name="text_result_saved" parent="text_result_blur">
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="text_result_item_partial">
+        <item name="android:textColor">@color/text_selector</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="text_result_item_counter" parent="text_result_item_partial">
         <item name="android:padding">2dp</item>
     </style>
 </resources>

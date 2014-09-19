@@ -3,7 +3,6 @@ package com.carles.jogging.result;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ public class ResultMapFragment extends SupportMapFragment {
     private int position;
     private List<JoggingModel> partials = new ArrayList <JoggingModel>();
 
-    private static final int MAP_PADDING_IN_PX = 50;
     // GoogleMap zoom value range from 0 to 19. 0 is worldwide, 19 finest zoom
     private static final float ZOOM = 15f;
     private GoogleMap map;
@@ -60,7 +58,7 @@ public class ResultMapFragment extends SupportMapFragment {
             partials = new ArrayList<JoggingModel>();
         }
 
-        // DON'T INIT THE MAP UNTIL ONCREATEVIEW DONE. So call initMap in onResume
+        // DON'T INIT THE MAP UNTIL ONCREATEVIEW DONE. So we call initMap in onResume
 
         return view;
     }
@@ -72,9 +70,9 @@ public class ResultMapFragment extends SupportMapFragment {
             return;
         }
 
-//        if (icon == null) {
-//            icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
-//        }
+        //        if (icon == null) {
+        //            icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
+        //        }
 
         // configurate map
         map.clear();
@@ -84,10 +82,8 @@ public class ResultMapFragment extends SupportMapFragment {
         // No position obtained. There are not markers to show
         if (partials == null) {
             // this shouldn't happen. Map option shouldn't be enabled if no locations found
-            Log.e("carles", "partials are null. no position obtain. This shouldn't happen");
             return;
         }
-        Log.e("carles", "partials are not null, showing locations");
 
         // add markers
         JoggingModel partial;
@@ -103,12 +99,12 @@ public class ResultMapFragment extends SupportMapFragment {
             points.add(point);
         }
 
-        for (int i=0; i<partials.size(); i++) {
+        for (int i = 0; i < partials.size(); i++) {
             partial = partials.get(i);
             point = new LatLng(partial.getEnd().getLatitude(), partial.getEnd().getLongitude());
             sTime = FormatUtil.time(partial.getTotalTime());
-            snippet = new StringBuilder().append(sTime).append("\n").append(partial.getTotalDistance()).append("m").toString();
-//            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
+            snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partial.getTotalDistance()).append("m").toString();
+            //            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
             map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
             points.add(point);
         }
@@ -116,7 +112,7 @@ public class ResultMapFragment extends SupportMapFragment {
         // draw lines between points
         map.addPolyline(new PolylineOptions().addAll(points).width(10f).color(Color.BLUE));
 
-        // moveCamera may cause an IllegalStateException if the map has not been already sized
+           // moveCamera may cause an IllegalStateException if the map has not been already sized
         // use cameraChangeListener instead
         //        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, MAP_PADDING_IN_PX));
         map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {

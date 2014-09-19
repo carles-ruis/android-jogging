@@ -6,7 +6,6 @@ import android.util.Log;
 import com.carles.jogging.C;
 import com.carles.jogging.JoggingAppError;
 import com.carles.jogging.R;
-import com.carles.jogging.model.JoggingModel;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -42,11 +41,11 @@ public class FormatUtil {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
 
-        if (hours == 0l) {
-            ret = String.format("  %02d:%02d", minutes, seconds);
-        } else {
-            ret = String.format("%1d:%02d:%02d", hours, minutes, seconds);
-        }
+        //        if (hours == 0l) {
+        //            ret = String.format("  %02d:%02d", minutes, seconds);
+        //        } else {
+        ret = String.format("%1d:%02d:%02d", hours, minutes, seconds);
+        //        }
 
         return ret;
     }

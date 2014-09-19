@@ -3,10 +3,9 @@
     <!-- color names -->
     <color name="blue">#333399</color>
     <color name="red_light">#ffacaa</color>
-    <color name="red_normal">#d46d6a</color>
-    <color name="red_normal_translucent">#eed46d6a</color>
-    <color name="red_light_pressed">#aa3c39</color>
-    <color name="red_normal_pressed">#801815</color>
+    <color name="red_drawer">#d46d6a</color>
+    <color name="red_drawer_translucent">#eed46d6a</color>
+    <color name="red_pressed">#aa3c39</color>
     <color name="red_dark">#801815</color>
 
     <color name="grey_lighter">#e7e7e7</color>
@@ -31,11 +30,11 @@
 
     <!-- action bar -->
     <color name="action_bar">@color/red_light</color>
-    <color name="action_bar_pressed">@color/red_light_pressed</color>
+    <color name="action_bar_pressed">@color/red_pressed</color>
 
     <!-- navigation drawer -->
-    <color name="drawer_background">@color/red_normal_translucent</color>
-    <color name="drawer_item_normal">@color/red_normal</color>
-    <color name="drawer_item_pressed">@color/red_normal_pressed</color>
+    <color name="drawer_background">@color/red_drawer_translucent</color>
+    <color name="drawer_item_normal">@color/red_drawer</color>
+    <color name="drawer_item_pressed">@color/red_pressed</color>
 
 </resources>

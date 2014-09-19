@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.util.Log;
 
 import com.carles.jogging.jogging.FootingResult;
 import com.google.gson.Gson;
@@ -23,7 +24,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
     private static JoggingSQLiteHelper INSTANCE;
     private static final Gson gson = new Gson();
 
-    private static final String DATABASE_NAME = "db_jogging";
+    private static final String DATABASE_NAME = "jogging.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String TABLE_JOGGING = "jogging";
@@ -84,7 +85,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
             " WHERE parent_id=0 AND user=? AND totaldistance=?";
 
     private static final String SQL_QUERY_PARTIALS = "SELECT * FROM " + TABLE_JOGGING +
-            " WHERE parent_id=? ORDER BY id DESC ";
+            " WHERE parent_id=? ORDER BY id ASC ";
 
     public static JoggingSQLiteHelper getInstance(Context ctx) {
         if (INSTANCE == null) {
@@ -128,10 +129,13 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
         // insert "full jogging" object
         long rowId = db.insert(TABLE_JOGGING, null, getValues(jogging));
+        Log.e("carles", "inserted jogging with rowId " + rowId);
         // insert "partial jogging" objects
         if (rowId != -1 && partials != null) {
             for (JoggingModel partial : partials) {
+                Log.e("carles", "about to insert partial with id " + partial.getId());
                 db.insert(TABLE_JOGGING, null, getValues(partial));
+                Log.e("carles", "inserted partial " + partial.getId() + " with rowId " + rowId);
             }
         }
         return rowId;

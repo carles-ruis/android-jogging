@@ -3,7 +3,6 @@ package com.carles.jogging.model;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.util.LocationHelper;
@@ -17,6 +16,9 @@ import java.util.List;
 public class JoggingModel implements Parcelable {
 
     private long id;
+    // if this object represents a "partial" run, id of the "full" run this object is part of
+    private long parentId;
+
     private Location start;
     private Location end;
     private UserModel user;
@@ -29,14 +31,14 @@ public class JoggingModel implements Parcelable {
 
     // if this objecte represents a "full" run, partial results obtained
     private List<JoggingModel> partials = new ArrayList<JoggingModel>();
-    // if this object represents a "partial" run, id of the "full" run this object is part of
-    private long parentId;
 
     public JoggingModel() {}
 
-    public JoggingModel(Location start, Location end, long totalTime, float totalDistance) {
+    public JoggingModel(Location start, Location end, long totalTime, float totalDistance, UserModel user) {
+        this.id = System.currentTimeMillis();
         this.start = start;
         this.end = end;
+        this.user = user;
         this.realTime = end.getTime() - start.getTime();
         this.totalTime = totalTime;
         this.realDistance = end.distanceTo(start);
@@ -44,12 +46,15 @@ public class JoggingModel implements Parcelable {
     }
 
     public JoggingModel(Parcel source) {
+        this.id = source.readLong();
+        this.parentId = source.readLong();
         this.start = source.readParcelable(Location.class.getClassLoader());
         this.end = source.readParcelable(Location.class.getClassLoader());
         this.realTime = source.readLong();
         this.totalTime = source.readLong();
         this.realDistance = source.readFloat();
         this.totalDistance = source.readFloat();
+        this.user = source.readParcelable(UserModel.class.getClassLoader());
     }
 
     /**
@@ -63,12 +68,10 @@ public class JoggingModel implements Parcelable {
         this.id = System.currentTimeMillis();
         this.start = partials.get(0).getStart();
         this.end = partials.get(partials.size() - 1).getEnd();
+        this.user = user;
         this.realTime = getEnd().getTime() - getStart().getTime();
         this.realDistance = partials.get(partials.size() - 1).getTotalDistance();
         this.footingResult = footingResult;
-
-        Log.e("carles", "populating jogging model with user " + user.getName());
-        this.user = user;
 
         // total distance and time. ReCalculate them if footing was successful
         if (footingResult == FootingResult.SUCCESS) {
@@ -83,8 +86,6 @@ public class JoggingModel implements Parcelable {
         this.partials = partials;
         for (int i = 0; i < partials.size(); i++) {
             partials.get(i).setParentId(getId());
-            partials.get(i).setId(Long.valueOf(String.format("%d%03d", getId(), i)));
-            partials.get(i).setUser(this.user);
         }
     }
 
@@ -199,12 +200,15 @@ public class JoggingModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
+        parcel.writeLong(parentId);
         parcel.writeParcelable(start, flags);
         parcel.writeParcelable(end, flags);
         parcel.writeLong(realTime);
         parcel.writeLong(totalTime);
         parcel.writeFloat(realDistance);
         parcel.writeFloat(totalDistance);
+        parcel.writeParcelable(user, flags);
     }
 
     public static final Parcelable.Creator<JoggingModel> CREATOR = new Creator<JoggingModel>() {

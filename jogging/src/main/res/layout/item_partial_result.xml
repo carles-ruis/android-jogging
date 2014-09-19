@@ -1,25 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:weightSum="10"
+              android:background="@drawable/item_list_selector"
+              android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/txt_partial_counter"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:gravity="right|bottom" />
+    <FrameLayout
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txt_partial_counter"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_result_counter_selector"
+            style="@style/text_result_item_counter"
+            android:layout_gravity="center"
+            android:gravity="right|center_vertical"/>
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/txt_partial_time"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/txt_partial_counter" />
+        android:drawableLeft="@drawable/ic_results_time_selector"
+        android:drawablePadding="@dimen/padding"
+        android:gravity="center_vertical"
+        style="@style/text_result_item_partial"/>
 
     <TextView
         android:id="@+id/txt_partial_distance"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_partial_time"
-        android:layout_toRightOf="@+id/txt_partial_counter" />
+        android:drawableLeft="@drawable/ic_results_distance_selector"
+        android:drawablePadding="@dimen/padding"
+        android:gravity="center_vertical"
+        style="@style/text_result_item_partial"/>
 
-</RelativeLayout>
+</LinearLayout>

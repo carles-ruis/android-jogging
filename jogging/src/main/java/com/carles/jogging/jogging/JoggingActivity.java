@@ -88,12 +88,8 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         public void run() {
             // Start LocationService and bind to it. Set flag BIND_AUTO_CREATE to avoid leaking the
             // serviceConnection. BIND_AUTO_CREATE don't call the onStartCommand() service method
-            Log.e("carles","countdown go");
             Intent intent = new Intent(JoggingActivity.this, LocationService.class);
             intent.putExtras(getIntent());
-            // TODO delete this? only invoke with bindService? service is going to keep foreground?
-            //startService(intent);
-            Log.e("carles","about to bind service");
             bindService(intent, serviceConnection, BIND_AUTO_CREATE);
 
             // update view
@@ -310,7 +306,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Log.e("carles","service was bound");
+            Log.i(TAG,"LocationServiceConnection onServiceConnected");
             LocationService.LocationServiceBinder binder = (LocationService.LocationServiceBinder) iBinder;
             service = binder.getService();
             service.setClient(JoggingActivity.this);
@@ -321,7 +317,6 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         @Override
         // onServiceDisconnected is only called when a crash cause a service unbind
         public void onServiceDisconnected(ComponentName componentName) {
-            Log.e("carles", "service was unbound");
             Log.i(TAG, "LocationServiceConnection onServiceDisconnected");
             isServiceBound = false;
         }
@@ -335,12 +330,9 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
     @Override
     public void onRunningFinished(Bundle extras) {
-        Log.e("carles","on running finished");
         if (checkServiceBound()) {
             unbindService();
-            Log.e("carles", "creating new intent");
             Intent newIntent = new Intent(this, ResultDetailActivity.class);
-            Log.e("carles", "footing result is " + (FootingResult) extras.getSerializable(C.EXTRA_FOOTING_RESULT));
             newIntent.putExtras(extras);
             trackRunningFinished(extras);
             startActivity(newIntent);

@@ -124,6 +124,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
                 finish();
+                overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
             }
         });
         dialog.setCancelable(false);
@@ -149,7 +150,6 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
     @Override
     public void onLocationObtained(Location location) {
         // destroy the service, stop requesting for location
-        Log.e("carles","first location obtained");
         if (isServiceBound) {
             unbindService(serviceConnection);
             isServiceBound = false;
@@ -206,6 +206,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         /*- a dialog is cancelled when the user presses the back button*/
         public void onCancel(DialogInterface dialog) {
             getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
         }
 
     }

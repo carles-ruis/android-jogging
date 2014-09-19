@@ -29,10 +29,8 @@ import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,7 +39,9 @@ import java.util.List;
 public class ResultDetailActivity extends BaseActivity implements ResultDetailFragment.OnLocationClickedListener {
 
     private static final String TAG = ResultDetailActivity.class.getSimpleName();
-    private static final String FACEBOOK_OPEN_GRAPH_OBJECT = "run";
+    private static final String FACEBOOK_TYPE = "com_carles_jogging:Run";
+    private static final String FACEBOOK_ACTION = "com_carles_jogging:Go For";
+    private static final String FACEBOOK_PROPERTY_NAME = "Run";
     private Context ctx;
 
     // fragments
@@ -69,11 +69,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         jogging = getIntent().getParcelableExtra(C.EXTRA_JOGGING_TOTAL);
         if (partials != null && jogging != null && !partials.isEmpty() &&
                 getIntent().getBooleanExtra(C.EXTRA_SHOULD_SAVE_RUNNING, false)) {
-            Log.e("carles", "jogging user is " + new Gson().toJson(jogging.getUser()));
-            for (JoggingModel partial:partials) {
-                Log.e("carles", "partial jogging user is " + new Gson().toJson(partial.getUser()));
-
-            }
             JoggingSQLiteHelper.getInstance(this).insertJogging(jogging, partials);
         }
 
@@ -166,12 +161,12 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private void addResultMapFragment(int position) {
         if (mapFragment == null) {
+            Log.e("carles", "new instance for map fragment");
             ArrayList<JoggingModel> partials = getIntent().<JoggingModel>getParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS);
             mapFragment = ResultMapFragment.newInstance(position, partials);
         } else {
             mapFragment.setPosition(position);
         }
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (mapFragment.isAdded()) {
             ft.show(mapFragment);
@@ -180,18 +175,15 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         }
         ft.hide(detailFragment);
         ft.commit();
-        overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
     }
 
     @Override
     public void onBackPressed() {
-
         if (mapFragment != null && mapFragment.isAdded() && mapFragment.isVisible()) {
             if (detailFragment != null) {
                 // if we are showing the map, re-show results detail fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.show(detailFragment).hide(mapFragment).commit();
-                overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
                 return;
             }
         }
@@ -210,6 +202,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 //                    return true;
 
                 case R.id.action_facebook:
+                    Log.e("carles","action facebook selected");
                     shareWithFacebook();
                     return true;
 
@@ -239,13 +232,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private void shareWithShareDialog() {
         Log.e("carles","share with share dialog");
-        OpenGraphObject ogo = OpenGraphObject.Factory.createForPost("jogging:run");
-        ogo.setProperty("title",getString(R.string.share_title, (int)jogging.getTotalDistance()));
-        ogo.setProperty("description", getString(R.string.share_time, jogging.getTotalTime()));
-        ogo.setProperty("url", getString(R.string.play_store_url));
-
-        OpenGraphAction ogAction = GraphObject.Factory.create(OpenGraphAction.class);
-        ogAction.setProperty(FACEBOOK_OPEN_GRAPH_OBJECT, ogo);
 
         String filename = "jogging_" + jogging.getId();
 
@@ -258,22 +244,41 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
             image = SystemUtil.loadBitmap(filename);
         }
 
-        if (image != null) {
-            Log.e("carles", "bitmap:" + image.toString());
-        } else {
-            Log.e("carles","bitmap is null");
-        }
+        OpenGraphObject ogo = OpenGraphObject.Factory.createForPost(FACEBOOK_TYPE);
+        ogo.setProperty("title",getString(R.string.share_title, (int)jogging.getTotalDistance()));
+        ogo.setProperty("description", getString(R.string.share_time, jogging.getTotalTime()));
+//        ogo.setProperty("url", getString(R.string.play_store_url));
+//        ogo.setProperty("meters", (int) jogging.getTotalDistance());
+//        ogo.setProperty("time", FormatUtil.time(jogging.getTotalTime()));
+
+        OpenGraphAction ogAction = GraphObject.Factory.create(OpenGraphAction.class);
+        ogAction.setProperty(FACEBOOK_PROPERTY_NAME, ogo);
 
         FacebookDialog shareDialog;
         if (image == null) {
-            shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction,
-                    FACEBOOK_OPEN_GRAPH_OBJECT).build();
+            Log.e("carles","preparing shareDialog without map attached");
+            shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction, FACEBOOK_ACTION, FACEBOOK_PROPERTY_NAME).build();
             Log.i(TAG, "Unable to load the map that should be shared with facebook");
         } else {
-            shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction,
-                    FACEBOOK_OPEN_GRAPH_OBJECT).setImageAttachmentsForObject(FACEBOOK_OPEN_GRAPH_OBJECT,
-                    Arrays.asList(image)).build();
+            Log.e("carles","preparing shareDialog with map attached");
+//            shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction,
+//                    FACEBOOK_OPEN_GRAPH_OBJECT).setImageAttachmentsForObject(FACEBOOK_OPEN_GRAPH_OBJECT,
+//                    Arrays.asList(image)).build();
+
+
+            FacebookDialog.OpenGraphActionDialogBuilder builder = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction, FACEBOOK_ACTION, FACEBOOK_PROPERTY_NAME);
+
+            if (builder.canPresent()) {
+                Log.e("carles","builder can present");
+            } else {
+                Log.e("carles", "builder cannot present");
+            }
+            shareDialog = builder.build();
+
+
         }
+
+        Log.e("carles","before tracking pending dialog");
         uiHelper.trackPendingDialogCall(shareDialog.present());
 
         Log.e("carles","pending dialog is being tracked");

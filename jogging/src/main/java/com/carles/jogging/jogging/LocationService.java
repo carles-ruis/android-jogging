@@ -21,6 +21,7 @@ import com.carles.jogging.jogging.gps_connectivity.GpsConnectivityManager;
 import com.carles.jogging.jogging.gps_connectivity.GpsConnectivityObserver;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.UserModel;
+import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.util.PrefUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -35,7 +36,9 @@ import java.util.List;
 /**
  * Created by carles1 on 26/04/14.
  */
-public class LocationService extends Service implements GpsConnectivityObserver, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+public class LocationService extends Service implements GpsConnectivityObserver,
+        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener,
+        LocationListener {
 
     private static final String TAG = LocationService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 1;
@@ -82,8 +85,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public void onCreate() {
-        Log.e("carles","service onCreate");
-          // request wakelock to avoid the device goes to sleep and misses location updates
+        // request wakelock to avoid the device goes to sleep and misses location updates
         acquireWakelock();
 
         // subscribe to gps connectivity changes
@@ -133,19 +135,19 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
         // check if this is the first location or the best accurated location
         if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {
-           // ignore repeated locations
+            // ignore repeated locations
             if (location.distanceTo(previousLocation) > 0.0f) {
                 bestLocation = location;
             } else {
-                Log.e("carles","Repeated location with accuracy " + location.getAccuracy());
+                Log.i(TAG, "Repeated location with accuracy " + location.getAccuracy());
             }
 
-        // check if we should keeping requesting location updates
+            // check if we should keeping requesting location updates
             if (bestLocation == null || System.currentTimeMillis() < stopRequestingTime) {
                 return;
             }
 
-        // take best location obtained if it's enough accurated
+            // take best location obtained if it's enough accurated
             if (bestLocation != null && bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
                 onLocationObtained();
             }
@@ -160,13 +162,14 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         // update location and distance and store the partial result
         currentDistance = currentDistance + bestLocation.distanceTo(previousLocation);
         totalTime = bestLocation.getTime() - startTime;
-        JoggingModel partial = new JoggingModel(previousLocation, bestLocation, totalTime, currentDistance);
+        JoggingModel partial = new JoggingModel(previousLocation, bestLocation, totalTime, currentDistance,
+                PrefUtil.getLoggedUser(this));
         partials.add(partial);
 
         previousLocation = bestLocation;
         bestLocation = null;
 
-        if (client != null) {
+        if (client != null && client.get() != null) {
             // update the view with the distance ran and time passed
             client.get().onLocationObtained(totalTime, currentDistance);
             //        Intent intent = new Intent(C.ACTION_UPDATE_KILOMETERS_RUN);
@@ -187,17 +190,15 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     private void stopRunning(FootingResult footingResult) {
         // prepare intent with the results
-        Log.e("carles", "stop running with footingResult=" + footingResult.toString());
         Bundle extras = new Bundle();
         extras.putSerializable(C.EXTRA_FOOTING_RESULT, footingResult);
 
         if (partials.size() > 0) {
-            Log.e("carles", "partials size > 0");
             UserModel user = PrefUtil.getLoggedUser(this);
-            Log.e("carles", "user is null?" + String.valueOf(user == null));
-            Log.e("carles", "username is " + user.getName());
-            extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
+            // "partials" object is updated in the JoggingModel constructor
+            // So we have to instance JoggingModel before putting partials into the bundle
             extras.putParcelable(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult, user));
+            extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
         }
 
         if (footingResult == FootingResult.SUCCESS) {
@@ -205,17 +206,10 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             extras.putBoolean(C.EXTRA_SHOULD_SAVE_RUNNING, true);
         }
 
-        if (extras.getSerializable(C.EXTRA_FOOTING_RESULT) == null) {
-            Log.e("carles", "before calling onrunningfinished extra footing result is null");
-        } else {
-            Log.e("carles", "before calling onrunningfinished extra footing result is " +
-                    extras.getSerializable(C.EXTRA_FOOTING_RESULT));
-        }
-
-        if (client != null) {
+        if (client != null && client.get() != null) {
             client.get().onRunningFinished(extras);
         } else {
-            createClientOnRunningFinished(extras);
+            handleOnRunningFinished(extras);
         }
 
         // play sound to notify the user
@@ -240,7 +234,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public void onDestroy() {
-         // stop handling periodicity of location updates
+        // stop handling periodicity of location updates
         handler.removeCallbacks(locationTimeoutUpdating);
         handler.removeCallbacks(locationStartUpdating);
 
@@ -294,10 +288,10 @@ public class LocationService extends Service implements GpsConnectivityObserver,
                 onLocationObtained();
             } else {
                 Log.i(TAG, "LIST OF ACCURACIES OBTAINED (NOT ENOUGH) = " + accuracies.toString());
-                if (bestLocation!= null) {
+                if (bestLocation != null) {
                     Log.e("carles", " bestLocation's accuracy was " + bestLocation.getAccuracy());
                 } else {
-                    Log.e("carles","best location is null");
+                    Log.e("carles", "best location is null");
                 }
                 stopRunning(FootingResult.NO_LOCATION_UPDATES);
             }
@@ -320,8 +314,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e("carles", "Service onbind");
-
         // init variables from the intent received
         startLocation = intent.getParcelableExtra(C.EXTRA_FIRST_LOCATION);
         previousLocation = startLocation;
@@ -336,9 +328,9 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         // PendingIntent won't have an attachment, there's no action to perform when user clicks it
         PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.notification).
-                setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).setContentIntent(emptyIntent);
+                setContentTitle(getString(R.string.notification_is_running_title)).setContentText(getString(R.string.notification_is_running_text)).
+                setContentIntent(emptyIntent);
         Notification notification = builder.build();
-        Log.e("carles", "service is going to start in foreground");
         startForeground(NOTIFICATION_ID, notification);
 
         // connect to the LocationClient that is going to request for locations
@@ -353,11 +345,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         }
     }
 
-//    public void start(Intent intent) {
-//        Log.e("carles","service starts");
-//        startService(intent);
-//    }
-
     public void cancelRun() {
         stopRunning(FootingResult.CANCELLED_BY_USER);
     }
@@ -371,9 +358,11 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         void onLocationObtained(long time, float meters);
     }
 
-    public void createClientOnRunningFinished(Bundle extras) {
+    public void handleOnRunningFinished(Bundle extras) {
         Log.e("carles", "client is null, create and send running finished intent");
-        // TODO handle client null
+        Intent newIntent = new Intent(this, ResultDetailActivity.class);
+        newIntent.putExtras(extras);
+        startActivity(newIntent);
     }
 
 }

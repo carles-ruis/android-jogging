@@ -57,7 +57,6 @@ public class ResultDetailFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e("carles","on create view");
         final View view = inflater.inflate(R.layout.fragment_result_detail, container, false);
 
         // obtain extras to show the results
@@ -98,8 +97,9 @@ public class ResultDetailFragment extends BaseFragment {
         final TextView txtDistance = (TextView) view.findViewById(R.id.txt_result_distance);
         final TextView txtSpeed = (TextView) view.findViewById(R.id.txt_result_speed);
         final TextView txtBestTime = (TextView) view.findViewById(R.id.txt_result_best_time);
-        final TextView txtRealTime = (TextView) view.findViewById(R.id.txt_result_real_time);
-        final TextView txtRealDistance = (TextView) view.findViewById(R.id.txt_result_real_distance);
+//        final ViewGroup lytTotals = (ViewGroup) view.findViewById(R.id.lyt_totals);
+//        final TextView txtRealTime = (TextView) view.findViewById(R.id.txt_result_real_time);
+//        final TextView txtRealDistance = (TextView) view.findViewById(R.id.txt_result_real_distance);
         final ListView list = (ListView) view.findViewById(R.id.list);
         final TextView txtSaved = (TextView) view.findViewById(R.id.txt_result_saved);
 
@@ -112,8 +112,8 @@ public class ResultDetailFragment extends BaseFragment {
             txtDistance.setText(getString(R.string.result_distance, (int)jogging.getTotalDistance()));
 
             if (footingResult == FootingResult.SUCCESS) {
-                txtRealTime.setText(getString(R.string.result_real_time, FormatUtil.time(jogging.getRealTime())));
-                txtRealDistance.setText(getString(R.string.result_real_distance,(int)jogging.getRealDistance()));
+//                txtRealTime.setText(getString(R.string.result_time, FormatUtil.time(jogging.getRealTime())));
+//                txtRealDistance.setText(getString(R.string.result_distance, (int)jogging.getRealDistance()));
                 txtSpeed.setText(getString(R.string.result_speed, getSpeed(jogging)));
 
                 UserModel user = PrefUtil.getLoggedUser(ctx);
@@ -127,20 +127,20 @@ public class ResultDetailFragment extends BaseFragment {
 
             } else {
                 txtSpeed.setVisibility(View.GONE);
-                txtRealTime.setVisibility(View.GONE);
-                txtRealDistance.setVisibility(View.GONE);
+//                lytTotals.setVisibility(View.GONE);
             }
 
             final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, partials);
             // add a header with the isSelectable flag to false
-            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
+//            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
             list.setAdapter(adapter);
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     if (callbacks != null) {
+//                        callbacks.onLocationClicked(position - 1);
                         // -1 position because first position is the list header
-                        callbacks.onLocationClicked(position - 1);
+                        callbacks.onLocationClicked(position);
                     }
                 }
             });
@@ -158,19 +158,16 @@ public class ResultDetailFragment extends BaseFragment {
     private Float getSpeed(JoggingModel jogging) {
         float kms = jogging.getTotalDistance() / 1000f;
         float h = jogging.getTotalTime() / (1000f * 3600f);
-        Log.e("carles", "speed " + kms / h);
         return kms/h;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.e("carles","on create options menu");
         inflater.inflate(R.menu.menu_result_detail, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.e("carles","on prepare options menu");
         menu.findItem(R.id.action_facebook).setVisible(footingResult == FootingResult.SUCCESS);
         menu.findItem(R.id.action_map).setVisible(hasObtainedLocations);
     }
