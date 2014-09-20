@@ -5,4 +5,5 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     style="@style/text_result_blur"
+    android:layout_marginBottom="@dimen/margin"
     android:text="@string/best_times_header" />
