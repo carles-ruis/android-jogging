@@ -30,7 +30,7 @@
         android:drawableLeft="@drawable/ic_results_time_selector"
         android:drawablePadding="@dimen/padding"
         android:gravity="center_vertical"
-        style="@style/text_result_item_partial"/>
+        style="@style/text_result_item"/>
 
     <TextView
         android:id="@+id/txt_partial_distance"
@@ -38,8 +38,8 @@
         android:layout_weight="4"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_results_distance_selector"
-        android:drawablePadding="@dimen/padding"
+        android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        style="@style/text_result_item_partial"/>
+        style="@style/text_result_item"/>
 
 </LinearLayout>

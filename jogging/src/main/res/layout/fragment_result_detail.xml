@@ -28,12 +28,9 @@
     <!-- text to show if no locations obtained -->
     <TextView
         android:id="@+id/txt_result_no_locations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/result_no_locations"
-        style="@style/text_no_locations"
-        android:visibility="gone"/>
+        style="@style/text_no_results"
+        android:text="@string/result_no_locations" />
 
     <!-- data to show if locations obtained -->
     <RelativeLayout
@@ -142,7 +139,7 @@
             android:layout_below="@id/txt_result_best_time"
             android:layout_marginTop="@dimen/margin"
             android:dividerHeight="1dp"
-            android:divider="@color/grey"/>
+            android:divider="@color/grey_light"/>
 
         <!-- inform the user his result was achieved -->
         <TextView

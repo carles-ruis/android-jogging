@@ -38,9 +38,6 @@ public class LastTimesContentFragment extends BaseFragment {
 
     public static LastTimesContentFragment newInstance() {
         LastTimesContentFragment fragment = new LastTimesContentFragment();
-//        Bundle args = new Bundle();
-//        args.putInt(ARGS_METERS, meters);
-//        fragment.setArguments(args);
         return fragment;
     }
 

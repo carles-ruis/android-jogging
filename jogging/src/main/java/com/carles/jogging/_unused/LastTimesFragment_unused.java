@@ -43,7 +43,7 @@ public class LastTimesFragment_unused extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_last_times, container, false);
+        final View view = inflater.inflate(R.layout.fragment_last_times_unused, container, false);
 
         final LastTimesPagerAdapter adapter = new LastTimesPagerAdapter(ctx, getChildFragmentManager());
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);

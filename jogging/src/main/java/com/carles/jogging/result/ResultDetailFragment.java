@@ -117,7 +117,8 @@ public class ResultDetailFragment extends BaseFragment {
                 txtSpeed.setText(getString(R.string.result_speed, getSpeed(jogging)));
 
                 UserModel user = PrefUtil.getLoggedUser(ctx);
-                if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(ctx).queryBestTimeByDistance(user, jogging.getTotalDistance())) {
+                if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(ctx).
+                        queryBestTimeByDistance(user, jogging.getTotalDistance())) {
                     // runner has achieve his record for this distance
                     txtBestTime.setVisibility(View.VISIBLE);
                 }

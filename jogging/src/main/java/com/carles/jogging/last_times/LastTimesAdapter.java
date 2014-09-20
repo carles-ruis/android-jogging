@@ -1,7 +1,6 @@
 package com.carles.jogging.last_times;
 
 import android.content.Context;
-import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,20 +31,24 @@ public class LastTimesAdapter extends ArrayAdapter<JoggingModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_last_time, parent, false);
             holder = new Holder();
             holder.txtTime = (TextView) convertView.findViewById(R.id.txt_time);
-            holder.txtDatetime = (TextView) convertView.findViewById(R.id.txt_datetime);
+            holder.txtDate = (TextView) convertView.findViewById(R.id.txt_date);
+            holder.txtHour = (TextView) convertView.findViewById(R.id.txt_hour);
+
             convertView.setTag(holder);
         } else {
             holder = (Holder)convertView.getTag();
         }
 
         holder.txtTime.setText(FormatUtil.time(jogging.getTotalTime()));
-        holder.txtDatetime.setText(FormatUtil.datetime(jogging.getId()));
+        holder.txtDate.setText(FormatUtil.date(jogging.getId()));
+        holder.txtHour.setText(FormatUtil.timePattern(jogging.getId()));
 
         return convertView;
     }
 
     static class Holder {
         TextView txtTime;
-        TextView txtDatetime;
+        TextView txtDate;
+        TextView txtHour;
     }
 }

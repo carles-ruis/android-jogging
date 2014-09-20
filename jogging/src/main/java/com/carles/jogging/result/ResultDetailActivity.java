@@ -15,6 +15,7 @@ import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
+import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.util.PrefUtil;
 import com.carles.jogging.util.SystemUtil;
 import com.facebook.FacebookException;
@@ -22,7 +23,6 @@ import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphObject;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
@@ -39,8 +39,8 @@ import java.util.List;
 public class ResultDetailActivity extends BaseActivity implements ResultDetailFragment.OnLocationClickedListener {
 
     private static final String TAG = ResultDetailActivity.class.getSimpleName();
-    private static final String FACEBOOK_TYPE = "com_carles_jogging:Run";
-    private static final String FACEBOOK_ACTION = "com_carles_jogging:Go For";
+    private static final String FACEBOOK_TYPE = "com_carles_jogging:run";
+    private static final String FACEBOOK_ACTION = "com_carles_jogging:go_for";
     private static final String FACEBOOK_PROPERTY_NAME = "Run";
     private Context ctx;
 
@@ -246,18 +246,18 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
         OpenGraphObject ogo = OpenGraphObject.Factory.createForPost(FACEBOOK_TYPE);
         ogo.setProperty("title",getString(R.string.share_title, (int)jogging.getTotalDistance()));
-        ogo.setProperty("description", getString(R.string.share_time, jogging.getTotalTime()));
+        ogo.setProperty("description", getString(R.string.share_time, FormatUtil.time(jogging.getTotalTime())));
 //        ogo.setProperty("url", getString(R.string.play_store_url));
 //        ogo.setProperty("meters", (int) jogging.getTotalDistance());
 //        ogo.setProperty("time", FormatUtil.time(jogging.getTotalTime()));
 
-        OpenGraphAction ogAction = GraphObject.Factory.create(OpenGraphAction.class);
+        OpenGraphAction ogAction = OpenGraphAction.Factory.createForPost(FACEBOOK_ACTION);
         ogAction.setProperty(FACEBOOK_PROPERTY_NAME, ogo);
 
         FacebookDialog shareDialog;
         if (image == null) {
             Log.e("carles","preparing shareDialog without map attached");
-            shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction, FACEBOOK_ACTION, FACEBOOK_PROPERTY_NAME).build();
+            shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this, ogAction, FACEBOOK_PROPERTY_NAME).build();
             Log.i(TAG, "Unable to load the map that should be shared with facebook");
         } else {
             Log.e("carles","preparing shareDialog with map attached");

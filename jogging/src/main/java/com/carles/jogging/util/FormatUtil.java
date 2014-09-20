@@ -31,6 +31,7 @@ public class FormatUtil {
         return datetime.print(millis);
     }
 
+    public static String timePattern(long millis) { return time.print(millis); }
     /**
      * Formats a timestamp to a user readable format containing the time in hours, minutes, and seconds
      */
