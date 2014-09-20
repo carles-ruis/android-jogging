@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-android:weightSum="10"
-    >
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:weightSum="10"
+              android:background="@drawable/item_list_selector">
 
     <TextView
         android:id="@+id/txt_distance"
         android:layout_width="0dp"
         android:layout_weight="3"
+        android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:layout_height="match_parent"
         android:drawableLeft="@drawable/ic_results_distance_selector"
         android:drawablePadding="4dp"
-        android:layout_marginLeft="@dimen/margin_big"
-        style="@style/text_list_item" />
+        android:layout_marginLeft="@dimen/margin_small"
+        style="@style/text_list_item_small"/>
 
     <TextView
         android:id="@+id/txt_time"
         android:layout_width="0dp"
-        android:layout_weight="4"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:drawableLeft="@drawable/ic_results_time_selector"
         android:drawablePadding="@dimen/padding"
-        style="@style/text_list_item"/>
+        style="@style/text_list_item_small"/>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -38,17 +40,16 @@ android:weightSum="10"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:paddingLeft="0dp"
-            android:paddingRight="@dimen/padding"
-            android:src="@drawable/ic_calendar_selector"
-            />
+            android:paddingRight="0dp"
+            android:src="@drawable/ic_calendar_selector"/>
 
         <TextView
+            android:id="@+id/txt_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_date"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/img_calendar"
-            style="@style/text_list_item_small" />
+            style="@style/text_list_item_small"/>
 
         <TextView
             android:id="@+id/txt_hour"

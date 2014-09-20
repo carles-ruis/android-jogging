@@ -161,7 +161,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private void addResultMapFragment(int position) {
         if (mapFragment == null) {
-            Log.e("carles", "new instance for map fragment");
             ArrayList<JoggingModel> partials = getIntent().<JoggingModel>getParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS);
             mapFragment = ResultMapFragment.newInstance(position, partials);
         } else {

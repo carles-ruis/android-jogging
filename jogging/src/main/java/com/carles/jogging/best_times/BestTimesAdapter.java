@@ -32,15 +32,17 @@ public class BestTimesAdapter extends ArrayAdapter<JoggingModel> {
             holder = new Holder();
             holder.txtDistance = (TextView) convertView.findViewById(R.id.txt_distance);
             holder.txtTime = (TextView) convertView.findViewById(R.id.txt_time);
-            holder.txtDatetime = (TextView)convertView.findViewById(R.id.txt_datetime);
+            holder.txtDate = (TextView) convertView.findViewById(R.id.txt_date);
+            holder.txtHour = (TextView) convertView.findViewById(R.id.txt_hour);
             convertView.setTag(holder);
         } else {
             holder = (Holder)convertView.getTag();
         }
 
-        holder.txtDistance.setText(new StringBuilder().append((int)jogging.getTotalDistance()).append(" m."));
+        holder.txtDistance.setText(String.valueOf((int)jogging.getTotalDistance()));
         holder.txtTime.setText(FormatUtil.time(jogging.getTotalTime()));
-        holder.txtDatetime.setText(FormatUtil.datetime(jogging.getId()));
+        holder.txtDate.setText(FormatUtil.date(jogging.getId()));
+        holder.txtHour.setText(FormatUtil.timePattern(jogging.getId()));
 
         return convertView;
     }
@@ -48,6 +50,7 @@ public class BestTimesAdapter extends ArrayAdapter<JoggingModel> {
     static class Holder {
         TextView txtDistance;
         TextView txtTime;
-        TextView txtDatetime;
+        TextView txtDate;
+        TextView txtHour;
     }
 }

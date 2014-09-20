@@ -160,7 +160,7 @@
 
     <style name="text_list_item_small">
         <item name="android:textSize">@dimen/text_small</item>
-        <item name="android:textColor">@color/text_blur_selector</item>
+        <item name="android:textColor">@color/text_selector</item>
         <item name="android:padding">0dp</item>
     </style>
 
