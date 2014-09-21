@@ -18,10 +18,7 @@ import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
-import com.carles.jogging.model.JoggingSQLiteHelper;
-import com.carles.jogging.model.UserModel;
 import com.carles.jogging.util.FormatUtil;
-import com.carles.jogging.util.PrefUtil;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -116,13 +113,11 @@ public class ResultDetailFragment extends BaseFragment {
 //                txtRealDistance.setText(getString(R.string.result_distance, (int)jogging.getRealDistance()));
                 txtSpeed.setText(getString(R.string.result_speed, getSpeed(jogging)));
 
-                UserModel user = PrefUtil.getLoggedUser(ctx);
-                if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(ctx).
-                        queryBestTimeByDistance(user, jogging.getTotalDistance())) {
-                    // runner has achieve his record for this distance
+                if (extras.getBoolean(C.EXTRA_BEST_TIME, false)) {
                     txtBestTime.setVisibility(View.VISIBLE);
                 }
-                if (extras.getBoolean(C.EXTRA_SHOULD_SAVE_RUNNING,false)) {
+
+                if (extras.getBoolean(C.EXTRA_RUNNING_SAVED,false)) {
                     txtSaved.setVisibility(View.VISIBLE);
                 }
 
@@ -151,7 +146,7 @@ public class ResultDetailFragment extends BaseFragment {
             txtNoLocations.setVisibility(View.VISIBLE);
         }
 
-        getActivity().getIntent().removeExtra(C.EXTRA_SHOULD_SAVE_RUNNING);
+        getActivity().getIntent().removeExtra(C.EXTRA_RUNNING_SAVED);
 
         return view;
     }

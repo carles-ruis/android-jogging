@@ -20,6 +20,7 @@ import com.carles.jogging.R;
 import com.carles.jogging.jogging.gps_connectivity.GpsConnectivityManager;
 import com.carles.jogging.jogging.gps_connectivity.GpsConnectivityObserver;
 import com.carles.jogging.model.JoggingModel;
+import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.model.UserModel;
 import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.util.PrefUtil;
@@ -60,8 +61,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private long startTime;
     private long totalTime;
     private float currentDistance;
-    private float totalDistance;
-    private String totalDistanceText;
+    private float goalDistance;
+    private String goalDistanceText;
     private Location startLocation;
     private Location previousLocation;
     private Location bestLocation;
@@ -179,7 +180,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         }
 
         // check if running is over
-        if (currentDistance < totalDistance) {
+        if (currentDistance < goalDistance) {
             handler.postDelayed(locationStartUpdating, TIME_BETWEEN_REQUESTS);
 
         } else {
@@ -193,17 +194,25 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         Bundle extras = new Bundle();
         extras.putSerializable(C.EXTRA_FOOTING_RESULT, footingResult);
 
+        UserModel user = PrefUtil.getLoggedUser(this);
+        // "partials" object is updated in the JoggingModel constructor
+        JoggingModel jogging = new JoggingModel(partials, goalDistance, footingResult, user);
         if (partials.size() > 0) {
-            UserModel user = PrefUtil.getLoggedUser(this);
-            // "partials" object is updated in the JoggingModel constructor
-            // So we have to instance JoggingModel before putting partials into the bundle
-            extras.putParcelable(C.EXTRA_JOGGING_TOTAL, new JoggingModel(partials, totalDistance, footingResult, user));
+            extras.putParcelable(C.EXTRA_JOGGING_TOTAL, jogging);
             extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
         }
 
         if (footingResult == FootingResult.SUCCESS) {
+
+            if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(this).
+                    queryBestTimeByDistance(user, jogging.getTotalDistance())) {
+                // user has overtaken his record
+                extras.putBoolean(C.EXTRA_BEST_TIME, true);
+            }
+
             // only successful joggings will be saved
-            extras.putBoolean(C.EXTRA_SHOULD_SAVE_RUNNING, true);
+            JoggingSQLiteHelper.getInstance(this).insertJogging(jogging, partials);
+            extras.putBoolean(C.EXTRA_RUNNING_SAVED, true);
         }
 
         if (client != null && client.get() != null) {
@@ -319,8 +328,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         previousLocation = startLocation;
         bestLocation = null;
         currentDistance = 0f;
-        totalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
-        totalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
+        goalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
+        goalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
         startTime = System.currentTimeMillis();
         // first location time has to be "now" because user starts running now
         previousLocation.setTime(startTime);

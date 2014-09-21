@@ -1,7 +1,5 @@
 package com.carles.jogging.test;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
@@ -16,7 +14,6 @@ import com.carles.jogging.model.UserModel;
  */
 public class JoggingSQLiteHelperTest extends AndroidTestCase {
 
-    private static final long ONE_HOUR = 3600000l;
     private static final long HALF_AN_HOUR = 1800000l;
     private static final long TEN_MINUTES = 600000l;
     private static final long FIVE_MINUTES = 300000l;
@@ -72,7 +69,9 @@ public class JoggingSQLiteHelperTest extends AndroidTestCase {
 
     @Override
     public void tearDown() throws Exception {
-        helper.clearTables();
+        // no need to clear tables, RenamingDelegatingContext handles ith
+        helper.close();
+        helper = null;
         super.tearDown();
     }
 
@@ -132,10 +131,10 @@ public class JoggingSQLiteHelperTest extends AndroidTestCase {
         assertTrue(helper.queryPartials(j11).size() == 4);
         assertTrue(helper.queryPartials(j12).isEmpty());
         assertTrue(helper.queryPartials(j21).size() == 1);
-        assertEquals(987654321004l, helper.queryPartials(j11).get(0).getId());
-        assertEquals(987654321003l, helper.queryPartials(j11).get(1).getId());
-        assertEquals(987654321002l, helper.queryPartials(j11).get(2).getId());
-        assertEquals(987654321001l, helper.queryPartials(j11).get(3).getId());
+        assertEquals(987654321001l, helper.queryPartials(j11).get(0).getId());
+        assertEquals(987654321002l, helper.queryPartials(j11).get(1).getId());
+        assertEquals(987654321003l, helper.queryPartials(j11).get(2).getId());
+        assertEquals(987654321004l, helper.queryPartials(j11).get(3).getId());
     }
 
     private void insertAll() {

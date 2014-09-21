@@ -16,19 +16,19 @@ import com.carles.jogging.R;
  */
 public class FirstLocationFailedDialog extends DialogFragment {
 
-    private static final String CONNECTION_TYPE = "connection_type";
+    private static final String ARG_CONNECTION_TYPE = "connection_type";
 
     public static FirstLocationFailedDialog newInstance(Error error) {
         FirstLocationFailedDialog ret = new FirstLocationFailedDialog();
         Bundle args = new Bundle();
-        args.putSerializable(CONNECTION_TYPE, error);
+        args.putSerializable(ARG_CONNECTION_TYPE, error);
         ret.setArguments(args);
         return ret;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Error error = (Error)getArguments().getSerializable(CONNECTION_TYPE);
+        Error error = (Error)getArguments().getSerializable(ARG_CONNECTION_TYPE);
 
         /*- Use the Builder class for convenient dialog construction */
         Dialog dialog = new Dialog(getActivity());

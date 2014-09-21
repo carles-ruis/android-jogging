@@ -15,21 +15,15 @@ public class C {
     public static final int REQ_CODE_GOOGLE_CONNECTION_FAILURE = 1;
     public static final int REQ_CODE_ENABLE_GPS = 2;
 
-    // arguments passed to fragments as bundle
-    public static final String ARGS_ACTION_BAR_TITLE = "args_action_bar_title";
-
     // arguments passes to activities as extras
     public static final String EXTRA_DISTANCE_IN_METERS = "extra_kilometers";
     public static final String EXTRA_DISTANCE_TEXT = "extra_kilometers_text";
     public static final String EXTRA_FIRST_LOCATION = "extra_first_location";
     public static final String EXTRA_FOOTING_RESULT = "extra_footing_result";
-    public static final String EXTRA_FOOTING_TIME_TEXT = "extra_footing_time_text";
     public static final String EXTRA_JOGGING_PARTIALS = "extra_partials";
     public static final String EXTRA_JOGGING_TOTAL = "extra_jogging_total";
-    public static final String EXTRA_SHOULD_SAVE_RUNNING = "extra_should_save_running";
-
-    // intent filter actions
-    public static final String ACTION_UPDATE_KILOMETERS_RUN = "com.carles.jogging.KILOMETERS_RUN";
+    public static final String EXTRA_RUNNING_SAVED = "extra_should_save_running";
+    public static final String EXTRA_BEST_TIME = "extra_best_time";
 
     // preferences
     public static final String PREF_FILE = "shared_prefs_file_";

@@ -3,9 +3,11 @@ package com.carles.jogging.result;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.carles.jogging.R;
 import com.carles.jogging.model.JoggingModel;
@@ -15,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -26,10 +29,14 @@ import java.util.List;
  */
 public class ResultMapFragment extends SupportMapFragment {
 
+    private static final String TAG = ResultMapFragment.class.getSimpleName();
     private static final String ARGS_KEY_POSITION = "args_key_position";
     private static final String ARGS_KEY_PARTIALS = "args_key_partials";
+
     private int position;
+    private Marker markerWithWindowShown = null;
     private List<JoggingModel> partials = new ArrayList <JoggingModel>();
+    private List<Marker> markers = new ArrayList<Marker>();
 
     // GoogleMap zoom value range from 0 to 19. 0 is worldwide, 19 finest zoom
     private static final float ZOOM = 15f;
@@ -85,17 +92,38 @@ public class ResultMapFragment extends SupportMapFragment {
             return;
         }
 
+        // set custom info window
+        map.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                markerWithWindowShown = null;
+                marker.hideInfoWindow();
+            }
+        });
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                markerWithWindowShown = marker;
+                // don't consume the event, marker should be shown and map centered
+                return false;
+            }
+        });
+
         // add markers
         JoggingModel partial;
         LatLng point;
         String sTime;
         String snippet;
         List<LatLng> points = new ArrayList<LatLng>();
+        markers = new ArrayList<Marker>();
+        Marker marker;
 
         if (!partials.isEmpty()) {
             partial = partials.get(0);
             point = new LatLng(partial.getStart().getLatitude(), partial.getStart().getLongitude());
-            map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
+            marker = map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
+            markers.add(marker);
             points.add(point);
         }
 
@@ -105,7 +133,8 @@ public class ResultMapFragment extends SupportMapFragment {
             sTime = FormatUtil.time(partial.getTotalTime());
             snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partial.getTotalDistance()).append("m").toString();
             //            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
-            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
+            marker = map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
+            markers.add(marker);
             points.add(point);
         }
 
@@ -137,6 +166,8 @@ public class ResultMapFragment extends SupportMapFragment {
             Location location = position == -1 ? partials.get(0).getStart() : partials.get(position).getEnd();
             LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, ZOOM));
+            markers.get(position+1).showInfoWindow();
+            markerWithWindowShown = markers.get(position+1);
         }
     }
 
@@ -147,8 +178,55 @@ public class ResultMapFragment extends SupportMapFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden) {
+        if (hidden) {
+            if (markerWithWindowShown != null) {
+                markerWithWindowShown.hideInfoWindow();
+                markerWithWindowShown = null;
+            }
+        } else {
             centerToPosition();
+        }
+    }
+
+    /*- ********************************************************************************* */
+    /*- ********************************************************************************* */
+    private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            // initial marker uses default infoContents to show only the title
+            if (marker.getTitle().equals(getString(R.string.map_inici))) {
+                return null;
+            }
+
+            try {
+                View contentsView = getActivity().getLayoutInflater().inflate(R.layout.infowindow_custom, null);
+                JoggingModel partial = partials.get(Integer.parseInt(marker.getTitle())-1);
+
+                final TextView txtTitle = (TextView) contentsView.findViewById(R.id.txt_title);
+                final TextView txtTime = (TextView) contentsView.findViewById(R.id.txt_time);
+                final TextView txtDistance = (TextView) contentsView.findViewById(R.id.txt_distance);
+                final TextView txtAccuracy = (TextView) contentsView.findViewById(R.id.txt_accuracy);
+
+                txtTitle.setText(marker.getTitle());
+                txtTime.setText(FormatUtil.time(partial.getTotalTime()));
+                txtDistance.setText(new StringBuilder().append((int) partial.getTotalDistance()).append("m"));
+                txtAccuracy.setText(new StringBuilder().append((int) partial.getAccuracy()).append("m"));
+
+                return contentsView;
+
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Error getInfoContents. Marker title cannot be parsed to int");
+                return null;
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(TAG, "Error getInfoContents. Marker title parses to an index out of bounds");
+                return null;
+            }
         }
     }
 }

@@ -117,9 +117,9 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     private void showRequestForFirstLocationProgressDialog() {
         dialog = new ProgressDialog(this);
-        dialog.setTitle(R.string.check_connection_progress_title);
+        dialog.setTitle(R.string.progress_waiting);
         dialog.setMessage(getString(R.string.check_connection_progress_msg));
-        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.check_connection_progress_cancel), new DialogInterface.OnClickListener() {
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.progress_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -127,6 +127,8 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
                 overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
             }
         });
+
+        // dialog is not cancelable with the back key, only with the cancel button
         dialog.setCancelable(false);
         dialog.show();
     }
