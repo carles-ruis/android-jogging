@@ -21,7 +21,6 @@ import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.util.FormatUtil;
-import com.carles.jogging.util.PrefUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +67,9 @@ public class LastTimesContentFragment extends BaseFragment {
         }
         final String sMeters = getResources().getStringArray(R.array.main_entries_kms)[position];
         final int meters = FormatUtil.textDistanceToMeters(ctx, sMeters);
-        final List<JoggingModel> joggings = JoggingSQLiteHelper.getInstance(ctx).queryLastTimes(PrefUtil.getLoggedUser(ctx), meters);
+//        final List<JoggingModel> joggings = JoggingSQLiteHelper.getInstance(ctx).queryLastTimes(PrefUtil.getLoggedUser(ctx), meters);
 
+        final List<JoggingModel> joggings = null;
         if (joggings == null || joggings.isEmpty()) {
             txtNoResults.setVisibility(View.VISIBLE);
 

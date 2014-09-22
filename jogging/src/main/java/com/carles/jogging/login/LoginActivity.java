@@ -23,6 +23,7 @@ import com.carles.jogging.main.MainActivity;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.model.UserModel;
 import com.carles.jogging.util.PrefUtil;
+import com.facebook.Session;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -100,7 +101,7 @@ public class LoginActivity extends BaseActivity {
             // txtPassword.setOnEditorActionListener(...)
 
         } else {
-            startMainActivity();
+            startUserSession();
         }
     }
 
@@ -112,7 +113,7 @@ public class LoginActivity extends BaseActivity {
 
         if (user != null) {
             PrefUtil.setLoggedUser(ctx, user);
-            startMainActivity();
+            startUserSession();
 
         } else {
             txtError.setText(R.string.login_error);
@@ -136,7 +137,7 @@ public class LoginActivity extends BaseActivity {
 
         if (id != -1) {
             PrefUtil.setLoggedUser(ctx, user);
-            startMainActivity();
+            startUserSession();
 
         } else {
             txtError.setText(R.string.login_error_new_user);
@@ -169,11 +170,17 @@ public class LoginActivity extends BaseActivity {
 
         } else {
             PrefUtil.setLoggedUser(ctx, user);
-            startMainActivity();
+            startUserSession();
         }
     }
 
-    private void startMainActivity() {
+    private void startUserSession() {
+        // reset facebook session
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            session.closeAndClearTokenInformation();
+        }
+
         startActivity(new Intent(this, MainActivity.class));
         finish();
         overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);

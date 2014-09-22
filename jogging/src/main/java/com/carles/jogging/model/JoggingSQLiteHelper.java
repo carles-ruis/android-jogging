@@ -23,6 +23,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
     private static JoggingSQLiteHelper INSTANCE;
     private static final Gson gson = new Gson();
+    private static final Object lock = new Object();
 
     private static final String DATABASE_NAME = "jogging.db";
     private static final int DATABASE_VERSION = 1;
@@ -88,12 +89,14 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
             " WHERE parent_id=? ORDER BY id ASC ";
 
     public static JoggingSQLiteHelper getInstance(Context ctx) {
-        if (INSTANCE == null) {
-            // Use the application context, which will ensure that you
-            // don't accidentally leak an Activity's context.
-            INSTANCE = new JoggingSQLiteHelper(ctx.getApplicationContext());
+        synchronized (lock) {
+            if (INSTANCE == null) {
+                // Use the application context, which will ensure that you
+                // don't accidentally leak an Activity's context.
+                INSTANCE = new JoggingSQLiteHelper(ctx.getApplicationContext());
+            }
+            return INSTANCE;
         }
-        return INSTANCE;
     }
 
     private JoggingSQLiteHelper(Context context) {

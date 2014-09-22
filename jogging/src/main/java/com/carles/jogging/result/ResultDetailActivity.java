@@ -25,12 +25,11 @@ import com.carles.jogging.util.PrefUtil;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
-import com.facebook.SessionDefaultAudience;
+import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
 import com.facebook.widget.WebDialog;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,34 +46,28 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     private static final int REAUTH_ACTIVITY_CODE = 100;
 
     private Context ctx;
-
-    // fragments
     private ResultDetailFragment detailFragment = null;
     private ResultMapFragment mapFragment = null;
+    private ProgressDialog progress;
 
     // data obtained from the intent
     private JoggingModel jogging;
     private ArrayList<JoggingModel> partials = new ArrayList<JoggingModel>();
 
     // share with facebook
-    private ProgressDialog progress;
-
     private Session.StatusCallback sessionCallback = new Session.StatusCallback() {
         @Override
         public void call(final Session session, final SessionState state, final Exception exception) {
+
             Log.e("carles", "statusCallback, state=" + state.name());
             if (session != null && session.isOpened()) {
                 switch (state) {
-                    case OPENED:
-                        Log.e("carles", "CALLBACK: now we will requestForPermissions");
-                        checkPublishPermissions(session);
-                        break;
-
                     case CREATED_TOKEN_LOADED:
                         Log.e("carles", "CALLBACK: now we will openForPublish");
-                        openForPublish(session);
+                        openForPublish_(session);
                         break;
 
+                    case OPENED:
                     case OPENED_TOKEN_UPDATED:
                         Log.e("carles", "CALLBACK: now we will publishFeedDialog");
                         publishFeedDialog();
@@ -108,9 +101,9 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e("carles", String.format("onActivityResult values. requestCode=%d, resultCode=%d, data=%s", requestCode, resultCode, new Gson().toJson(data)));
-        // to update the facebook session state after user grant permissions and call the callback
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        if (Session.getActiveSession() != null) {
+            Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -142,52 +135,39 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
         Session session = Session.getActiveSession();
         if (session == null) {
-            Log.e("carles", "First shareWithFacebook attempt. Session is null");
-        } else {
-            Log.e("carles", "First shareWithFacebook attempt. Session is " + session.getState().name());
+            session = new Session(this);
+            Session.setActiveSession(session);
         }
 
-        if (session == null) {
-            Log.e("carles", "Facebook session null : open active session");
+        Log.e("carles", "session state=" + session.getState().name());
+
+        if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
+            openForPublish_(session);
+        } else {
             Session.openActiveSession(this, true, sessionCallback);
-
-        } else {
-            checkPublishPermissions(session);
         }
     }
 
-    private void checkPublishPermissions(Session session) {
-        Log.e("carles", "Facebook session opened. Check permissions");
-        List<String> permissions = session.getPermissions();
-        if (!permissions.contains(PERMISSION)) {
-            Log.e("carles", "permissions not granted. Request publish permissions");
-            requestPublishPermissions(session);
-        } else {
-            Log.e("carles", "Facebook open for publish dialog request");
-            openForPublish(session);
-        }
-    }
+    private void openForPublish_(Session session) {
+        Log.e("carles","open for publish_");
+        if (session != null) {
+            List<String> permissions = new ArrayList<String>();
+            permissions.add(PERMISSION);
 
-    private void requestPublishPermissions(Session session) {
-        Log.e("carles", "requestPublishPermission to the user");
-        if (session != null && session.isOpened()) {
-            Log.e("carles", "session opened");
-            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSION)
-                    // demonstrate how to set an audience for the publish permissions,
-                    // if none are set, this defaults to FRIENDS
-                    .setDefaultAudience(SessionDefaultAudience.FRIENDS).setRequestCode(REAUTH_ACTIVITY_CODE).
-                            setCallback(sessionCallback);
-            session.requestNewPublishPermissions(newPermissionsRequest);
+            Session.OpenRequest openRequest = new Session.OpenRequest(this).setCallback(sessionCallback);
+            openRequest.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO);
+            openRequest.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
+            openRequest.setPermissions(permissions);
+            session.openForPublish(openRequest);
         }
-    }
-
-    private void openForPublish(Session session) {
-        Log.e("carles","openForPublish");
-        session.openForPublish(new Session.OpenRequest(this).setCallback(sessionCallback));
     }
 
     private void publishFeedDialog() {
         Log.e("carles", "show publishFeedDialog");
+        if (Session.getActiveSession() == null) {
+            return;
+        }
+
         showProgressDialog();
 
         Bundle params = new Bundle();
@@ -239,7 +219,8 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     }
 
     private void trackSocialInteraction() {
-        EasyTracker.getInstance(this).send(MapBuilder.createSocial("Facebook", "Share", PrefUtil.getLoggedUser(ctx).getName() + " running").build());
+        EasyTracker.getInstance(this).send(MapBuilder.createSocial("Facebook", "Share",
+                PrefUtil.getLoggedUser(ctx).getName() + " running").build());
     }
 
     private void showSuccessResponse() {
