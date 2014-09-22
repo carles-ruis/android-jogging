@@ -73,10 +73,9 @@ public class JoggingModel implements Parcelable {
         this.realDistance = partials.get(partials.size() - 1).getTotalDistance();
         this.footingResult = footingResult;
 
-        // total distance and time. ReCalculate them if footing was successful
+        // Recalculate total distance and time if footing was successful
         if (footingResult == FootingResult.SUCCESS) {
             this.totalDistance = goalDistance;
-//            this.totalTime = (long) ((float) getRealTime() * getTotalDistance() / getRealDistance());
 
             // extrapolate the two last locations obtained to set totalTime as accurate as possible
             float nextToLastDistance = 0f;

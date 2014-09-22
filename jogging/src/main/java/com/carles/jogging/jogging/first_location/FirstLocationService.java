@@ -19,8 +19,6 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Obtains first location before the user starts running.
@@ -37,28 +35,23 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     private static final int MIN_REQUEST_TIME = 30 * 1000;
     private static final int MAX_REQUEST_TIME = 120 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
-    // TODO change accuracy limit
-    private static final float ACCURACY_LIMIT = 200.0f;
-    private static final float LOW_ACCURACY_LIMIT = 200.0f;
+    private static final float ACCURACY_LIMIT = 25.0f;
+    private static final float LOW_ACCURACY_LIMIT = 100.0f;
 
     private static final String WAKE_LOCK_TAG = "wake_lock_tag";
     private static PowerManager.WakeLock wakelock;
 
     private long stopRequestingTime;
     private final IBinder binder = new FirstLocationServiceBinder();
-    // i used weak reference to the client activity cause
-    // to avoid becoming out of scope when is recreated
+    // using weak reference to the client activity to avoid becoming out of scope when is recreated
     private WeakReference<OnFirstLocationResultListener> client;
 
     private LocationClient locationClient;
     private LocationRequest locationRequest;
-
     private Location bestLocation;
 
     private Handler handler = new Handler();
     private FirstLocationTimeout firstLocationTimeout = new FirstLocationTimeout();
-
-    private List<Float> accuracies = new ArrayList<Float>(); // TODO delete
 
     @Override
     public void onCreate() {
@@ -111,12 +104,12 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
             bestLocation = location;
         }
 
-        /*- check if we should keeping requesting location updates */
+        // check if we should keeping requesting location updates
         if (System.currentTimeMillis() < stopRequestingTime) {
             return;
         }
 
-        /*- sent best location obtained if it's enough accurated */
+        // sent best location obtained if it's enough accurated
         if (bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
             handler.removeCallbacks(firstLocationTimeout);
             client.get().onLocationObtained(bestLocation);

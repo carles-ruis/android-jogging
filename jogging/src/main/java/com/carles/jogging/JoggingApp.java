@@ -22,7 +22,7 @@ public class JoggingApp extends Application {
         // set to true to disable google analytics
         GoogleAnalytics.getInstance(this).setAppOptOut(false);
         // Set the log level. Warning by default
-        GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+        GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.WARNING);
     }
 
     private void configStrictMode() {

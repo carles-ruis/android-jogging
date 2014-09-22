@@ -65,8 +65,10 @@ public class LastTimesContentFragment extends BaseFragment {
 
     private void loadData() {
         // obtain the selected distance by the user in the actionBar navigation list
-        ((SherlockFragmentActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        int position = ((SherlockFragmentActivity)getActivity()).getSupportActionBar().getSelectedNavigationIndex();
+        ((SherlockFragmentActivity)getActivity()).getSupportActionBar().setNavigationMode
+                (ActionBar.NAVIGATION_MODE_LIST);
+        int position = ((SherlockFragmentActivity)getActivity()).getSupportActionBar().
+                getSelectedNavigationIndex();
         if (position==-1) {
             position = 0;
         }

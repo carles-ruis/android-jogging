@@ -37,7 +37,6 @@ public class LoginActivity extends BaseActivity {
     private Context ctx;
 
     private ViewGroup lytRoot;
-    private TextView txtAppName;
     private ImageView imgLogo;
     private ImageView imgUsername;
     private EditText txtUsername;
@@ -58,7 +57,6 @@ public class LoginActivity extends BaseActivity {
 
             lytRoot = (ViewGroup) findViewById(R.id.lyt_root);
             imgLogo = (ImageView) findViewById(R.id.img_logo);
-            txtAppName = (TextView) findViewById(R.id.txt_app_name);
             imgUsername = (ImageView) findViewById(R.id.img_username);
             txtUsername = (EditText) findViewById(R.id.et_username);
             imgPassword = (ImageView) findViewById(R.id.img_password);

@@ -62,7 +62,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private long totalTime;
     private float currentDistance;
     private float goalDistance;
-    private String goalDistanceText;
     private Location startLocation;
     private Location previousLocation;
     private Location bestLocation;
@@ -75,8 +74,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private Runnable locationTimeoutUpdating = new LocationTimeoutUpdating();
     private Runnable locationStartUpdating = new LocationStartUpdating();
     private long stopRequestingTime;
-
-    private List<Float> accuracies = new ArrayList<Float>(); // TODO delete
 
     // sound to notify user that running is over
     private SoundPool soundPool;
@@ -132,15 +129,12 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     @Override
     public void onLocationChanged(Location location) {
-        accuracies.add(location.getAccuracy()); // TODO delete
 
         // check if this is the first location or the best accurated location
         if (bestLocation == null || location.getAccuracy() <= bestLocation.getAccuracy()) {
             // ignore repeated locations
             if (location.distanceTo(previousLocation) > 0.0f) {
                 bestLocation = location;
-            } else {
-                Log.i(TAG, "Repeated location with accuracy " + location.getAccuracy());
             }
 
             // check if we should keeping requesting location updates
@@ -190,6 +184,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     }
 
     private void stopRunning(FootingResult footingResult) {
+        Log.i(TAG, "Stop running. Result:" + footingResult);
+
         // prepare intent with the results
         Bundle extras = new Bundle();
         extras.putSerializable(C.EXTRA_FOOTING_RESULT, footingResult);
@@ -295,13 +291,9 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
                 Log.e("carles", "best Location's accuracy better than low_accuracy_limit : " + bestLocation.getAccuracy());
                 onLocationObtained();
+
             } else {
-                Log.i(TAG, "LIST OF ACCURACIES OBTAINED (NOT ENOUGH) = " + accuracies.toString());
-                if (bestLocation != null) {
-                    Log.e("carles", " bestLocation's accuracy was " + bestLocation.getAccuracy());
-                } else {
-                    Log.e("carles", "best location is null");
-                }
+                Log.i(TAG, "Location timeout. Locations obtained are not enough accurate");
                 stopRunning(FootingResult.NO_LOCATION_UPDATES);
             }
         }
@@ -329,7 +321,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         bestLocation = null;
         currentDistance = 0f;
         goalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
-        goalDistanceText = intent.getStringExtra(C.EXTRA_DISTANCE_TEXT);
         startTime = System.currentTimeMillis();
         // first location time has to be "now" because user starts running now
         previousLocation.setTime(startTime);
@@ -368,7 +359,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     }
 
     public void handleOnRunningFinished(Bundle extras) {
-        Log.e("carles", "client is null, create and send running finished intent");
+        Log.i(TAG, "client is null, create and send running finished intent");
         Intent newIntent = new Intent(this, ResultDetailActivity.class);
         newIntent.putExtras(extras);
         startActivity(newIntent);

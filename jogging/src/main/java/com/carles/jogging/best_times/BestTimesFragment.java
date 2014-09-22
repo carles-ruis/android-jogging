@@ -45,6 +45,7 @@ public class BestTimesFragment extends BaseFragment {
         final View view = inflater.inflate(R.layout.fragment_best_times, container, false);
         ctx = getActivity();
 
+        // load views
         txtNoResults = (TextView) view.findViewById(R.id.txt_no_results);
         list = (ListView) view.findViewById(R.id.list);
         progress = (ProgressBar) view.findViewById(R.id.progress);
@@ -77,7 +78,6 @@ public class BestTimesFragment extends BaseFragment {
             });
         }
     }
-
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */

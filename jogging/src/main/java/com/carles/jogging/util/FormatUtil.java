@@ -36,19 +36,10 @@ public class FormatUtil {
      * Formats a timestamp to a user readable format containing the time in hours, minutes, and seconds
      */
     public static String time(long millis) {
-        String ret = "";
-
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
-
-        //        if (hours == 0l) {
-        //            ret = String.format("  %02d:%02d", minutes, seconds);
-        //        } else {
-        ret = String.format("%1d:%02d:%02d", hours, minutes, seconds);
-        //        }
-
-        return ret;
+        return String.format("%1d:%02d:%02d", hours, minutes, seconds);
     }
 
     public static Integer textDistanceToMeters(Context context, String src) {

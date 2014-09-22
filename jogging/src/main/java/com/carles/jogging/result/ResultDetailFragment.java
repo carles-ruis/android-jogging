@@ -85,7 +85,7 @@ public class ResultDetailFragment extends BaseFragment {
         // allows this fragment to inflate its own menu in the action bar
         setHasOptionsMenu(true);
 
-        // map views
+        // load views
         final TextView txtTitle = (TextView) view.findViewById(R.id.txt_result_title);
         final TextView txtSubtitle = (TextView) view.findViewById(R.id.txt_result_subtitle);
         final TextView txtNoLocations = (TextView) view.findViewById(R.id.txt_result_no_locations);
@@ -129,7 +129,6 @@ public class ResultDetailFragment extends BaseFragment {
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     if (callbacks != null) {
 //                        callbacks.onLocationClicked(position - 1);
-                        // -1 position because first position is the list header
                         callbacks.onLocationClicked(position);
                     }
                 }

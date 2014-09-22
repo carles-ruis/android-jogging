@@ -131,7 +131,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.title_jogging);
 
-        // mapping views
+        // load views
         txtImproveTime = (TextView) findViewById(R.id.txt_jogging_improve_time);
         txtOnYourMarks = (TextView) findViewById(R.id.txt_jogging_on_your_marks);
         txtGetSet = (TextView)findViewById(R.id.txt_jogging_get_set);
@@ -189,16 +189,6 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         }
         super.onPause();
     }
-
-//    @Override
-//    public void onDetach() {
-//        // avoid "fragment not attached to activity IllegalStateException"
-//        handler.removeCallbacks(countdownOnYourMarksThread);
-//        handler.removeCallbacks(countdownGetSetThread);
-//        handler.removeCallbacks(countdownGoThread);
-//        handler.removeCallbacks(countdownDoneUpdateTextsThread);
-//        super.onDetach();
-//    }
 
     @Override
     protected void onDestroy() {
@@ -342,9 +332,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
     }
 
     private void unbindService() {
-        Log.e("carles", "is service bound?" + isServiceBound);
         if (isServiceBound) {
-            Log.e("carles","unbind service before destroying the activity");
             unbindService(serviceConnection);
             isServiceBound = false;
         }
@@ -360,7 +348,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
                 MapBuilder builder = MapBuilder.createEvent("jogging", "finish", null, value);
                 tracker.send(builder.build());
 
-                Log.i(TAG, "Tracking running finished for FootingResult success. Distance = " + value);
+                Log.i(TAG, "Tracking running finished for FootingResult success");
             }
         }
     }

@@ -53,7 +53,8 @@ public class ActivateGpsDialog extends DialogFragment {
             public void onClick(View view) {
                 dismiss();
                 // user doesn't want to activate gps
-                FirstLocationFailedDialog.newInstance(Error.GPS_DISABLED).show(getActivity().getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
+                FirstLocationFailedDialog.newInstance(Error.GPS_DISABLED).show(getActivity().
+                        getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
             }
         });
 

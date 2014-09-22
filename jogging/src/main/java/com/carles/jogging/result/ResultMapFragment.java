@@ -41,7 +41,6 @@ public class ResultMapFragment extends SupportMapFragment {
     // GoogleMap zoom value range from 0 to 19. 0 is worldwide, 19 finest zoom
     private static final float ZOOM = 15f;
     private GoogleMap map;
-//    private BitmapDescriptor icon;
 
     public static ResultMapFragment newInstance(int position, ArrayList<JoggingModel> partials) {
         ResultMapFragment mapFragment = new ResultMapFragment();
@@ -77,9 +76,7 @@ public class ResultMapFragment extends SupportMapFragment {
             return;
         }
 
-        //        if (icon == null) {
-        //            icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
-        //        }
+        //  icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
 
         // configurate map
         map.clear();
@@ -88,7 +85,7 @@ public class ResultMapFragment extends SupportMapFragment {
 
         // No position obtained. There are not markers to show
         if (partials == null) {
-            // this shouldn't happen. Map option shouldn't be enabled if no locations found
+            // this should never happen. Map option shouldn't be enabled if no locations found
             return;
         }
 

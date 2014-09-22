@@ -30,7 +30,6 @@ public class FirstLocationFailedDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Error error = (Error)getArguments().getSerializable(ARG_CONNECTION_TYPE);
 
-        /*- Use the Builder class for convenient dialog construction */
         Dialog dialog = new Dialog(getActivity());
 
         final LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -52,7 +51,7 @@ public class FirstLocationFailedDialog extends DialogFragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(view);
 
-        /*- cancel the dialog if the user touches inside it as well as outside it */
+        // cancel the dialog if the user touches inside it as well as outside it
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

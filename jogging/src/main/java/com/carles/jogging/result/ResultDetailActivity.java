@@ -59,17 +59,17 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         @Override
         public void call(final Session session, final SessionState state, final Exception exception) {
 
-            Log.e("carles", "statusCallback, state=" + state.name());
+            Log.i(TAG, "facebook session state after callback = " + state.name());
             if (session != null && session.isOpened()) {
                 switch (state) {
                     case CREATED_TOKEN_LOADED:
-                        Log.e("carles", "CALLBACK: now we will openForPublish");
-                        openForPublish_(session);
+                        Log.i(TAG, "facebook session is CREATE_TOKEN_LOADED: openForPublish");
+                        openForPublish(session);
                         break;
 
                     case OPENED:
                     case OPENED_TOKEN_UPDATED:
-                        Log.e("carles", "CALLBACK: now we will publishFeedDialog");
+                        Log.i(TAG, "facebook session is OPENED: publishFeedDialog");
                         publishFeedDialog();
                         break;
                 }
@@ -145,13 +145,13 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         Log.e("carles", "session state=" + session.getState().name());
 
         if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
-            openForPublish_(session);
+            openForPublish(session);
         } else {
             Session.openActiveSession(this, true, sessionCallback);
         }
     }
 
-    private void openForPublish_(Session session) {
+    private void openForPublish(Session session) {
         Log.e("carles","open for publish_");
         if (session != null) {
             List<String> permissions = new ArrayList<String>();
@@ -181,6 +181,8 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         params.putString("description", getString(R.string.share_feed_dialog_desc,
                 (int) jogging.getTotalDistance(), FormatUtil.time(jogging.getTotalTime())));
         params.putString("link", getString(R.string.play_store_url));
+
+        // TODO delete logs
 
         WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(ctx, Session.getActiveSession(), params)).
                 setOnCompleteListener(new WebDialog.OnCompleteListener() {
@@ -247,7 +249,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                 return true;
 
             case R.id.action_facebook:
-                Log.e("carles", "action facebook selected");
                 shareWithFacebook();
                 return true;
 
@@ -273,7 +274,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
     }
-
 }
 
 /*- ************************************************************* */
@@ -330,4 +330,3 @@ class FacebookCallbackDialog extends DialogFragment {
         dismiss();
     }
 }
-

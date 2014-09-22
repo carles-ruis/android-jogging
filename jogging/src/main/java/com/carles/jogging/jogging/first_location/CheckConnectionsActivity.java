@@ -104,7 +104,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
             showRequestForFirstLocationProgressDialog();
             Intent intent = new Intent(this, FirstLocationService.class);
 
-        /*- BIND_AUTO_CREATE ties the service lifecycle with the binding */
+            // BIND_AUTO_CREATE ties the service lifecycle with the binding
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
             isServiceBound = true;
 

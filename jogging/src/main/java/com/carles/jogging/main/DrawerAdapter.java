@@ -21,7 +21,6 @@ public class DrawerAdapter extends ArrayAdapter<DrawerOption> {
     public DrawerAdapter(Context context) {
         super(context, R.layout.item_drawer, DrawerOption.values());
         inflater = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-
     }
 
     @Override

@@ -75,8 +75,6 @@ public class SystemUtil {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             ret = BitmapFactory.decodeFile(mPath, options);
 
-            Log.e("carles","bitmap was decoded successfully");
-
         } catch (Exception e) {
             e.printStackTrace();
         }
