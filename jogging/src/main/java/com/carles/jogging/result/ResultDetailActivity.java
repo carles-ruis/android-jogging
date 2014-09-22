@@ -1,7 +1,6 @@
 package com.carles.jogging.result;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -48,7 +48,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     private Context ctx;
     private ResultDetailFragment detailFragment = null;
     private ResultMapFragment mapFragment = null;
-    private ProgressDialog progress;
+    private ProgressBar progress;
 
     // data obtained from the intent
     private JoggingModel jogging;
@@ -85,6 +85,9 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.title_result);
+
+        // load views
+        progress = (ProgressBar) findViewById(R.id.progress);
 
         // save results in the local database if required
         partials = getIntent().<JoggingModel>getParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS);
@@ -168,7 +171,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
             return;
         }
 
-        showProgressDialog();
+        progress.setVisibility(View.VISIBLE);
 
         Bundle params = new Bundle();
         String user = PrefUtil.getLoggedUser(ctx).getName();
@@ -184,7 +187,8 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
                     @Override
                     public void onComplete(Bundle values, FacebookException error) {
-                        dismissProgressDialog();
+
+                        progress.setVisibility(View.GONE);
 
                         if (error == null) {
 
@@ -233,21 +237,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private void showFailureResponse(String errMsg) {
         FacebookCallbackDialog.newInstance(errMsg, true).show(getSupportFragmentManager(), TAG_FACEBOOK_RESPONSE);
-    }
-
-    private void showProgressDialog() {
-        progress = new ProgressDialog(this);
-        progress.setTitle(R.string.progress_waiting);
-        progress.setMessage(getString(R.string.facebook_connecting));
-        progress.setCancelable(true);
-        progress.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (progress != null) {
-            progress.dismiss();
-            progress = null;
-        }
     }
 
     @Override

@@ -2,12 +2,14 @@ package com.carles.jogging.best_times;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.carles.jogging.BaseFragment;
@@ -31,6 +33,7 @@ public class BestTimesFragment extends BaseFragment {
 
     private TextView txtNoResults;
     private ListView list;
+    private ProgressBar progress;
 
     public static BestTimesFragment newInstance() {
         BestTimesFragment fragment = new BestTimesFragment();
@@ -44,16 +47,14 @@ public class BestTimesFragment extends BaseFragment {
 
         txtNoResults = (TextView) view.findViewById(R.id.txt_no_results);
         list = (ListView) view.findViewById(R.id.list);
+        progress = (ProgressBar) view.findViewById(R.id.progress);
 
-        // load best times from database
-        loadData();
+        new BestTimesAsyncTask().execute();
 
         return view;
     }
 
-    private void loadData() {
-        final List<JoggingModel> bestTimes = JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(PrefUtil.getLoggedUser(ctx));
-
+    private void updateView(final List<JoggingModel> bestTimes) {
         if (bestTimes == null || bestTimes.isEmpty()) {
             txtNoResults.setVisibility(View.VISIBLE);
 
@@ -74,6 +75,28 @@ public class BestTimesFragment extends BaseFragment {
                     getActivity().overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);
                 }
             });
+        }
+    }
+
+
+    /*- ********************************************************************************* */
+    /*- ********************************************************************************* */
+    private class BestTimesAsyncTask extends AsyncTask<Void, Void, List<JoggingModel>> {
+
+        @Override
+        protected void onPreExecute() {
+            progress.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected List<JoggingModel> doInBackground(Void... params) {
+            return JoggingSQLiteHelper.getInstance(ctx).queryBestTimes(PrefUtil.getLoggedUser(ctx));
+        }
+
+        @Override
+        protected void onPostExecute(List<JoggingModel> bestTimes) {
+            progress.setVisibility(View.GONE);
+            updateView(bestTimes);
         }
     }
 }

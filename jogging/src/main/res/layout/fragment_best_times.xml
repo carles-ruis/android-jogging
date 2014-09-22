@@ -7,6 +7,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/almost_white">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/txt_no_results"
         style="@style/text_no_results"

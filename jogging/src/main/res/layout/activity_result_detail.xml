@@ -1,5 +1,21 @@
 <FrameLayout
-    android:id="@+id/fragment_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- the ProgressBar will be place on top of the FrameLayout because is the last added -->
+    <ProgressBar
+        android:id="@+id/progress"
+        android:padding="@dimen/padding"
+        android:background="@drawable/shape_progress_bar_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>

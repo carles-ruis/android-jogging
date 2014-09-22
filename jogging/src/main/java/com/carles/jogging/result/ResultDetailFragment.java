@@ -94,9 +94,6 @@ public class ResultDetailFragment extends BaseFragment {
         final TextView txtDistance = (TextView) view.findViewById(R.id.txt_result_distance);
         final TextView txtSpeed = (TextView) view.findViewById(R.id.txt_result_speed);
         final TextView txtBestTime = (TextView) view.findViewById(R.id.txt_result_best_time);
-//        final ViewGroup lytTotals = (ViewGroup) view.findViewById(R.id.lyt_totals);
-//        final TextView txtRealTime = (TextView) view.findViewById(R.id.txt_result_real_time);
-//        final TextView txtRealDistance = (TextView) view.findViewById(R.id.txt_result_real_distance);
         final ListView list = (ListView) view.findViewById(R.id.list);
         final TextView txtSaved = (TextView) view.findViewById(R.id.txt_result_saved);
 
@@ -109,8 +106,6 @@ public class ResultDetailFragment extends BaseFragment {
             txtDistance.setText(getString(R.string.result_distance, (int)jogging.getTotalDistance()));
 
             if (footingResult == FootingResult.SUCCESS) {
-//                txtRealTime.setText(getString(R.string.result_time, FormatUtil.time(jogging.getRealTime())));
-//                txtRealDistance.setText(getString(R.string.result_distance, (int)jogging.getRealDistance()));
                 txtSpeed.setText(getString(R.string.result_speed, getSpeed(jogging)));
 
                 if (extras.getBoolean(C.EXTRA_BEST_TIME, false)) {
@@ -123,7 +118,6 @@ public class ResultDetailFragment extends BaseFragment {
 
             } else {
                 txtSpeed.setVisibility(View.GONE);
-//                lytTotals.setVisibility(View.GONE);
             }
 
             final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, partials);
