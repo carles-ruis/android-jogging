@@ -151,13 +151,14 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onLocationObtained(Location location) {
+        Log.i(TAG, "First location obtained:" + LocationHelper.toString(location));
+
         // destroy the service, stop requesting for location
         if (isServiceBound) {
             unbindService(serviceConnection);
             isServiceBound = false;
         }
 
-        Log.i(TAG, "First location found:" + LocationHelper.toString(location));
         Intent intent = new Intent(this, JoggingActivity.class);
         intent.putExtras(getIntent().getExtras());
         intent.putExtra(C.EXTRA_FIRST_LOCATION, location);
@@ -168,7 +169,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onLocationFailed(Error error) {
-        Log.i(TAG, "OnFirstLocationResultListener onLocationFailed()");
+        Log.i(TAG, "First location failed");
 
         /*- destroy the service, stop requesting for  location */
         if (isServiceBound) {

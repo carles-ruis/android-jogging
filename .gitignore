@@ -29,6 +29,5 @@ proguard/
 .idea/
 
 # other files
-/notes/jogging_notes.txt
-/notes/jogging_millores.txt
 /libraries/*/build/
+/IGNORED

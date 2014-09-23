@@ -50,11 +50,6 @@ public class FormatUtil {
             return C.HALF_MARATHON_METERS;
         }
 
-        // TODO delete. 150 meters for TEST
-        if ("TEST".equals(src)) {
-            return 150;
-        }
-
         if (src == null) {
             throw new JoggingAppError(errorMsg);
         }

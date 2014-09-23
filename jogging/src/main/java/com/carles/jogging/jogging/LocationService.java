@@ -45,8 +45,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private static final int NOTIFICATION_ID = 1;
     private static final int SOUND_MAX_DURATION = 2000;
 
-    private static final long TIME_BETWEEN_REQUESTS = 30 * 1000;
-    private static final long MIN_REQUEST_TIME = 30 * 1000;
+    private static final long TIME_BETWEEN_REQUESTS = 20 * 1000;
+    private static final long MIN_REQUEST_TIME = 20 * 1000;
     private static final long MAX_REQUEST_TIME = 90 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
     private static final float SMALLEST_DISPLACEMENT = 1.0f;
@@ -192,16 +192,18 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
         UserModel user = PrefUtil.getLoggedUser(this);
         // "partials" object is updated in the JoggingModel constructor
-        JoggingModel jogging = new JoggingModel(partials, goalDistance, footingResult, user);
+        JoggingModel jogging = null;
         if (partials.size() > 0) {
+            jogging = new JoggingModel(partials, goalDistance, footingResult, user);
             extras.putParcelable(C.EXTRA_JOGGING_TOTAL, jogging);
             extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
         }
 
         if (footingResult == FootingResult.SUCCESS) {
 
-            if (jogging.getTotalTime() < JoggingSQLiteHelper.getInstance(this).
-                    queryBestTimeByDistance(user, jogging.getTotalDistance())) {
+            // jogging cannot be null if the footing result is success
+            if (jogging.getGoalTime() < JoggingSQLiteHelper.getInstance(this).
+                    queryBestTimeByDistance(user, jogging.getGoalDistance())) {
                 // user has overtaken his record
                 extras.putBoolean(C.EXTRA_BEST_TIME, true);
             }
@@ -289,7 +291,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         public void run() {
 
             if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
-                Log.e("carles", "best Location's accuracy better than low_accuracy_limit : " + bestLocation.getAccuracy());
                 onLocationObtained();
 
             } else {

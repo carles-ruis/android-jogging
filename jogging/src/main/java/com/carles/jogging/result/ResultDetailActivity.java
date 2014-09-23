@@ -1,10 +1,10 @@
 package com.carles.jogging.result;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
@@ -41,9 +41,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private static final String TAG = ResultDetailActivity.class.getSimpleName();
     private static final String TAG_FACEBOOK_RESPONSE = "tag_facebook_response";
-    private static final Uri M_FACEBOOK_URL = Uri.parse("http://m.facebook.com");
     private static final String PERMISSION = "publish_actions";
-    private static final int REAUTH_ACTIVITY_CODE = 100;
 
     private Context ctx;
     private ResultDetailFragment detailFragment = null;
@@ -142,8 +140,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
             Session.setActiveSession(session);
         }
 
-        Log.e("carles", "session state=" + session.getState().name());
-
         if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
             openForPublish(session);
         } else {
@@ -152,7 +148,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     }
 
     private void openForPublish(Session session) {
-        Log.e("carles","open for publish_");
         if (session != null) {
             List<String> permissions = new ArrayList<String>();
             permissions.add(PERMISSION);
@@ -166,7 +161,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     }
 
     private void publishFeedDialog() {
-        Log.e("carles", "show publishFeedDialog");
         if (Session.getActiveSession() == null) {
             return;
         }
@@ -179,10 +173,8 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         params.putString("name", getString(R.string.share_feed_dialog_name, user, appName));
         params.putString("caption", getString(R.string.app_name));
         params.putString("description", getString(R.string.share_feed_dialog_desc,
-                (int) jogging.getTotalDistance(), FormatUtil.time(jogging.getTotalTime())));
+                (int) jogging.getGoalDistance(), FormatUtil.time(jogging.getGoalTime())));
         params.putString("link", getString(R.string.play_store_url));
-
-        // TODO delete logs
 
         WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(ctx, Session.getActiveSession(), params)).
                 setOnCompleteListener(new WebDialog.OnCompleteListener() {
@@ -198,25 +190,21 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                             if (postId != null) {
                                 // When the story is posted
                                 Log.i(TAG, "Shared with facebook via FeedDialog. id=" + postId);
-                                Log.e("carles", "Shared with facebook via FeedDialog. id=" + postId);
                                 trackSocialInteraction();
                                 showSuccessResponse();
 
                             } else {
                                 // User clicked the Cancel button
                                 Log.i(TAG, "NOT shared with facebook. User cancelled");
-                                Log.e("carles", "NOT shared with facebook. User cancelled");
                             }
 
                         } else if (error instanceof FacebookOperationCanceledException) {
                             // User clicked the "x" button
                             Log.i(TAG, "NOT shared with facebook. User closed dialog");
-                            Log.e("carles", "NOT shared with facebook. User closed dialog");
 
                         } else {
                             // Generic, ex: network error
                             Log.e(TAG, "NOT shared with facebook. Error:" + error.getMessage());
-                            Log.e("carles", "NOT shared with facebook. Error:" + error.getMessage());
                             showFailureResponse(error.getMessage());
                         }
                     }
@@ -227,6 +215,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     private void trackSocialInteraction() {
         EasyTracker.getInstance(this).send(MapBuilder.createSocial("Facebook", "Share",
                 PrefUtil.getLoggedUser(ctx).getName() + " running").build());
+        Log.i(TAG, "share to facebook was tracked");
     }
 
     private void showSuccessResponse() {
@@ -274,59 +263,60 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_activity_to_right_in, R.anim.slide_activity_to_right_out);
     }
-}
 
-/*- ************************************************************* */
     /*- ************************************************************* */
-class FacebookCallbackDialog extends DialogFragment {
+    /*- ************************************************************* */
+    @SuppressLint("ValidFragment")
+    private static class FacebookCallbackDialog extends DialogFragment {
 
-    private static final String ARG_RESPONSE = "arg_response";
-    private static final String ARG_IS_ERROR = "arg_is_error";
+        private static final String ARG_RESPONSE = "arg_response";
+        private static final String ARG_IS_ERROR = "arg_is_error";
 
-    public static FacebookCallbackDialog newInstance(String response, boolean isError) {
-        FacebookCallbackDialog ret = new FacebookCallbackDialog();
-        Bundle args = new Bundle();
-        args.putString(ARG_RESPONSE, response);
-        args.putBoolean(ARG_IS_ERROR, isError);
-        ret.setArguments(args);
-        return ret;
-    }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = new Dialog(getActivity());
-
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_custom, null);
-        final TextView title = (TextView) view.findViewById(R.id.dlg_title);
-        final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
-
-        title.setText(R.string.facebook_response_title);
-        if (getArguments() == null || getArguments().getString(ARG_RESPONSE) == null) {
-            msg.setText(R.string.facebook_post_success);
-        } else if (getArguments().getBoolean(ARG_IS_ERROR, false)) {
-            msg.setText(R.string.facebook_post_failure);
-        } else {
-            msg.setText(getArguments().getString(ARG_RESPONSE));
+        public static FacebookCallbackDialog newInstance(String response, boolean isError) {
+            FacebookCallbackDialog ret = new FacebookCallbackDialog();
+            Bundle args = new Bundle();
+            args.putString(ARG_RESPONSE, response);
+            args.putBoolean(ARG_IS_ERROR, isError);
+            ret.setArguments(args);
+            return ret;
         }
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(view);
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            Dialog dialog = new Dialog(getActivity());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
+            final LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View view = inflater.inflate(R.layout.dialog_custom, null);
+            final TextView title = (TextView) view.findViewById(R.id.dlg_title);
+            final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
+
+            title.setText(R.string.facebook_response_title);
+            if (getArguments() == null || getArguments().getString(ARG_RESPONSE) == null) {
+                msg.setText(R.string.facebook_post_success);
+            } else if (getArguments().getBoolean(ARG_IS_ERROR, false)) {
+                msg.setText(R.string.facebook_post_failure);
+            } else {
+                msg.setText(getArguments().getString(ARG_RESPONSE));
             }
-        });
 
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
-        return dialog;
-    }
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(view);
 
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        dismiss();
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
+            return dialog;
+        }
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            dismiss();
+        }
     }
 }

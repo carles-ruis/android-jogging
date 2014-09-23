@@ -1,5 +1,7 @@
 package com.carles.jogging.jogging;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -200,6 +202,12 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         super.onDestroy();
     }
 
+    private void cancelRunByUser() {
+        if (checkServiceBound()) {
+            service.cancelRun();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -218,9 +226,22 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */
-    private class CancelRunDialog extends DialogFragment {
+    @SuppressLint("ValidFragment")
+    private static class CancelRunDialog extends DialogFragment {
+
+        private JoggingActivity activity;
 
         public CancelRunDialog() {}
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                this.activity = (JoggingActivity)activity;
+            } catch (ClassCastException e) {
+                Log.i(TAG, "Activity class should be JoggingActivity");
+            }
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -242,9 +263,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
                 @Override
                 public void onClick(View view) {
                     dismiss();
-                    if (checkServiceBound()) {
-                        service.cancelRun();
-                    }
+                    activity.cancelRunByUser();
                 }
             });
 
@@ -344,7 +363,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             JoggingModel jogging = (JoggingModel) parcel;
             if (jogging.getFootingResult() == FootingResult.SUCCESS) {
                 Tracker tracker = EasyTracker.getInstance(ctx);
-                Long value = (long) jogging.getTotalDistance();
+                Long value = (long) jogging.getGoalDistance();
                 MapBuilder builder = MapBuilder.createEvent("jogging", "finish", null, value);
                 tracker.send(builder.build());
 

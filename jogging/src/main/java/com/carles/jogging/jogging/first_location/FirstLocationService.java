@@ -29,13 +29,15 @@ import java.lang.ref.WeakReference;
  * <p/>
  * Created by carles1 on 26/04/14.
  */
-public class FirstLocationService extends Service implements GpsConnectivityObserver, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+public class FirstLocationService extends Service implements GpsConnectivityObserver,
+        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = FirstLocationService.class.getSimpleName();
     private static final int MIN_REQUEST_TIME = 30 * 1000;
-    private static final int MAX_REQUEST_TIME = 120 * 1000;
+    private static final int MAX_REQUEST_TIME = 90 * 1000;
+    private static final int MAX_GPS_CONNECTION_TIME = 60 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
-    private static final float ACCURACY_LIMIT = 25.0f;
+    private static final float ACCURACY_LIMIT = 50.0f;
     private static final float LOW_ACCURACY_LIMIT = 100.0f;
 
     private static final String WAKE_LOCK_TAG = "wake_lock_tag";
@@ -51,7 +53,8 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     private Location bestLocation;
 
     private Handler handler = new Handler();
-    private FirstLocationTimeout firstLocationTimeout = new FirstLocationTimeout();
+    private FirstLocationTimeout locationTimeout = new FirstLocationTimeout();
+    private GpsConnectionTimeout gpsConnectionTimeout = new GpsConnectionTimeout();
 
     @Override
     public void onCreate() {
@@ -86,13 +89,16 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     /*- Called from the client */
     public void requestLocation() {
+        handler.postDelayed(gpsConnectionTimeout, MAX_GPS_CONNECTION_TIME);
         locationClient.connect();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        handler.removeCallbacks(gpsConnectionTimeout);
+
         stopRequestingTime = System.currentTimeMillis() + MIN_REQUEST_TIME;
-        handler.postDelayed(firstLocationTimeout, MAX_REQUEST_TIME);
+        handler.postDelayed(locationTimeout, MAX_REQUEST_TIME);
 
         locationClient.requestLocationUpdates(locationRequest, this);
     }
@@ -111,14 +117,14 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
         // sent best location obtained if it's enough accurated
         if (bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
-            handler.removeCallbacks(firstLocationTimeout);
+            handler.removeCallbacks(locationTimeout);
             client.get().onLocationObtained(bestLocation);
         }
     }
 
     @Override
     public void onDestroy() {
-        /*- remove all callbacks (at the moment there's only 'firstLocationTimeout' */
+        /*- remove all callbacks (at the moment there's only 'locationTimeout' */
         handler.removeCallbacksAndMessages(null);
 
         /*- stop requesting location updates and close connection to google play services */
@@ -171,12 +177,23 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     /*- ************************************************************** */
     /*- ************************************************************** */
+    private class GpsConnectionTimeout implements Runnable {
+        @Override
+        public void run() {
+            client.get().onLocationFailed(Error.GPS_NOT_CONNECTED);
+        }
+    }
+
     private class FirstLocationTimeout implements Runnable {
         @Override
         public void run() {
+
             if (bestLocation != null && bestLocation.getAccuracy() <= LOW_ACCURACY_LIMIT) {
+                Log.i(TAG, "First location timeout: using a location with low accuracy");
                 client.get().onLocationObtained(bestLocation);
+
             } else {
+                Log.i(TAG, "First location timeout. No location with reasonable accuracy");
                 client.get().onLocationFailed(Error.NO_LOCATIONS);
             }
         }

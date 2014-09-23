@@ -65,7 +65,7 @@ public class BestTimesFragment extends BaseFragment {
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    JoggingModel joggingSelected = bestTimes.get(position-1);
+                    JoggingModel joggingSelected = bestTimes.get(position - 1);
                     List<JoggingModel> partials = JoggingSQLiteHelper.getInstance(ctx).queryPartials(joggingSelected);
 
                     Intent intent = new Intent(ctx, ResultDetailActivity.class);

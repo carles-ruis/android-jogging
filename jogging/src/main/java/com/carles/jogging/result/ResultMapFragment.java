@@ -127,8 +127,8 @@ public class ResultMapFragment extends SupportMapFragment {
         for (int i = 0; i < partials.size(); i++) {
             partial = partials.get(i);
             point = new LatLng(partial.getEnd().getLatitude(), partial.getEnd().getLongitude());
-            sTime = FormatUtil.time(partial.getTotalTime());
-            snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partial.getTotalDistance()).append("m").toString();
+            sTime = FormatUtil.time(partial.getGoalTime());
+            snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partial.getGoalDistance()).append("m").toString();
             //            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
             marker = map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
             markers.add(marker);
@@ -211,8 +211,8 @@ public class ResultMapFragment extends SupportMapFragment {
                 final TextView txtAccuracy = (TextView) contentsView.findViewById(R.id.txt_accuracy);
 
                 txtTitle.setText(marker.getTitle());
-                txtTime.setText(FormatUtil.time(partial.getTotalTime()));
-                txtDistance.setText(new StringBuilder().append((int) partial.getTotalDistance()).append("m"));
+                txtTime.setText(FormatUtil.time(partial.getGoalTime()));
+                txtDistance.setText(new StringBuilder().append((int) partial.getGoalDistance()).append("m"));
                 txtAccuracy.setText(new StringBuilder().append((int) partial.getAccuracy()).append("m"));
 
                 return contentsView;

@@ -3,7 +3,6 @@ package com.carles.jogging.result;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class ResultDetailFragment extends BaseFragment {
             callbacks = (OnLocationClickedListener) activity;
             ctx = activity;
         } catch (CancellationException e) {
-            Log.e(TAG, "activity must implement OnMapButtonClickListener");
+            throw new ClassCastException("Activity must implement OnLocationClickListener");
         }
     }
 
@@ -62,8 +61,8 @@ public class ResultDetailFragment extends BaseFragment {
         JoggingModel jogging = extras.getParcelable(C.EXTRA_JOGGING_TOTAL);
 
         // obtain title and subtitle
-        String title;
-        String subtitle;
+        String title = "";
+        String subtitle = "";
         if (extras.getSerializable(C.EXTRA_FOOTING_RESULT) == null) {
             footingResult = FootingResult.UNKNOWN_ERROR;
             title = getString(R.string.footing_result_failure_title);
@@ -73,7 +72,6 @@ public class ResultDetailFragment extends BaseFragment {
             footingResult = (FootingResult) extras.getSerializable(C.EXTRA_FOOTING_RESULT);
             if (footingResult == FootingResult.SUCCESS) {
                 title = getString(R.string.footing_result_success_title);
-                subtitle = getString(R.string.footing_result_success, (int)jogging.getTotalDistance());
             } else {
                 title = getString(R.string.footing_result_failure_title);
                 subtitle = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", ctx.getPackageName()));
@@ -102,17 +100,18 @@ public class ResultDetailFragment extends BaseFragment {
         txtSubtitle.setText(subtitle);
 
         if (hasObtainedLocations) {
-            txtTime.setText(getString(R.string.result_time, FormatUtil.time(jogging.getTotalTime())));
-            txtDistance.setText(getString(R.string.result_distance, (int)jogging.getTotalDistance()));
+            txtTime.setText(getString(R.string.result_time, FormatUtil.time(jogging.getGoalTime())));
+            txtDistance.setText(getString(R.string.result_distance, (int)jogging.getGoalDistance()));
 
             if (footingResult == FootingResult.SUCCESS) {
+                txtSubtitle.setVisibility(View.GONE);
                 txtSpeed.setText(getString(R.string.result_speed, getSpeed(jogging)));
 
                 if (extras.getBoolean(C.EXTRA_BEST_TIME, false)) {
                     txtBestTime.setVisibility(View.VISIBLE);
                 }
 
-                if (extras.getBoolean(C.EXTRA_RUNNING_SAVED,false)) {
+                if (extras.getBoolean(C.EXTRA_RUNNING_SAVED, false)) {
                     txtSaved.setVisibility(View.VISIBLE);
                 }
 
@@ -145,8 +144,8 @@ public class ResultDetailFragment extends BaseFragment {
     }
 
     private Float getSpeed(JoggingModel jogging) {
-        float kms = jogging.getTotalDistance() / 1000f;
-        float h = jogging.getTotalTime() / (1000f * 3600f);
+        float kms = jogging.getGoalDistance() / 1000f;
+        float h = jogging.getGoalTime() / (1000f * 3600f);
         return kms/h;
     }
 

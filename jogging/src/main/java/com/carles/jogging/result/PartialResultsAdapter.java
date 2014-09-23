@@ -40,8 +40,8 @@ public class PartialResultsAdapter extends ArrayAdapter<JoggingModel> {
         }
 
         holder.txtCounter.setText(new StringBuilder().append(position+1).append("."));
-        holder.txtTime.setText(FormatUtil.time(jogging.getTotalTime()));
-        holder.txtDistance.setText(String.format("%5d", (int)jogging.getTotalDistance()));
+        holder.txtTime.setText(FormatUtil.time(jogging.getGoalTime()));
+        holder.txtDistance.setText(String.format("%5d", (int)jogging.getGoalDistance()));
 
         return convertView;
     }

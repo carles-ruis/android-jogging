@@ -35,3 +35,8 @@
 -keepnames class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+# ###########################
+# Joda time warnings
+# ###########################
+-dontwarn org.joda.convert.**

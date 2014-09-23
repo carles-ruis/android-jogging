@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
-import android.util.Log;
 
 import com.carles.jogging.jogging.FootingResult;
 import com.google.gson.Gson;
@@ -18,8 +17,6 @@ import java.util.List;
  * Created by carles1 on 11/09/14.
  */
 public class JoggingSQLiteHelper extends SQLiteOpenHelper {
-
-    private static final String TAG = JoggingSQLiteHelper.class.getSimpleName();
 
     private static JoggingSQLiteHelper INSTANCE;
     private static final Gson gson = new Gson();
@@ -129,18 +126,26 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
     public long insertJogging(JoggingModel jogging, List<JoggingModel> partials) {
         SQLiteDatabase db = getWritableDatabase();
+        long rowId = -1;
 
-        // insert "full jogging" object
-        long rowId = db.insert(TABLE_JOGGING, null, getValues(jogging));
-        Log.e("carles", "inserted jogging with rowId " + rowId);
-        // insert "partial jogging" objects
-        if (rowId != -1 && partials != null) {
-            for (JoggingModel partial : partials) {
-                Log.e("carles", "about to insert partial with id " + partial.getId());
-                db.insert(TABLE_JOGGING, null, getValues(partial));
-                Log.e("carles", "inserted partial " + partial.getId() + " with rowId " + rowId);
+        // insert everything in a single transaction for better performance
+        try {
+            db.beginTransaction();
+
+            // insert "full jogging" object
+            rowId = db.insert(TABLE_JOGGING, null, getValues(jogging));
+            // insert "partial jogging" objects
+            if (rowId != -1 && partials != null) {
+                for (JoggingModel partial : partials) {
+                    db.insert(TABLE_JOGGING, null, getValues(partial));
+                }
             }
+            db.setTransactionSuccessful();// marks a commit
+
+        } finally {
+            db.endTransaction(); // will rollback if commit didn't success
         }
+
         return rowId;
     }
 
@@ -151,9 +156,9 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_END, gson.toJson(jogging.getEnd()));
         values.put(COLUMN_USER, jogging.getUser().getName());
         values.put(COLUMN_REALTIME, jogging.getRealTime());
-        values.put(COLUMN_TOTALTIME, jogging.getTotalTime());
+        values.put(COLUMN_TOTALTIME, jogging.getGoalTime());
         values.put(COLUMN_REALDISTANCE, jogging.getRealDistance());
-        values.put(COLUMN_TOTALDISTANCE, jogging.getTotalDistance());
+        values.put(COLUMN_TOTALDISTANCE, jogging.getGoalDistance());
         values.put(COLUMN_PARENT_ID, jogging.getParentId());
 
         if (jogging.getFootingResult() != null) {
@@ -207,8 +212,8 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
         j.setRealDistance(c.getFloat(c.getColumnIndex(COLUMN_REALDISTANCE)));
         j.setRealTime(c.getLong(c.getColumnIndex(COLUMN_REALTIME)));
-        j.setTotalDistance(c.getFloat(c.getColumnIndex(COLUMN_TOTALDISTANCE)));
-        j.setTotalTime(c.getLong(c.getColumnIndex(COLUMN_TOTALTIME)));
+        j.setGoalDistance(c.getFloat(c.getColumnIndex(COLUMN_TOTALDISTANCE)));
+        j.setGoalTime(c.getLong(c.getColumnIndex(COLUMN_TOTALTIME)));
 
         return j;
     }
@@ -257,12 +262,6 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         if (c!=null) {
             c.close();
         }
-    }
-
-    public void clearTables() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_JOGGING, null, null);
-        db.delete(TABLE_USERS, null, null);
     }
 
 }

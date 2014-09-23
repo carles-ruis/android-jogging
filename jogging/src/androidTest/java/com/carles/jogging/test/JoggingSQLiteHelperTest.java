@@ -61,8 +61,8 @@ public class JoggingSQLiteHelperTest extends AndroidTestCase {
         j.setFootingResult(FootingResult.SUCCESS);
         j.setStart(location);
         j.setEnd(location);
-        j.setTotalDistance(totalDistance);
-        j.setTotalTime(totalTime);
+        j.setGoalDistance(totalDistance);
+        j.setGoalTime(totalTime);
         j.setParentId(parentId);
         return j;
     }
@@ -113,9 +113,9 @@ public class JoggingSQLiteHelperTest extends AndroidTestCase {
         insertAll();
         assertTrue(helper.queryBestTimes(u2).size() == 1);
         assertTrue(helper.queryBestTimes(u1).size() == 2);
-        assertTrue(helper.queryBestTimes(u1).get(0).getTotalDistance() == 8000f);
-        assertTrue(helper.queryBestTimes(u1).get(1).getTotalDistance() == 6000f);
-        assertTrue(helper.queryBestTimes(u1).get(1).getTotalTime() == HALF_AN_HOUR - 1000);
+        assertTrue(helper.queryBestTimes(u1).get(0).getGoalDistance() == 8000f);
+        assertTrue(helper.queryBestTimes(u1).get(1).getGoalDistance() == 6000f);
+        assertTrue(helper.queryBestTimes(u1).get(1).getGoalTime() == HALF_AN_HOUR - 1000);
     }
 
     public void testQueryBestByDistance() {

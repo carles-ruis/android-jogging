@@ -12,7 +12,6 @@
             <option value="$PROJECT_DIR$/libraries" />
             <option value="$PROJECT_DIR$/libraries/actionbarsherlock" />
             <option value="$PROJECT_DIR$/libraries/facebookSDK" />
-            <option value="$PROJECT_DIR$/libraries/viewpagerindicator" />
           </set>
         </option>
       </GradleProjectSettings>

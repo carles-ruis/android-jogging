@@ -25,24 +25,24 @@ public class JoggingModel implements Parcelable {
     private FootingResult footingResult;
 
     private long realTime;
-    private long totalTime;
+    private long goalTime;
     private float realDistance;
-    private float totalDistance;
+    private float goalDistance;
 
     // if this objecte represents a "full" run, partial results obtained
     private List<JoggingModel> partials = new ArrayList<JoggingModel>();
 
     public JoggingModel() {}
 
-    public JoggingModel(Location start, Location end, long totalTime, float totalDistance, UserModel user) {
+    public JoggingModel(Location start, Location end, long goalTime, float goalDistance, UserModel user) {
         this.id = System.currentTimeMillis();
         this.start = start;
         this.end = end;
         this.user = user;
         this.realTime = end.getTime() - start.getTime();
-        this.totalTime = totalTime;
+        this.goalTime = goalTime;
         this.realDistance = end.distanceTo(start);
-        this.totalDistance = totalDistance;
+        this.goalDistance = goalDistance;
     }
 
     public JoggingModel(Parcel source) {
@@ -51,48 +51,48 @@ public class JoggingModel implements Parcelable {
         this.start = source.readParcelable(Location.class.getClassLoader());
         this.end = source.readParcelable(Location.class.getClassLoader());
         this.realTime = source.readLong();
-        this.totalTime = source.readLong();
+        this.goalTime = source.readLong();
         this.realDistance = source.readFloat();
-        this.totalDistance = source.readFloat();
+        this.goalDistance = source.readFloat();
         this.user = source.readParcelable(UserModel.class.getClassLoader());
     }
 
     /**
      * Creates a JoggingModel from the info of each partial JoggingModel.
      * The partials list should not be empty, check before constructing this object.
-     * Truncates totalDistance to the distance expected by the user if footing was successful
-     * Calculates totalTime relative to totalDistance if footing was successful
+     * Truncates goalDistance to the distance expected by the user if footing was successful
+     * Calculates goalTime relative to goalDistance if footing was successful
      * @param partials
      */
     public JoggingModel(List<JoggingModel> partials, float goalDistance, FootingResult footingResult, UserModel user) {
-        this.id = System.currentTimeMillis();
+        this.id = System.currentTimeMillis() + 1; // add one to difference it from last partial id
         this.start = partials.get(0).getStart();
         this.end = partials.get(partials.size() - 1).getEnd();
         this.user = user;
         this.realTime = getEnd().getTime() - getStart().getTime();
-        this.realDistance = partials.get(partials.size() - 1).getTotalDistance();
+        this.realDistance = partials.get(partials.size() - 1).getGoalDistance();
         this.footingResult = footingResult;
 
         // Recalculate total distance and time if footing was successful
         if (footingResult == FootingResult.SUCCESS) {
-            this.totalDistance = goalDistance;
+            this.goalDistance = goalDistance;
 
-            // extrapolate the two last locations obtained to set totalTime as accurate as possible
+            // extrapolate the two last locations obtained to set goalTime as accurate as possible
             float nextToLastDistance = 0f;
             long nextToLastTime = 0l;
             if (partials.size() > 1) {
-                nextToLastDistance = partials.get(partials.size() - 2).getTotalDistance();
-                nextToLastTime = partials.get(partials.size() - 2).getTotalTime();
+                nextToLastDistance = partials.get(partials.size() - 2).getGoalDistance();
+                nextToLastTime = partials.get(partials.size() - 2).getGoalTime();
             }
             float lastDistancesDifference = realDistance - nextToLastDistance;
             long lastTimesDifference = realTime - nextToLastTime;
             float goalDistanceDifference = goalDistance - nextToLastDistance;
             long goalTimeDifference = (long)(goalDistanceDifference * (float) lastTimesDifference / lastDistancesDifference);
-            this.totalTime = + nextToLastTime + goalTimeDifference;
+            this.goalTime = + nextToLastTime + goalTimeDifference;
 
         } else {
-            this.totalDistance = this.realDistance;
-            this.totalTime = this.realTime;
+            this.goalDistance = this.realDistance;
+            this.goalTime = this.realTime;
         }
 
         // link this JoggingModel with its partials
@@ -109,8 +109,8 @@ public class JoggingModel implements Parcelable {
                 ", end=" + LocationHelper.toString(end) +
                 ", realTime=" + realTime +
                 ", realDistance=" + realDistance +
-                ", totalTime=" + totalTime +
-                ", totalDistance=" + totalDistance +
+                ", goalTime=" + goalTime +
+                ", goalDistance=" + goalDistance +
                 '}';
     }
 
@@ -178,24 +178,24 @@ public class JoggingModel implements Parcelable {
         this.realDistance = realDistance;
     }
 
-    public float getTotalDistance() {
-        return totalDistance;
+    public float getGoalDistance() {
+        return goalDistance;
     }
 
-    public void setTotalDistance(float totalDistance) {
-        this.totalDistance = totalDistance;
+    public void setGoalDistance(float goalDistance) {
+        this.goalDistance = goalDistance;
     }
 
     public float getAccuracy() {
         return end.getAccuracy();
     }
 
-    public long getTotalTime() {
-        return totalTime;
+    public long getGoalTime() {
+        return goalTime;
     }
 
-    public void setTotalTime(long totalTime) {
-        this.totalTime = totalTime;
+    public void setGoalTime(long goalTime) {
+        this.goalTime = goalTime;
     }
 
     public FootingResult getFootingResult() {
@@ -218,9 +218,9 @@ public class JoggingModel implements Parcelable {
         parcel.writeParcelable(start, flags);
         parcel.writeParcelable(end, flags);
         parcel.writeLong(realTime);
-        parcel.writeLong(totalTime);
+        parcel.writeLong(goalTime);
         parcel.writeFloat(realDistance);
-        parcel.writeFloat(totalDistance);
+        parcel.writeFloat(goalDistance);
         parcel.writeParcelable(user, flags);
     }
 

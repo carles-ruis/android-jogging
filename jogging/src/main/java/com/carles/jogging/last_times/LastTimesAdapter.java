@@ -39,7 +39,7 @@ public class LastTimesAdapter extends ArrayAdapter<JoggingModel> {
             holder = (Holder)convertView.getTag();
         }
 
-        holder.txtTime.setText(FormatUtil.time(jogging.getTotalTime()));
+        holder.txtTime.setText(FormatUtil.time(jogging.getGoalTime()));
         holder.txtDate.setText(FormatUtil.date(jogging.getId()));
         holder.txtHour.setText(FormatUtil.timePattern(jogging.getId()));
 

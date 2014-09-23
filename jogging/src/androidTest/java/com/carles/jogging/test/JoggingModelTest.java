@@ -26,20 +26,20 @@ public class JoggingModelTest extends TestCase {
         Location l3 = createLocation(60000l);
 
         p0 = new JoggingModel();
-        p0.setTotalDistance(10f);
-        p0.setTotalTime(5000l);
+        p0.setGoalDistance(10f);
+        p0.setGoalTime(5000l);
         p0.setStart(l0);
         p0.setEnd(l1);
 
         p1 = new JoggingModel();
-        p1.setTotalDistance(100f);
-        p1.setTotalTime(50000l);
+        p1.setGoalDistance(100f);
+        p1.setGoalTime(50000l);
         p1.setStart(l1);
         p1.setEnd(l2);
 
         p2 = new JoggingModel();
-        p2.setTotalDistance(200f);
-        p2.setTotalTime(60000l);
+        p2.setGoalDistance(200f);
+        p2.setGoalTime(60000l);
         p2.setStart(l2);
         p2.setEnd(l3);
     }
@@ -58,23 +58,23 @@ public class JoggingModelTest extends TestCase {
     public void testJoggingModelConstructor_calcTotalDistance() {
         // user ran 5sec for 10m , that's 1sec for 2m
         JoggingModel j = new JoggingModel(Arrays.asList(p0), 2f, FootingResult.SUCCESS, null);
-        assertEquals(2f, j.getTotalDistance());
-        assertEquals(1000l, j.getTotalTime());
+        assertEquals(2f, j.getGoalDistance());
+        assertEquals(1000l, j.getGoalTime());
 
         // user ran 45sec for 90m, that's *5sec* for 10m
         j = new JoggingModel(Arrays.asList(p0, p1), 20f, FootingResult.SUCCESS, null);
-        assertEquals(20f, j.getTotalDistance());
-        assertEquals(10000l, j.getTotalTime());
+        assertEquals(20f, j.getGoalDistance());
+        assertEquals(10000l, j.getGoalTime());
 
         // user ran 10sec for 100m, that's *8sec* for  80m
         j = new JoggingModel(Arrays.asList(p0, p1, p2), 180f, FootingResult.SUCCESS, null);
-        assertEquals(180f, j.getTotalDistance());
-        assertEquals(58000l, j.getTotalTime());
+        assertEquals(180f, j.getGoalDistance());
+        assertEquals(58000l, j.getGoalTime());
 
         // user ran was not successful, don't extrapolate totalTime
         j = new JoggingModel(Arrays.asList(p0, p1, p2), 180f, FootingResult.CANCELLED_BY_USER, null);
-        assertEquals(200f, j.getTotalDistance());
-        assertEquals(60000l, j.getTotalTime());
+        assertEquals(200f, j.getGoalDistance());
+        assertEquals(60000l, j.getGoalTime());
 
     }
 
