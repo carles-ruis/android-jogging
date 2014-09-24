@@ -87,7 +87,8 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
                 } else {
                     Log.i(TAG, "Google Play services not available.");
                         /*- device was not able to connect to google play services */
-                    FirstLocationFailedDialog.newInstance(Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE).show(getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
+                    FirstLocationFailedDialog.newInstance(Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE).
+                            show(getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
                 }
                 break;
             case C.REQ_CODE_ENABLE_GPS:

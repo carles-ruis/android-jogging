@@ -92,10 +92,12 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         jogging = getIntent().getParcelableExtra(C.EXTRA_JOGGING_TOTAL);
 
         // show detail fragment as is the ResultDetailActivity's initial fragment
-        if (detailFragment == null) {
-            detailFragment = ResultDetailFragment.newInstance();
+        if (savedInstanceState == null) {
+            if (detailFragment == null) {
+                detailFragment = ResultDetailFragment.newInstance();
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, detailFragment).commit();
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, detailFragment).commit();
     }
 
     @Override

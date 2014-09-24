@@ -140,8 +140,7 @@
         <item name="android:padding">4dp</item>
     </style>
 
-
-    <style name="text_result_item_counter" parent="text_result_item">
+    <style name="text_result_item.counter">
         <item name="android:padding">2dp</item>
     </style>
 

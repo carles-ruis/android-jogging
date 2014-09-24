@@ -65,6 +65,8 @@
         android:layout_above="@+id/txt_jogging_time"
         android:layout_centerHorizontal="true"
         style="@style/text_jogging"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:visibility="invisible" />
 
     <TextView
@@ -73,6 +75,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         style="@style/text_jogging"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:visibility="invisible" />
 
     <!-- cancel run button in the bottom -->

@@ -33,8 +33,8 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = FirstLocationService.class.getSimpleName();
-    private static final int MIN_REQUEST_TIME = 30 * 1000;
-    private static final int MAX_REQUEST_TIME = 90 * 1000;
+    private static final int MIN_REQUEST_TIME = 20 * 1000;
+    private static final int MAX_REQUEST_TIME = 60 * 1000;
     private static final int MAX_GPS_CONNECTION_TIME = 60 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
     private static final float ACCURACY_LIMIT = 50.0f;

@@ -47,10 +47,11 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
     private static final long TIME_BETWEEN_REQUESTS = 20 * 1000;
     private static final long MIN_REQUEST_TIME = 20 * 1000;
-    private static final long MAX_REQUEST_TIME = 90 * 1000;
+    private static final long MAX_REQUEST_TIME = 60 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
     private static final float SMALLEST_DISPLACEMENT = 1.0f;
     private static final float ACCURACY_LIMIT = 25.0f;
+    private static final float AVERAGE_ACCURACY_LIMIT = 50.0f;
     private static final float LOW_ACCURACY_LIMIT = 100.0f;
 
     private static final String WAKE_LOCK_TAG = "wake_lock_tag";
@@ -144,6 +145,12 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
             // take best location obtained if it's enough accurated
             if (bestLocation != null && bestLocation.getAccuracy() <= ACCURACY_LIMIT) {
+                onLocationObtained();
+            }
+
+            // if MIN_REQUEST_TIME passed, accept not so good accuracy
+            if (bestLocation != null && bestLocation.getAccuracy() <= AVERAGE_ACCURACY_LIMIT &&
+                    System.currentTimeMillis() > stopRequestingTime) {
                 onLocationObtained();
             }
         }

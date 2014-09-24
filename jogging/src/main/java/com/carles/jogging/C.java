@@ -5,7 +5,7 @@ package com.carles.jogging;
  */
 public class C {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static final int DEFAULT_DISTANCE = 2000;
     public static final Integer HALF_MARATHON_METERS = 21097;

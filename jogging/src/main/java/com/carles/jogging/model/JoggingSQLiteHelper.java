@@ -3,9 +3,11 @@ package com.carles.jogging.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.util.Log;
 
 import com.carles.jogging.jogging.FootingResult;
 import com.google.gson.Gson;
@@ -17,6 +19,8 @@ import java.util.List;
  * Created by carles1 on 11/09/14.
  */
 public class JoggingSQLiteHelper extends SQLiteOpenHelper {
+
+    private static final String TAG = JoggingSQLiteHelper.class.getSimpleName();
 
     private static JoggingSQLiteHelper INSTANCE;
     private static final Gson gson = new Gson();
@@ -85,7 +89,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
     private static final String SQL_QUERY_PARTIALS = "SELECT * FROM " + TABLE_JOGGING +
             " WHERE parent_id=? ORDER BY id ASC ";
 
-    public static JoggingSQLiteHelper getInstance(Context ctx) {
+    public static synchronized JoggingSQLiteHelper getInstance(Context ctx) {
         synchronized (lock) {
             if (INSTANCE == null) {
                 // Use the application context, which will ensure that you
@@ -133,14 +137,17 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
             db.beginTransaction();
 
             // insert "full jogging" object
-            rowId = db.insert(TABLE_JOGGING, null, getValues(jogging));
+            rowId = db.insertOrThrow(TABLE_JOGGING, null, getValues(jogging));
             // insert "partial jogging" objects
             if (rowId != -1 && partials != null) {
                 for (JoggingModel partial : partials) {
-                    db.insert(TABLE_JOGGING, null, getValues(partial));
+                    db.insertOrThrow(TABLE_JOGGING, null, getValues(partial));
                 }
             }
             db.setTransactionSuccessful();// marks a commit
+
+        } catch (SQLException e) {
+            Log.e(TAG, "Error inserting jogging to db");
 
         } finally {
             db.endTransaction(); // will rollback if commit didn't success

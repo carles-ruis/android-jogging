@@ -38,7 +38,8 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         setContentView(R.layout.activity_main);
         ctx = this;
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().
+                findFragmentById(R.id.navigation_drawer);
         navigationDrawerView = findViewById(R.id.navigation_drawer);
         mTitle = getTitle();
 
@@ -53,7 +54,8 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
     }
 
     private void setUpNavigationList() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
+                (this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
 
         ActionBar.OnNavigationListener callback = new ActionBar.OnNavigationListener() {
             @Override
