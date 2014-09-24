@@ -12,12 +12,12 @@ Track your times and distances when going jogging
 - Map tracking your route
 - Share your results to Facebook
 
-* The more you run in a straight line, the more reliable the results will be. Avoid turning 180º to change your direction
+The more you run in a straight line, the more reliable the results will be. Avoid turning 180º to change your direction
 
 ====================
-Google Maps API v2
-Location APIs
-Bound services: wake lock, connectivity receiver
-SQLite local database
-Facebook integration
-Google Analytics
+- Google Maps API v2
+- Location APIs
+- Bound services: wake lock, connectivity receiver
+- SQLite local database
+- Facebook integration
+- Google Analytics
