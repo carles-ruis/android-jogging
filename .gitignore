@@ -31,4 +31,5 @@ proguard/
 # other files
 /libraries/*/build/
 /IGNORED
-#/jogging/build.gradle
+/jogging/build.gradle
+/jogging/gradle.properties
