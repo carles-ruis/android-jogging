@@ -16,7 +16,7 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:background="@drawable/item_result_counter_selector"
-            style="@style/text_result_item_counter"
+            style="@style/text_result_item.counter"
             android:layout_gravity="center"
             android:gravity="right|center_vertical"/>
 

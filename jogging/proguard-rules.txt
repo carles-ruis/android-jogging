@@ -40,3 +40,14 @@
 # Joda time warnings
 # ###########################
 -dontwarn org.joda.convert.**
+
+# ###########################
+# Google Ad Mobs
+# ###########################
+-keep public class com.google.android.gms.ads.** {
+   public *;
+}
+
+-keep public class com.google.ads.** {
+   public *;
+}
