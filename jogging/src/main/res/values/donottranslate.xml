@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="play_store_url">https://play.google.com/store/apps/details?id=com.carles.jogging</string>
+
+    <!-- Google Ad Mobs -->
+    <string name="red_dark">801815</string>
+    <string name="grey">777777</string>
+    <string name="grey_light">e0e0e0</string>
+
+    <string-array name="main_entries_kms">
+        <item>2 kms</item>
+        <item>3 kms</item>
+        <item>4 kms</item>
+        <item>5 kms</item>
+        <item>6 kms</item>
+        <item>8 kms</item>
+        <item>10 kms</item>
+        <item>12 kms</item>
+        <item>15 kms</item>
+        <item>20 kms</item>
+        <item>@string/main_half_marathon</item>
+    </string-array>
+
+</resources>

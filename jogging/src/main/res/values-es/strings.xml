@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- app strings -->
+    <string name="app_name">Go Footing</string>
+    <string name="ok">OK</string>
+    <string name="no">No</string>
+    <string name="progress_loading">Cargando ...</string>
+    <string name="progress_waiting">Espera...</string>
+    <string name="progress_cancel">Cancelar</string>
+    <string name="hello_kitty">Hello Kitty!!!</string>
+
+    <!-- Menu options -->
+    <string name="menu_main">Go Footing</string>
+    <string name="menu_main_description">¡Supera tu récord!</string>
+    <string name="menu_best">Records</string>
+    <string name="menu_best_description">Tus mejores tiempos</string>
+    <string name="menu_last">Histórico</string>
+    <string name="menu_last_description">Todos tus tiempos</string>
+    <string name="logout">Logout</string>
+
+    <!-- Action bar items -->
+    <string name="action_help">Ayuda</string>
+    <string name="action_facebook">Compartir con Facebook</string>
+    <string name="action_settings">Preferencias</string>
+    <string name="action_map">Mapa</string>
+
+    <!-- Fragment titles -->
+    <string name="title_main">Go Footing</string>
+    <string name="title_best">Records</string>
+    <string name="title_last">Histórico</string>
+    <string name="title_check_connections">Buscando posición...</string>
+    <string name="title_jogging">¡Corre!</string>
+    <string name="title_result">Resultados</string>
+
+    <!-- Login activity -->
+    <string name="login_hint_username">Usuario</string>
+    <string name="login_hint_password">Password</string>
+    <string name="login_button">Login</string>n
+    <string name="login_new_user">Nuevo usuaria</string>
+    <string name="login_error">Usuario/password incorrecto</string>
+    <string name="login_error_new_user">Este usuario ya existe</string>
+    <string name="login_error_unknown">Error inesperado. Logueate con otro usuario</string>
+
+    <!-- Main Fragment -->
+    <string name="main_button_run">¡ Corre !</string>
+    <string name="main_text_run">Voy a correr ...</string>
+    <string name="main_half_marathon">¡Media maratón!</string>
+
+    <!-- Check connections fragment -->
+    <string name="check_connection_progress_msg">El GPS está obteniendo tu posición</string>
+    <string name="connection_failed_title">No he obtenido tu posición</string>
+    <string name="connection_failed_google">No he podido conectarme con los servicios de Google</string>
+    <string name="connection_failed_gps">Activa el GPS para controlar tu recorrido</string>
+    <string name="connection_failed_gps_lost">Se ha perdido la conexión con el GPS</string>
+    <string name="connection_failed_gps_connection">No he podido conectarme al GPS</string>
+    <string name="connection_failed_gps_location">El GPS no ha obtenido tu posición. Camina unos metros y vuelve a intentarlo.</string>
+    <string name="connection_failed_unknown">Error inesperado. El GPS no ha obtenido tu posición</string>
+    <string name="activate_gps_title">GPS desactivado</string>
+    <string name="activate_gps_msg">Tienes que activar el GPS para controlar tu recorrido</string>
+    <string name="activate_gps_button_yes">OK</string>
+    <string name="activate_gps_button_no">No</string>
+
+    <!-- Jogging fragment -->
+    <string name="jogging_improve_time">Mejora tu tiempo en la distancia de %1$s</string>
+    <string name="jogging_on_your_marks">PREPARADO ...</string>
+    <string name="jogging_get_set">... LISTO ...</string>
+    <string name="jogging_go">¡¡¡ YA !!!</string>
+    <string name="jogging_kilometers_run">Distancia recorrida: %d metros</string>
+    <string name="jogging_time">Tiempo: %s</string>
+    <string name="jogging_button_cancel">Dejar de correr</string>
+    <string name="cancel_run_title">Dejar de correr</string>
+    <string name="cancel_run_msg">¿Estás seguro?</string>
+    <string name="cancel_run_button_yes">Si, descanso</string>
+    <string name="cancel_run_button_no">No</string>
+
+    <!-- Location service notification -->
+    <string name="notification_is_running_title">Corriendo...</string>
+    <string name="notification_is_running_text">!Todavía tienes que correr un poco más, ànimo!</string>
+
+    <!-- Result detail fragment -->
+    <string name="footing_result_success_title">¡ Footing superado !</string>
+    <string name="footing_result_failure_title">Footing cancelado</string>
+    <string name="footing_result_unknown_error">Ha habido un error</string>
+    <string name="footing_result_cancelled">Has parado de hacer footing</string>
+    <string name="footing_result_gps_disabled">El GPS ha sido desactivado</string>
+    <string name="footing_result_gs_disconnected">Error en la conexión con los servicios de Google</string>
+    <string name="footing_result_no_updates">El GPS no ha podido obtener una posición precisa</string>
+    <string name="footing_result_gs_failure">Error en la conexión con los servicios de Google</string>
+    <string name="result_no_locations">No he obtenido ninguna posición</string>
+    <string name="result_time">%s s.</string>
+    <string name="result_distance">%d m.</string>
+    <string name="result_speed">%.2f kms/h</string>
+    <string name="result_best_time">¡¡¡ ES TU MEJOR TIEMPO !!!</string>
+    <string name="result_saved">!He guardado tu tiempo. Mejóralo!</string>
+    <string name="partial_header">Resultados parciales</string>
+    <string name="map_inici">Inicio</string>
+    <string name="share_feed_dialog_name">%1$s ha salido a correr con %2$s</string>
+    <string name="share_feed_dialog_desc">Una distancia de %1$d metros en %2$s</string>
+    <string name="facebook_response_title">Facebook</string>
+    <string name="facebook_post_success">Has compartido tu footing con Facebook</string>
+    <string name="facebook_post_failure">Error. No he podido compartir con Facebook</string>
+
+    <!-- Best times fragment & Last times fragment -->
+    <string name="no_results">No hay tiempos guardados</string>
+    <string name="best_times_header">Tus mejores tiempos para cada distancia</string>
+
+    <!-- Settings -->
+
+    <!-- Accessibility -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+</resources>

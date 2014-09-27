@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- app strings -->
+    <string name="app_name">Go Jogging</string>
+    <string name="ok">OK</string>
+    <string name="no">No</string>
+    <string name="progress_loading">Loading ...</string>
+    <string name="progress_waiting">Wait...</string>
+    <string name="progress_cancel">Cancel</string>
+    <string name="hello_kitty">Hello Kitty!!!</string>
+
+    <!-- Menu options -->
+    <string name="menu_main">Go Jogging</string>
+    <string name="menu_main_description">Beat your best time!</string>
+    <string name="menu_best">Best times</string>
+    <string name="menu_best_description">Your best times for each distance</string>
+    <string name="menu_last">History</string>
+    <string name="menu_last_description">All your results</string>
+    <string name="logout">Logout</string>
+
+    <!-- Action bar items -->
+    <string name="action_help">Help</string>
+    <string name="action_facebook">Share with Facebook</string>
+    <string name="action_settings">Preferences</string>
+    <string name="action_map">Map</string>
+
+    <!-- Fragment titles -->
+    <string name="title_main">Go Jogging</string>
+    <string name="title_best">Best times</string>
+    <string name="title_last">History</string>
+    <string name="title_check_connections">Obtaining location...</string>
+    <string name="title_jogging">Run !</string>
+    <string name="title_result">Results</string>
+
+    <!-- Login activity -->
+    <string name="login_hint_username">User</string>
+    <string name="login_hint_password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_new_user">New user</string>
+    <string name="login_error">Wrong user/password</string>
+    <string name="login_error_new_user">This user already exists</string>
+    <string name="login_error_unknown">Unknown error. Try to login with another user</string>
+
+    <!-- Main Fragment -->
+    <string name="main_button_run">Run !</string>
+    <string name="main_text_run">I\'m going to run ...</string>
+    <string name="main_half_marathon">Half marathon!</string>
+
+    <!-- Check connections fragment -->
+    <string name="check_connection_progress_msg">GPS is obtaining your location</string>
+    <string name="connection_failed_title">GPS could not obtain your location</string>
+    <string name="connection_failed_google">Google Play Services is not available</string>
+    <string name="connection_failed_gps">Enable GPS before you start Jogging</string>
+    <string name="connection_failed_gps_lost">GPS connection was lost</string>
+    <string name="connection_failed_gps_connection">Unable to connect to GPS</string>
+    <string name="connection_failed_gps_location">No locations obtained. Change your position and try again</string>
+    <string name="connection_failed_unknown">Unexpected error. No locations obtained</string>
+    <string name="activate_gps_title">GPS disabled</string>
+    <string name="activate_gps_msg">Enable GPS before you start Jogging</string>
+    <string name="activate_gps_button_yes">OK</string>
+    <string name="activate_gps_button_no">No</string>
+
+    <!-- Jogging fragment -->
+    <string name="jogging_improve_time">Beat your %1$s best time !!!</string>
+    <string name="jogging_on_your_marks">ON YOUR MARKS ...</string>
+    <string name="jogging_get_set">... GET SET ...</string>
+    <string name="jogging_go">... GO !!!</string>
+    <string name="jogging_kilometers_run">Distance ran: %d meters</string>
+    <string name="jogging_time">Time: %s</string>
+    <string name="jogging_button_cancel">Stop jogging</string>
+    <string name="cancel_run_title">Stop jogging</string>
+    <string name="cancel_run_msg">Are you sure?</string>
+    <string name="cancel_run_button_yes">Yes, I need to rest</string>
+    <string name="cancel_run_button_no">No</string>
+
+    <!-- Location service notification -->
+    <string name="notification_is_running_title">Jogging...</string>
+    <string name="notification_is_running_text">Don\'t stop running already, you can do it!</string>
+
+    <!-- Result detail fragment -->
+    <string name="footing_result_success_title">Jogging success !</string>
+    <string name="footing_result_failure_title">Jogging cancelled</string>
+    <string name="footing_result_unknown_error">An unexpected error occured</string>
+    <string name="footing_result_cancelled">You stopped jogging</string>
+    <string name="footing_result_gps_disabled">GPS disabled</string>
+    <string name="footing_result_gs_disconnected">Google services connection error</string>
+    <string name="footing_result_no_updates">GPS have not obtained an accurate location</string>
+    <string name="footing_result_gs_failure">Google services connection error</string>
+    <string name="result_no_locations">No locations obtained</string>
+    <string name="result_time">%s s.</string>
+    <string name="result_distance">%d m.</string>
+    <string name="result_speed">%.2f kms/h</string>
+    <string name="result_best_time">IT\'S YOUR BEST TIME !!!</string>
+    <string name="result_saved">Footing saved. Improve it!</string>
+    <string name="partial_header">Partial results</string>
+    <string name="map_inici">Start</string>
+    <string name="share_feed_dialog_name">%1$s went running with %2$s</string>
+    <string name="share_feed_dialog_desc">Ran %1$d meters in %2$s</string>
+    <string name="facebook_response_title">Facebook</string>
+    <string name="facebook_post_success">You shared your jogging to Facebook</string>
+    <string name="facebook_post_failure">Error while trying to share to Facebook</string>
+
+    <!-- Best times fragment & Last times fragment -->
+    <string name="no_results">No results saved</string>
+    <string name="best_times_header">Your best times for each distance</string>
+
+    <!-- Settings -->
+
+    <!-- Accessibility -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+</resources>

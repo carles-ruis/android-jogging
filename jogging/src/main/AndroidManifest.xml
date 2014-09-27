@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    package="com.carles.jogging"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- location and maps permissions -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <!-- internet and connectivity permission: ConnectivityManager, Maps, Google Mobile Ads  -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- the service needs to keep the device awake to keep requesting for locations -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <!-- permissions to use GoogleMaps -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+        android:name="JoggingApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Jogging">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_api_key"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id"/>
+        <!--<meta-data-->
+            <!--android:name="com.google.android.backup.api_key"-->
+            <!--android:value="@string/backup_key"/>-->
+
+        <!-- alwaysRetainTaskState to keep the task state when is destroyed after some time
+        unactive, usually around 30 minutes -->
+        <activity
+            android:name=".login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:theme="@style/Theme.Jogging.NoActionBar"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".main.MainActivity"
+            android:icon="@drawable/ic_running_girl"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".jogging.first_location.CheckConnectionsActivity"
+            android:icon="@drawable/ic_running_girl"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".jogging.JoggingActivity"
+            android:icon="@drawable/ic_running_girl"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".result.ResultDetailActivity"
+            android:icon="@drawable/ic_running_girl"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name"/>
+
+        <!--Include the AdActivity configChanges and theme. For Google Mobile Ads -->
+        <activity android:name="com.google.android.gms.ads.AdActivity"
+                  android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+                  android:theme="@android:style/Theme.Translucent" />
+
+        <!-- we are using binding so services and its activities must run in the same process -->
+        <service
+            android:name=".jogging.first_location.FirstLocationService"
+            android:exported="false"
+            android:label="@string/app_name"/>
+
+        <service
+            android:name=".jogging.LocationService"
+            android:exported="false"
+            android:label="@string/app_name"/>
+
+        <!--       <receiver
+                   android:name="WifiConnectivityReceiver">
+                   <intent-filter>
+                       <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                       <action android:name="android.net.wifi.STATE_CHANGE"/>
+                   </intent-filter>
+               </receiver>
+       -->
+
+        <receiver android:name=".jogging.gps_connectivity.GpsConnectivityReceiver">
+            <intent-filter>
+                <action android:name="android.location.PROVIDERS_CHANGED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
