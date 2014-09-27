@@ -189,7 +189,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                             if (postId != null) {
                                 // When the story is posted
                                 Log.i(TAG, "Shared with facebook via FeedDialog. id=" + postId);
-                                trackSocialInteraction();
+                                trackShareWithFacebook();
                                 showSuccessResponse();
 
                             } else {
@@ -211,10 +211,9 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         feedDialog.show();
     }
 
-    private void trackSocialInteraction() {
+    private void trackShareWithFacebook() {
         EasyTracker.getInstance(this).send(MapBuilder.createSocial("Facebook", "Share",
                 PrefUtil.getLoggedUser(ctx).getName() + " running").build());
-        Log.i(TAG, "share to facebook was tracked");
     }
 
     private void showSuccessResponse() {
@@ -227,6 +226,30 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private void showFailureResponse(String errMsg) {
         FacebookCallbackDialog.newInstance(errMsg, true).show(getSupportFragmentManager(), TAG_FACEBOOK_RESPONSE);
+    }
+
+    private void shareWithWhatsApp() {
+
+//        if (detailFragment != null && detailFragment.getShareActionProvider() != null) {
+
+        // populate the share intent with data
+        Intent waIntent = new Intent(Intent.ACTION_SEND);
+        waIntent.setType("text/plain");
+        waIntent.setPackage("com.whatsapp");
+        waIntent.putExtra(Intent.EXTRA_TEXT, new StringBuilder()
+                .append(getString(R.string.share_whatsapp_text, (int) jogging.getGoalDistance(), FormatUtil.time(jogging.getGoalTime())))
+                .append(getString(R.string.app_name))
+                .append("' : ")
+                .append(getString(R.string.play_store_url)).toString());
+        waIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.app_name));
+        startActivity(waIntent);
+
+        trackShareWithWhatsApp();
+    }
+
+    private void trackShareWithWhatsApp() {
+        EasyTracker.getInstance(this).send(MapBuilder.createSocial("WhatsApp", "Share",
+                PrefUtil.getLoggedUser(ctx).getName() + " running").build());
     }
 
     @Override
@@ -242,6 +265,10 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
             case R.id.action_map:
                 addResultMapFragment(-1);
+                return true;
+
+            case R.id.action_whatsapp:
+                shareWithWhatsApp();
                 return true;
 
             default:

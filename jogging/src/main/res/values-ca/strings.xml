@@ -24,6 +24,7 @@
     <string name="action_facebook">Compartir amb Facebook</string>
     <string name="action_settings">Preferències</string>
     <string name="action_map">Mapa</string>
+    <string name="action_whatsapp">Compartir amb WhatsApp</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Fent Footing</string>
@@ -95,6 +96,7 @@
     <string name="result_saved">He guardat el teu temps. Millora\'l!</string>
     <string name="partial_header">Resultats parcials</string>
     <string name="map_inici">Inici</string>
+    <string name="share_whatsapp_text">He corregut %1$d metres en %2$s amb \'</string>
     <string name="share_feed_dialog_name">%1$s ha sortit a correr amb %2$s</string>
     <string name="share_feed_dialog_desc">Una distància de %1$d metres en %2$s</string>
     <string name="facebook_response_title">Facebook</string>

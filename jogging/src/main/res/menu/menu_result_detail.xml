@@ -8,14 +8,23 @@
         <!--app:actionProviderClass="com.actionbarsherlock.widget.ShareActionProvider" />-->
 
     <item
-        android:id="@+id/action_facebook"
-        android:icon="@drawable/ic_menu_facebook"
-        android:showAsAction="always"
-        android:title="@string/action_facebook"/>
-
-    <item
         android:id="@+id/action_map"
         android:icon="@drawable/ic_menu_place"
         android:showAsAction="always"
         android:title="@string/action_map" />
+
+    <item
+        android:id="@+id/action_whatsapp"
+        android:icon="@drawable/ic_menu_whatsapp"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_whatsapp"
+        android:orderInCategory="1"
+        app:actionProviderClass="com.actionbarsherlock.widget.ShareActionProvider" />
+
+    <item
+        android:id="@+id/action_facebook"
+        android:icon="@drawable/ic_menu_facebook"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="2"
+        android:title="@string/action_facebook"/>
 </menu>

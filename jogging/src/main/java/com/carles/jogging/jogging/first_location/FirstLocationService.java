@@ -93,8 +93,6 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.e("carles", "on connected");
-
         stopRequestingTime = System.currentTimeMillis() + MIN_REQUEST_TIME;
         handler.postDelayed(locationTimeout, MAX_REQUEST_TIME);
 

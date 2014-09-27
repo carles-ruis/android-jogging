@@ -2,6 +2,7 @@ package com.carles.jogging.result;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class ResultDetailFragment extends BaseFragment {
     private Context ctx;
     private OnLocationClickedListener callbacks;
     private boolean hasObtainedLocations;
+    private boolean hasWhatsApp;
 
     private FootingResult footingResult = FootingResult.UNKNOWN_ERROR;
 
@@ -153,12 +155,23 @@ public class ResultDetailFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result_detail, menu);
+        hasWhatsApp = hasWhatsApp();
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_facebook).setVisible(footingResult == FootingResult.SUCCESS);
+        menu.findItem(R.id.action_facebook).setVisible(hasObtainedLocations);
         menu.findItem(R.id.action_map).setVisible(hasObtainedLocations);
+        menu.findItem(R.id.action_whatsapp).setVisible(hasObtainedLocations && hasWhatsApp);
+    }
+
+    private boolean hasWhatsApp() {
+        try {
+            ctx.getPackageManager().getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     public interface OnLocationClickedListener {

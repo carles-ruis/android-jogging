@@ -24,6 +24,7 @@
     <string name="action_facebook">Share with Facebook</string>
     <string name="action_settings">Preferences</string>
     <string name="action_map">Map</string>
+    <string name="action_whatsapp">Share with WhatsApp</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Go Jogging</string>
@@ -95,6 +96,7 @@
     <string name="result_saved">Footing saved. Improve it!</string>
     <string name="partial_header">Partial results</string>
     <string name="map_inici">Start</string>
+    <string name="share_whatsapp_text">I have ran %1$d meteres in %2$s with \'</string>
     <string name="share_feed_dialog_name">%1$s went running with %2$s</string>
     <string name="share_feed_dialog_desc">Ran %1$d meters in %2$s</string>
     <string name="facebook_response_title">Facebook</string>
