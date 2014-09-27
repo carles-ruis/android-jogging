@@ -31,6 +31,5 @@ proguard/
 # other files
 /libraries/*/build/
 /IGNORED
-/jogging/build.gradle
 /jogging/gradle.properties
 /jogging/src/main/res/values/keys.xml
