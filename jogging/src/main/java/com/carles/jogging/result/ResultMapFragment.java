@@ -33,8 +33,9 @@ public class ResultMapFragment extends SupportMapFragment {
     private static final String ARGS_KEY_POSITION = "args_key_position";
     private static final String ARGS_KEY_JOGGING = "args_key_jogging";
 
-    private int position;
+    private int position = 0;
     private Marker markerWithWindowShown = null;
+    private JoggingModel jogging = null;
     private List<JoggingModel> partials = new ArrayList<JoggingModel>();
     private List<JoggingModel> partialsForKm = new ArrayList <JoggingModel>();
     private List<Marker> markers = new ArrayList<Marker>();
@@ -59,14 +60,9 @@ public class ResultMapFragment extends SupportMapFragment {
         // retrieve arguments
         if (getArguments() != null) {
             position = getArguments().getInt(ARGS_KEY_POSITION, 0);
-            partials = ((JoggingModel)getArguments().getParcelable(ARGS_KEY_JOGGING)).getPartials();
-            partialsForKm = ((JoggingModel)getArguments().getParcelable(ARGS_KEY_JOGGING)).
-                    getPartialsForKilometer();
-
-        } else {
-            position = 0;
-            partials = new ArrayList<JoggingModel>();
-            partialsForKm = new ArrayList<JoggingModel>();
+            jogging = getArguments().getParcelable(ARGS_KEY_JOGGING);
+            partials = jogging.getPartials();
+            partialsForKm = jogging.getPartialsForKilometer();
         }
 
         // DON'T INIT THE MAP UNTIL ONCREATEVIEW DONE. So we call initMap in onResume
@@ -87,7 +83,7 @@ public class ResultMapFragment extends SupportMapFragment {
         map.setIndoorEnabled(false);
 
         // No position obtained. There are not markers to show
-        if (partials == null || partialsForKm == null) {
+        if (jogging == null || partials == null || partialsForKm == null) {
             // this should never happen. Map option shouldn't be enabled if no locations found
             return;
         }
@@ -112,34 +108,35 @@ public class ResultMapFragment extends SupportMapFragment {
 
         // Add markers. One for each kilometer, get points from jogging.getPartialsForKilometer()
         JoggingModel partialForKm;
-        LatLng point;
         String sTime;
         String snippet;
         markers = new ArrayList<Marker>();
-        Marker marker;
 
-        if (!partials.isEmpty()) {
-            partialForKm = partialsForKm.get(0);
-            point = new LatLng(partialForKm.getStart().getLatitude(), partialForKm.getStart().getLongitude());
-            marker = map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
-            markers.add(marker);
-        }
+        LatLng point = new LatLng(jogging.getStart().getLatitude(), jogging.getStart().getLongitude());
+        Marker marker = map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
+        markers.add(marker);
 
         for (int i = 0; i < partialsForKm.size(); i++) {
             partialForKm = partialsForKm.get(i);
             point = new LatLng(partialForKm.getEnd().getLatitude(), partialForKm.getEnd().getLongitude());
             sTime = FormatUtil.time(partialForKm.getGoalTime());
-            snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partialForKm.getGoalDistance()).append("m").toString();
+            snippet = new StringBuilder().append(sTime).append("  -  ").append((int) partialForKm.getGoalDistance()).append("m").toString();
             marker = map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
             markers.add(marker);
         }
 
         // draw lines between points. Use all points, get them from jogging.getPartials()
-        List<LatLng> points = new ArrayList<LatLng>();
-        for (JoggingModel partial : partials) {
-            points.add(new LatLng(partial.getStart().getLatitude(), partial.getStart().getLongitude()));
+        if (partials.size() > 0) {
+            List<LatLng> points = new ArrayList<LatLng>();
+            points.add(new LatLng(jogging.getStart().getLatitude(), jogging.getStart().getLongitude()));
+
+            JoggingModel partial = null;
+            for (int i = 0; i < partials.size(); i++) {
+                partial = partials.get(i);
+                points.add(new LatLng(partial.getEnd().getLatitude(), partial.getEnd().getLongitude()));
+            }
+            map.addPolyline(new PolylineOptions().addAll(points).width(10f).color(Color.BLUE));
         }
-        map.addPolyline(new PolylineOptions().addAll(points).width(10f).color(Color.BLUE));
 
            // moveCamera may cause an IllegalStateException if the map has not been already sized
         // use cameraChangeListener instead
@@ -162,8 +159,8 @@ public class ResultMapFragment extends SupportMapFragment {
     }
 
     private void centerToPosition() {
-        if (map != null && !partials.isEmpty()) {
-            Location location = position == -1 ? partials.get(0).getStart() : partials.get(position).getEnd();
+        if (map != null && partialsForKm!= null && !partialsForKm.isEmpty()) {
+            Location location = position == -1 ? partialsForKm.get(0).getStart() : partialsForKm.get(position).getEnd();
             LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, ZOOM));
             markers.get(position+1).showInfoWindow();
@@ -206,7 +203,7 @@ public class ResultMapFragment extends SupportMapFragment {
 
             try {
                 View contentsView = getActivity().getLayoutInflater().inflate(R.layout.infowindow_custom, null);
-                JoggingModel partial = partials.get(Integer.parseInt(marker.getTitle())-1);
+                JoggingModel partialForKm = partialsForKm.get(Integer.parseInt(marker.getTitle())-1);
 
                 final TextView txtTitle = (TextView) contentsView.findViewById(R.id.txt_title);
                 final TextView txtTime = (TextView) contentsView.findViewById(R.id.txt_time);
@@ -214,9 +211,9 @@ public class ResultMapFragment extends SupportMapFragment {
                 final TextView txtAccuracy = (TextView) contentsView.findViewById(R.id.txt_accuracy);
 
                 txtTitle.setText(marker.getTitle());
-                txtTime.setText(FormatUtil.time(partial.getGoalTime()));
-                txtDistance.setText(new StringBuilder().append((int) partial.getGoalDistance()).append("m"));
-                txtAccuracy.setText(new StringBuilder().append((int) partial.getAccuracy()).append("m"));
+                txtTime.setText(FormatUtil.time(partialForKm.getGoalTime()));
+                txtDistance.setText(new StringBuilder().append((int) partialForKm.getGoalDistance()).append("m"));
+                txtAccuracy.setText(new StringBuilder().append((int) partialForKm.getAccuracy()).append("m"));
 
                 return contentsView;
 

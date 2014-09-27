@@ -71,7 +71,7 @@
     <string name="jogging_button_cancel">Stop jogging</string>
     <string name="cancel_run_title">Stop jogging</string>
     <string name="cancel_run_msg">Are you sure?</string>
-    <string name="cancel_run_button_yes">Yes, I need to rest</string>
+    <string name="cancel_run_button_yes">Yes, stop</string>
     <string name="cancel_run_button_no">No</string>
 
     <!-- Location service notification -->

@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.carles.jogging.jogging.FootingResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -57,6 +58,8 @@ public class JoggingModel implements Parcelable {
         this.realDistance = source.readFloat();
         this.goalDistance = source.readFloat();
         this.user = source.readParcelable(UserModel.class.getClassLoader());
+        this.partials = Arrays.asList(source.createTypedArray(JoggingModel.CREATOR));
+        this.partialsForKilometer = Arrays.asList(source.createTypedArray(JoggingModel.CREATOR));
     }
 
     /**
@@ -241,6 +244,9 @@ public class JoggingModel implements Parcelable {
         parcel.writeFloat(realDistance);
         parcel.writeFloat(goalDistance);
         parcel.writeParcelable(user, flags);
+        parcel.writeTypedArray(partials.toArray(new JoggingModel[partials.size()]), flags);
+        parcel.writeTypedArray(partialsForKilometer.toArray
+                (new JoggingModel[partialsForKilometer.size()]), flags);
     }
 
     public static final Parcelable.Creator<JoggingModel> CREATOR = new Creator<JoggingModel>() {
@@ -251,6 +257,5 @@ public class JoggingModel implements Parcelable {
             return new JoggingModel[size];
         }
     };
-
 
 }

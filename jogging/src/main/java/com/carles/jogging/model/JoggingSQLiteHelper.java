@@ -126,7 +126,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         // there's no need to close a SQLite db in Android. System does it for you
     }
 
-    public long insertJogging(JoggingModel jogging, List<JoggingModel> partials) {
+    public long insertJogging(JoggingModel jogging) {
         SQLiteDatabase db = getWritableDatabase();
         long rowId = -1;
 
@@ -137,8 +137,8 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
             // insert "full jogging" object
             rowId = db.insertOrThrow(TABLE_JOGGING, null, getValues(jogging));
             // insert "partial jogging" objects
-            if (rowId != -1 && partials != null) {
-                for (JoggingModel partial : partials) {
+            if (rowId != -1 && jogging.getPartialsForKilometer()!= null) {
+                for (JoggingModel partial : jogging.getPartialsForKilometer()) {
                     db.insertOrThrow(TABLE_JOGGING, null, getValues(partial));
                 }
             }
@@ -194,14 +194,14 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(SQL_QUERY_JOGGING_LIST_LAST, new String[]{user.getName(), String.valueOf(distance)});
         if (c != null && c.moveToFirst()) {
             do {
-                ret.add(getJogging(c, user));
+                ret.add(queryJogging(c, user));
             } while (c.moveToNext());
         }
         closeCursor(c);
         return ret;
     }
 
-    private JoggingModel getJogging(Cursor c, UserModel user) {
+    private JoggingModel queryJogging(Cursor c, UserModel user) {
         JoggingModel j = new JoggingModel();
         j.setParentId(c.getLong(c.getColumnIndex(COLUMN_PARENT_ID)));
         j.setUser(user);
@@ -230,7 +230,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(SQL_QUERY_JOGGING_LIST_BEST, new String[]{user.getName(), user.getName()});
         if (c!=null && c.moveToFirst()) {
             do {
-                ret.add(getJogging(c, user));
+                ret.add(queryJogging(c, user));
             } while (c.moveToNext());
         }
         closeCursor(c);
@@ -256,7 +256,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(SQL_QUERY_PARTIALS, new String[]{String.valueOf(jogging.getId())});
         if (c!=null && c.moveToFirst()) {
             do {
-                ret.add(getJogging(c, jogging.getUser()));
+                ret.add(queryJogging(c, jogging.getUser()));
             } while (c.moveToNext());
         }
         closeCursor(c);

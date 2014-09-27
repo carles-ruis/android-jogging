@@ -215,7 +215,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
             }
 
             // only successful joggings will be saved
-            JoggingSQLiteHelper.getInstance(this).insertJogging(jogging, partials);
+            JoggingSQLiteHelper.getInstance(this).insertJogging(jogging);
             extras.putBoolean(C.EXTRA_RUNNING_SAVED, true);
         }
 
