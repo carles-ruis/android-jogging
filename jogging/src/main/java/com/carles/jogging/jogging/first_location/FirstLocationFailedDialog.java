@@ -44,8 +44,12 @@ public class FirstLocationFailedDialog extends DialogFragment {
             msg.setText(getString(R.string.connection_failed_gps));
         } else if (error==Error.GPS_LOST) {
             msg.setText(getString(R.string.connection_failed_gps_lost));
-        } else {
+        } else if (error==Error.GPS_NOT_CONNECTED) {
+            msg.setText(getString(R.string.connection_failed_gps_connection));
+        } else if (error==Error.NO_LOCATIONS) {
             msg.setText(getString(R.string.connection_failed_gps_location));
+         } else {
+            msg.setText(getString(R.string.connection_failed_unknown));
         }
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -66,7 +70,7 @@ public class FirstLocationFailedDialog extends DialogFragment {
     }
 
     @Override
-    /*- a dialog is cancelled when the user presses the back button*/
+    // dialog is cancelled when the user presses the back button
     public void onCancel(DialogInterface dialog) {
         getActivity().finish();
     }

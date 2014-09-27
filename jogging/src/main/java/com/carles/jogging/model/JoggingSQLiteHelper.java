@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.util.Log;
 
+import com.carles.jogging.C;
 import com.carles.jogging.jogging.FootingResult;
 import com.google.gson.Gson;
 
@@ -25,9 +26,6 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
     private static JoggingSQLiteHelper INSTANCE;
     private static final Gson gson = new Gson();
     private static final Object lock = new Object();
-
-    private static final String DATABASE_NAME = "jogging.db";
-    private static final int DATABASE_VERSION = 1;
 
     private static final String TABLE_JOGGING = "jogging";
     private static final String COLUMN_ID = "id";
@@ -101,7 +99,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
     }
 
     private JoggingSQLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, C.DATABASE_NAME, null, C.DATABASE_VERSION);
     }
 
     @Override
@@ -185,7 +183,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
             ret.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
             ret.setEmail(c.getString(c.getColumnIndex(COLUMN_EMAIL)));
         }
-        close(c);
+        closeCursor(c);
         return ret;
     }
 
@@ -199,7 +197,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
                 ret.add(getJogging(c, user));
             } while (c.moveToNext());
         }
-        close(c);
+        closeCursor(c);
         return ret;
     }
 
@@ -235,7 +233,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
                 ret.add(getJogging(c, user));
             } while (c.moveToNext());
         }
-        close(c);
+        closeCursor(c);
         return ret;
     }
 
@@ -247,7 +245,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         if (c != null && c.moveToFirst()) {
             ret = c.getLong(0);
         }
-        close(c);
+        closeCursor(c);
         return ret;
     }
 
@@ -261,11 +259,11 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
                 ret.add(getJogging(c, jogging.getUser()));
             } while (c.moveToNext());
         }
-        close(c);
+        closeCursor(c);
         return ret;
     }
 
-    private void close(Cursor c) {
+    private void closeCursor(Cursor c) {
         if (c!=null) {
             c.close();
         }

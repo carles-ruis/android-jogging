@@ -8,13 +8,14 @@ import com.carles.jogging.model.JoggingModel;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by carles on 21/09/2014.
  */
 public class JoggingModelTest extends TestCase {
 
-    private JoggingModel p0, p1, p2;
+    private JoggingModel p0, p1, p2, p3, p4, p5;
 
     @Override
     public void setUp() throws Exception {
@@ -42,6 +43,24 @@ public class JoggingModelTest extends TestCase {
         p2.setGoalTime(60000l);
         p2.setStart(l2);
         p2.setEnd(l3);
+
+        p3 = new JoggingModel();
+        p3.setGoalDistance(1003f);
+        p3.setGoalTime(60001l);
+        p3.setStart(l3);
+        p3.setEnd(l3);
+
+        p4 = new JoggingModel();
+        p4.setGoalDistance(1004f);
+        p4.setGoalTime(60002l);
+        p4.setStart(l3);
+        p4.setEnd(l3);
+
+        p5 = new JoggingModel();
+        p5.setGoalDistance(3005f);
+        p5.setGoalTime(60003l);
+        p5.setStart(l3);
+        p5.setEnd(l3);
     }
 
     private Location createLocation(long millis) {
@@ -75,7 +94,14 @@ public class JoggingModelTest extends TestCase {
         j = new JoggingModel(Arrays.asList(p0, p1, p2), 180f, FootingResult.CANCELLED_BY_USER, null);
         assertEquals(200f, j.getGoalDistance());
         assertEquals(60000l, j.getGoalTime());
+    }
 
+    public void testCalcPartialsForKilometer() {
+        JoggingModel j = new JoggingModel(Arrays.asList(p0, p1, p2, p3, p4, p5), 3000f, FootingResult.SUCCESS, null);
+        List<JoggingModel> pfk = j.getPartialsForKilometer();
+        assertEquals(2, pfk.size());
+        assertEquals(1003f, pfk.get(0).getGoalDistance());
+        assertEquals(3005f, pfk.get(1).getGoalDistance());
     }
 
 }

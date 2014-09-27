@@ -25,7 +25,6 @@ import com.carles.jogging.result.ResultDetailActivity;
 import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.util.PrefUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,10 +88,11 @@ public class LastTimesContentFragment extends BaseFragment {
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     JoggingModel selectedJogging = joggings.get(position);
                     List<JoggingModel> partials = JoggingSQLiteHelper.getInstance(ctx).queryPartials(selectedJogging);
+                    selectedJogging.setPartialsForKilometer(partials);
+                    selectedJogging.setPartials(partials);
 
                     Intent intent = new Intent(ctx, ResultDetailActivity.class);
                     intent.putExtra(C.EXTRA_JOGGING_TOTAL, selectedJogging);
-                    intent.putParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS, (ArrayList) partials);
                     intent.putExtra(C.EXTRA_FOOTING_RESULT, FootingResult.SUCCESS);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.slide_activity_to_left_in, R.anim.slide_activity_to_left_out);

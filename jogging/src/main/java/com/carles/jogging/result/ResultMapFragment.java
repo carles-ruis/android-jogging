@@ -31,22 +31,23 @@ public class ResultMapFragment extends SupportMapFragment {
 
     private static final String TAG = ResultMapFragment.class.getSimpleName();
     private static final String ARGS_KEY_POSITION = "args_key_position";
-    private static final String ARGS_KEY_PARTIALS = "args_key_partials";
+    private static final String ARGS_KEY_JOGGING = "args_key_jogging";
 
     private int position;
     private Marker markerWithWindowShown = null;
-    private List<JoggingModel> partials = new ArrayList <JoggingModel>();
+    private List<JoggingModel> partials = new ArrayList<JoggingModel>();
+    private List<JoggingModel> partialsForKm = new ArrayList <JoggingModel>();
     private List<Marker> markers = new ArrayList<Marker>();
 
     // GoogleMap zoom value range from 0 to 19. 0 is worldwide, 19 finest zoom
     private static final float ZOOM = 15f;
     private GoogleMap map;
 
-    public static ResultMapFragment newInstance(int position, ArrayList<JoggingModel> partials) {
+    public static ResultMapFragment newInstance(int position, JoggingModel jogging) {
         ResultMapFragment mapFragment = new ResultMapFragment();
         Bundle args = new Bundle();
         args.putInt(ARGS_KEY_POSITION, position);
-        args.putParcelableArrayList(ARGS_KEY_PARTIALS, partials);
+        args.putParcelable(ARGS_KEY_JOGGING, jogging);
         mapFragment.setArguments(args);
         return mapFragment;
     }
@@ -58,10 +59,14 @@ public class ResultMapFragment extends SupportMapFragment {
         // retrieve arguments
         if (getArguments() != null) {
             position = getArguments().getInt(ARGS_KEY_POSITION, 0);
-            partials = getArguments().getParcelableArrayList(ARGS_KEY_PARTIALS);
+            partials = ((JoggingModel)getArguments().getParcelable(ARGS_KEY_JOGGING)).getPartials();
+            partialsForKm = ((JoggingModel)getArguments().getParcelable(ARGS_KEY_JOGGING)).
+                    getPartialsForKilometer();
+
         } else {
             position = 0;
             partials = new ArrayList<JoggingModel>();
+            partialsForKm = new ArrayList<JoggingModel>();
         }
 
         // DON'T INIT THE MAP UNTIL ONCREATEVIEW DONE. So we call initMap in onResume
@@ -76,15 +81,13 @@ public class ResultMapFragment extends SupportMapFragment {
             return;
         }
 
-        //  icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position);
-
         // configurate map
         map.clear();
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setIndoorEnabled(false);
 
         // No position obtained. There are not markers to show
-        if (partials == null) {
+        if (partials == null || partialsForKm == null) {
             // this should never happen. Map option shouldn't be enabled if no locations found
             return;
         }
@@ -107,35 +110,35 @@ public class ResultMapFragment extends SupportMapFragment {
             }
         });
 
-        // add markers
-        JoggingModel partial;
+        // Add markers. One for each kilometer, get points from jogging.getPartialsForKilometer()
+        JoggingModel partialForKm;
         LatLng point;
         String sTime;
         String snippet;
-        List<LatLng> points = new ArrayList<LatLng>();
         markers = new ArrayList<Marker>();
         Marker marker;
 
         if (!partials.isEmpty()) {
-            partial = partials.get(0);
-            point = new LatLng(partial.getStart().getLatitude(), partial.getStart().getLongitude());
+            partialForKm = partialsForKm.get(0);
+            point = new LatLng(partialForKm.getStart().getLatitude(), partialForKm.getStart().getLongitude());
             marker = map.addMarker(new MarkerOptions().position(point).title(getString(R.string.map_inici)));
             markers.add(marker);
-            points.add(point);
         }
 
-        for (int i = 0; i < partials.size(); i++) {
-            partial = partials.get(i);
-            point = new LatLng(partial.getEnd().getLatitude(), partial.getEnd().getLongitude());
-            sTime = FormatUtil.time(partial.getGoalTime());
-            snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partial.getGoalDistance()).append("m").toString();
-            //            map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet).icon(icon));
+        for (int i = 0; i < partialsForKm.size(); i++) {
+            partialForKm = partialsForKm.get(i);
+            point = new LatLng(partialForKm.getEnd().getLatitude(), partialForKm.getEnd().getLongitude());
+            sTime = FormatUtil.time(partialForKm.getGoalTime());
+            snippet = new StringBuilder().append(sTime).append("  -  ").append((int)partialForKm.getGoalDistance()).append("m").toString();
             marker = map.addMarker(new MarkerOptions().position(point).title(String.valueOf(i + 1)).snippet(snippet));
             markers.add(marker);
-            points.add(point);
         }
 
-        // draw lines between points
+        // draw lines between points. Use all points, get them from jogging.getPartials()
+        List<LatLng> points = new ArrayList<LatLng>();
+        for (JoggingModel partial : partials) {
+            points.add(new LatLng(partial.getStart().getLatitude(), partial.getStart().getLongitude()));
+        }
         map.addPolyline(new PolylineOptions().addAll(points).width(10f).color(Color.BLUE));
 
            // moveCamera may cause an IllegalStateException if the map has not been already sized

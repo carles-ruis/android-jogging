@@ -50,7 +50,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     // data obtained from the intent
     private JoggingModel jogging;
-    private ArrayList<JoggingModel> partials = new ArrayList<JoggingModel>();
 
     // share with facebook
     private Session.StatusCallback sessionCallback = new Session.StatusCallback() {
@@ -81,15 +80,13 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         setContentView(R.layout.activity_result_detail);
         ctx = this;
 
+        jogging = getIntent().getParcelableExtra(C.EXTRA_JOGGING_TOTAL);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.title_result);
 
         // load views
         progress = (ProgressBar) findViewById(R.id.progress);
-
-        // save results in the local database if required
-        partials = getIntent().<JoggingModel>getParcelableArrayListExtra(C.EXTRA_JOGGING_PARTIALS);
-        jogging = getIntent().getParcelableExtra(C.EXTRA_JOGGING_TOTAL);
 
         // show detail fragment as is the ResultDetailActivity's initial fragment
         if (savedInstanceState == null) {
@@ -116,7 +113,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
 
     private void addResultMapFragment(int position) {
         if (mapFragment == null) {
-            mapFragment = ResultMapFragment.newInstance(position, partials);
+            mapFragment = ResultMapFragment.newInstance(position, jogging);
         } else {
             mapFragment.setPosition(position);
         }

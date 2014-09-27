@@ -36,7 +36,7 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     private static final int MIN_REQUEST_TIME = 20 * 1000;
     private static final int MAX_REQUEST_TIME = 60 * 1000;
     private static final int MAX_GPS_CONNECTION_TIME = 60 * 1000;
-    private static final long UPDATE_INTERVAL = 4 * 1000;
+    private static final long UPDATE_INTERVAL = 2 * 1000;
     private static final float ACCURACY_LIMIT = 50.0f;
     private static final float LOW_ACCURACY_LIMIT = 100.0f;
 
@@ -54,7 +54,6 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     private Handler handler = new Handler();
     private FirstLocationTimeout locationTimeout = new FirstLocationTimeout();
-    private GpsConnectionTimeout gpsConnectionTimeout = new GpsConnectionTimeout();
 
     @Override
     public void onCreate() {
@@ -89,13 +88,12 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     /*- Called from the client */
     public void requestLocation() {
-        handler.postDelayed(gpsConnectionTimeout, MAX_GPS_CONNECTION_TIME);
         locationClient.connect();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        handler.removeCallbacks(gpsConnectionTimeout);
+        Log.e("carles", "on connected");
 
         stopRequestingTime = System.currentTimeMillis() + MIN_REQUEST_TIME;
         handler.postDelayed(locationTimeout, MAX_REQUEST_TIME);
@@ -177,13 +175,6 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
 
     /*- ************************************************************** */
     /*- ************************************************************** */
-    private class GpsConnectionTimeout implements Runnable {
-        @Override
-        public void run() {
-            client.get().onLocationFailed(Error.GPS_NOT_CONNECTED);
-        }
-    }
-
     private class FirstLocationTimeout implements Runnable {
         @Override
         public void run() {

@@ -203,7 +203,6 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         if (partials.size() > 0) {
             jogging = new JoggingModel(partials, goalDistance, footingResult, user);
             extras.putParcelable(C.EXTRA_JOGGING_TOTAL, jogging);
-            extras.putParcelableArrayList(C.EXTRA_JOGGING_PARTIALS, (ArrayList<JoggingModel>) partials);
         }
 
         if (footingResult == FootingResult.SUCCESS) {

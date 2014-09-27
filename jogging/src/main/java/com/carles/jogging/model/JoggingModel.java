@@ -5,7 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.carles.jogging.jogging.FootingResult;
-import com.carles.jogging.util.LocationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,9 @@ public class JoggingModel implements Parcelable {
 
     // if this objecte represents a "full" run, partial results obtained
     private List<JoggingModel> partials = new ArrayList<JoggingModel>();
+
+    // partials results for each kilometer. Showing and saving full partial list was too much
+    private List<JoggingModel> partialsForKilometer = new ArrayList<JoggingModel>();
 
     public JoggingModel() {}
 
@@ -100,18 +102,27 @@ public class JoggingModel implements Parcelable {
         for (int i = 0; i < partials.size(); i++) {
             partials.get(i).setParentId(getId());
         }
+
+        this.partialsForKilometer = calcPartialsForKilometer();
     }
 
-    @Override
-    public String toString() {
-        return "JoggingModel{" +
-                "start=" + LocationHelper.toString(start) +
-                ", end=" + LocationHelper.toString(end) +
-                ", realTime=" + realTime +
-                ", realDistance=" + realDistance +
-                ", goalTime=" + goalTime +
-                ", goalDistance=" + goalDistance +
-                '}';
+    /**
+     * Gets this jogging' list of kilometer partials
+     * @return
+     */
+    public List<JoggingModel> calcPartialsForKilometer() {
+        List<JoggingModel> ret = new ArrayList<JoggingModel>();
+        int previous = 0;
+        int current = 0;
+
+        for (JoggingModel partial : getPartials()) {
+            current = (int) partial.getGoalDistance();
+            if (current / 1000 > previous / 1000) {
+                ret.add(partial);
+            }
+            previous = current;
+        }
+        return ret;
     }
 
     public long getId() {
@@ -206,6 +217,14 @@ public class JoggingModel implements Parcelable {
         this.footingResult = footingResult;
     }
 
+    public List<JoggingModel> getPartialsForKilometer() {
+        return partialsForKilometer;
+    }
+
+    public void setPartialsForKilometer(List<JoggingModel> partialsForKilometer) {
+        this.partialsForKilometer = partialsForKilometer;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -232,4 +251,6 @@ public class JoggingModel implements Parcelable {
             return new JoggingModel[size];
         }
     };
+
+
 }

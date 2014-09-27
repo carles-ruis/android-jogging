@@ -20,7 +20,6 @@ public class C {
     public static final String EXTRA_DISTANCE_TEXT = "extra_kilometers_text";
     public static final String EXTRA_FIRST_LOCATION = "extra_first_location";
     public static final String EXTRA_FOOTING_RESULT = "extra_footing_result";
-    public static final String EXTRA_JOGGING_PARTIALS = "extra_partials";
     public static final String EXTRA_JOGGING_TOTAL = "extra_jogging_total";
     public static final String EXTRA_RUNNING_SAVED = "extra_should_save_running";
     public static final String EXTRA_BEST_TIME = "extra_best_time";
@@ -42,5 +41,9 @@ public class C {
 
     // google analytics custom dimension indexes
     public static final int GA_DIMENSION_USER = 1;
+
+    // SQLite database
+    public static final String DATABASE_NAME = "jogging.db";
+    public static final int DATABASE_VERSION = 1;
 
 }

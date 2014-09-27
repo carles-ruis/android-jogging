@@ -57,8 +57,9 @@ public class ResultDetailFragment extends BaseFragment {
 
         // obtain extras to show the results
         Bundle extras = getActivity().getIntent().getExtras();
-        List<JoggingModel> partials = extras.<JoggingModel>getParcelableArrayList(C.EXTRA_JOGGING_PARTIALS);
         JoggingModel jogging = extras.getParcelable(C.EXTRA_JOGGING_TOTAL);
+        List<JoggingModel> partials = jogging.getPartials();
+        List<JoggingModel> partialsForKm = jogging.getPartialsForKilometer();
 
         // obtain title and subtitle
         String title = "";
@@ -119,7 +120,7 @@ public class ResultDetailFragment extends BaseFragment {
                 txtSpeed.setVisibility(View.GONE);
             }
 
-            final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, partials);
+            final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, partialsForKm);
             // add a header with the isSelectable flag to false
 //            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
             list.setAdapter(adapter);

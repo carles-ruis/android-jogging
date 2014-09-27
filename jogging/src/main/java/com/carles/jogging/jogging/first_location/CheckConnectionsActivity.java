@@ -33,6 +33,11 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     private ProgressDialog dialog;
 
+    // Use to control if this activity is in the foreground
+    private boolean isActive = true;
+    // Error that must be shown if a onLocationFailed was received while activity was not visible
+    private Error errorPending = null;
+
     private FirstLocationService service;
     private boolean isServiceBound = false;
     private ServiceConnection serviceConnection = new FirstLocationServiceConnection();
@@ -102,7 +107,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (enabled) {
-            showRequestForFirstLocationProgressDialog();
+            showProgressDialog();
             Intent intent = new Intent(this, FirstLocationService.class);
 
             // BIND_AUTO_CREATE ties the service lifecycle with the binding
@@ -116,7 +121,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         }
     }
 
-    private void showRequestForFirstLocationProgressDialog() {
+    private void showProgressDialog() {
         dialog = new ProgressDialog(this);
         dialog.setTitle(R.string.progress_waiting);
         dialog.setMessage(getString(R.string.check_connection_progress_msg));
@@ -132,6 +137,23 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         // dialog is not cancelable with the back key, only with the cancel button
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        isActive = true;
+        if (errorPending != null) {
+            showFirstLocationFailedDialog(errorPending);
+            errorPending = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        isActive = false;
+        super.onStop();
     }
 
     @Override
@@ -183,7 +205,20 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
             dialog = null;
         }
 
-        FirstLocationFailedDialog.newInstance(error).show(getSupportFragmentManager(), C.TAG_FIRST_LOCATION_NOT_OBTAINED);
+        // if activity is not visible when receiving a callback, don't show dialog because the
+        // fragment transaction will cause
+        // java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+        if (isActive) {
+            showFirstLocationFailedDialog(error);
+        } else {
+            errorPending = error;
+        }
+    }
+
+    private void showFirstLocationFailedDialog(Error error) {
+        FirstLocationFailedDialog.newInstance(error).show(getSupportFragmentManager(),
+                C.TAG_FIRST_LOCATION_NOT_OBTAINED);
+        getSupportFragmentManager().executePendingTransactions();
     }
 
     /*- ********************************************************************************* */
