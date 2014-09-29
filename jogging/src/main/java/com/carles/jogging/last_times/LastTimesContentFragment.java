@@ -22,7 +22,6 @@ import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.model.JoggingSQLiteHelper;
 import com.carles.jogging.result.ResultDetailActivity;
-import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.util.PrefUtil;
 
 import java.util.List;
@@ -64,15 +63,14 @@ public class LastTimesContentFragment extends BaseFragment {
 
     private void loadData() {
         // obtain the selected distance by the user in the actionBar navigation list
-        ((SherlockFragmentActivity)getActivity()).getSupportActionBar().setNavigationMode
-                (ActionBar.NAVIGATION_MODE_LIST);
-        int position = ((SherlockFragmentActivity)getActivity()).getSupportActionBar().
+        ((SherlockFragmentActivity) getActivity()).getSupportActionBar().
+                setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        int position = ((SherlockFragmentActivity) getActivity()).getSupportActionBar().
                 getSelectedNavigationIndex();
-        if (position==-1) {
+        if (position == -1) {
             position = 0;
         }
-        final String sMeters = getResources().getStringArray(R.array.main_entries_kms)[position];
-        final int meters = FormatUtil.textDistanceToMeters(ctx, sMeters);
+        final int meters = (position + 1)*1000;
 
         new QueryLastTimesAsyncTask().execute(meters);
     }

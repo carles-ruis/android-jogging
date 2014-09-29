@@ -9,12 +9,20 @@ import com.google.gson.Gson;
 
 public class PrefUtil {
 
-    public static int getLastKilometersSelectedPosition(Context ctx) {
-        return ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).getInt(C.PREF_LAST_KILOMETERS_SELECTED, 0);
+    public static int getLastKilometersSelected(Context ctx) {
+        return ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).getInt(C.PREF_LAST_KILOMETERS, 1);
     }
 
-    public static void setLastKilometersSelectedPosition(Context ctx, int lastKilometersSelected) {
-        ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).edit().putInt(C.PREF_LAST_KILOMETERS_SELECTED, lastKilometersSelected).commit();
+    public static void setLastKilometersSelected(Context ctx, int kms) {
+        ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).edit().putInt(C.PREF_LAST_KILOMETERS, kms).commit();
+    }
+
+    public static boolean getDistanceSelected(Context ctx) {
+        return ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).getBoolean(C.PREF_DISTANCE_SELECTED, true);
+    }
+
+    public static void setDistanceSelected(Context ctx, boolean isDistanceSelected) {
+        ctx.getSharedPreferences(C.PREF_FILE, Context.MODE_PRIVATE).edit().putBoolean(C.PREF_DISTANCE_SELECTED, isDistanceSelected).commit();
     }
 
     public static UserModel getLoggedUser(Context ctx) {

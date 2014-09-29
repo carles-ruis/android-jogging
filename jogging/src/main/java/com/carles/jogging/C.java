@@ -7,17 +7,16 @@ public class C {
 
     public static final boolean DEBUG = false;
 
-    public static final int DEFAULT_DISTANCE = 2000;
     public static final Integer HALF_MARATHON_METERS = 21097;
     public static final int COUNTDOWN_STOP_MILLISECONDS = 1500;
+    public static final int NO_DISTANCE = 999999;
 
     // request codes for startActivityForResult
     public static final int REQ_CODE_GOOGLE_CONNECTION_FAILURE = 1;
     public static final int REQ_CODE_ENABLE_GPS = 2;
 
     // arguments passes to activities as extras
-    public static final String EXTRA_DISTANCE_IN_METERS = "extra_kilometers";
-    public static final String EXTRA_DISTANCE_TEXT = "extra_kilometers_text";
+    public static final String EXTRA_KILOMETERS = "extra_kilometers";
     public static final String EXTRA_FIRST_LOCATION = "extra_first_location";
     public static final String EXTRA_FOOTING_RESULT = "extra_footing_result";
     public static final String EXTRA_JOGGING_TOTAL = "extra_jogging_total";
@@ -26,8 +25,9 @@ public class C {
 
     // preferences
     public static final String PREF_FILE = "shared_prefs_file_";
-    public static final String PREF_LAST_KILOMETERS_SELECTED = "pref_last_kms_selected";
     public static final String PREF_LOGGER_USER = "pref_logged_user";
+    public static final String PREF_LAST_KILOMETERS = "pref_last_kilometers";
+    public static final String PREF_DISTANCE_SELECTED = "pref_distance_selected";
 
     // tags for dialogs
     public static final String TAG_CONNECTION_FAILED_DIALOG = "tag_connection_failed_dialog";

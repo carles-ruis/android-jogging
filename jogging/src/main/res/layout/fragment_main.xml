@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -9,71 +9,104 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.carles.jogging.main.MainActivity$PlaceholderFragment">
 
-    <ImageView
-        android:id="@+id/img_logo"
-        android:layout_above="@+id/txt_app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:padding="@dimen/padding"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_running_girl" />
-
     <TextView
         android:id="@+id/txt_app_name"
-        android:layout_above="@+id/lyt_main_kms"
+        style="@style/text_login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        style="@style/text_login_title"
+        android:layout_above="@+id/lyt_input"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/margin_big"
-        android:layout_centerHorizontal="true" />
+        android:text="@string/app_name" />
 
-    <LinearLayout
-        android:id="@+id/lyt_main_kms"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+    <RelativeLayout
+        android:id="@+id/lyt_input"
         android:layout_centerVertical="true"
-        android:weightSum="2">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/txt_main_kms"
-            android:gravity="right"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+        <RadioGroup
+            android:id="@+id/rg_kms"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:paddingBottom="4dp"
-            style="@style/spinner_label"
-            android:text="@string/main_text_run" />
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/sp_main_kms"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            <RadioButton
+                android:id="@+id/rb_no_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_text_no_distance" />
+
+            <RadioButton
+                android:id="@+id/rb_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/main_text_distance" />
+
+        </RadioGroup>
+
+        <RelativeLayout
+            android:id="@+id/lyt_kms"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/spinner"
-            android:entries="@array/main_entries_kms" />
-    </LinearLayout>
+            android:layout_below="@id/rg_kms"
+            android:layout_marginLeft="@dimen/margin_big"
+            android:layout_marginRight="@dimen/margin">
+
+            <SeekBar
+                android:id="@+id/seek_kms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:max="19" />
+
+            <TextView
+                style="@style/label_main_kms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/seek_kms"
+                android:layout_below="@id/seek_kms"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/txt_kms"
+                style="@style/label_main_kms.progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seek_kms"
+                android:layout_centerHorizontal="true"
+                android:text="1 Km" />
+
+            <TextView
+                style="@style/label_main_kms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/seek_kms"
+                android:layout_below="@id/seek_kms"
+                android:text="20" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_main_run"
+        style="@style/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/adView"
-        style="@style/button"
         android:text="@string/main_button_run" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_small"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id"/>
+        ads:adUnitId="@string/banner_ad_unit_id" />
 
 </RelativeLayout>

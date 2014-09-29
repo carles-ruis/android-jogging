@@ -18,6 +18,9 @@ import com.carles.jogging.last_times.LastTimesContentFragment;
 import com.carles.jogging.login.LoginActivity;
 import com.carles.jogging.util.PrefUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by carles1 on 20/04/14.
  */
@@ -54,8 +57,15 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
     }
 
     private void setUpNavigationList() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
-                (this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
+        //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
+        //                (this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
+        final List<CharSequence> options = new ArrayList<CharSequence>();
+        options.add("1 Km");
+        for (int i=2; i<=20; i++) {
+            options.add(new StringBuilder().append(i).append(" Kms"));
+        }
+
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, R.layout.sherlock_spinner_dropdown_item, options);
 
         ActionBar.OnNavigationListener callback = new ActionBar.OnNavigationListener() {
             @Override

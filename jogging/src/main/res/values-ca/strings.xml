@@ -46,7 +46,8 @@
     <!-- Main Fragment -->
     <string name="main_button_run">Corre !</string>
     <string name="main_text_run">Avui correré ...</string>
-    <string name="main_half_marathon">Mitja marató!</string>
+    <string name="main_text_no_distance">Avui correré fins que em cansi</string>
+    <string name="main_text_distance">Prefereixo seleccionar la distància</string>
 
     <!-- Check connections fragment -->
     <string name="check_connection_progress_msg">El GPS està obtenint la teva posició</string>
@@ -63,7 +64,8 @@
     <string name="activate_gps_button_no">No</string>
 
     <!-- Jogging fragment -->
-    <string name="jogging_improve_time">Millora el teu temps en la distància de %1$s</string>
+    <string name="jogging_cheer_distance">Millora el teu temps en la distància de %d kms</string>
+    <string name="jogging_cheer_no_distance">Corre tanta estona com puguis</string>
     <string name="jogging_on_your_marks">PREPARAT ...</string>
     <string name="jogging_get_set">... LLEST ...</string>
     <string name="jogging_go">... JA !!!</string>
@@ -97,7 +99,7 @@
     <string name="partial_header">Resultats parcials</string>
     <string name="map_inici">Inici</string>
     <string name="share_whatsapp_text">He corregut %1$d metres en %2$s amb \'</string>
-    <string name="share_feed_dialog_name">%1$s ha sortit a correr amb %2$s</string>
+    <string name="share_feed_dialog_name">He sortit a correr amb %s</string>
     <string name="share_feed_dialog_desc">Una distància de %1$d metres en %2$s</string>
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">Has compartit aquest footing a Facebook</string>

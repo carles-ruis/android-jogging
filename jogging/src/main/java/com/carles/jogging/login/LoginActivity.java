@@ -87,7 +87,6 @@ public class LoginActivity extends BaseActivity {
                     if (r.height() < MIN_WINDOW_VISIBLE_SPACE_TO_SHOW_LOGO) {
                         // not much space available, hide the logo
                         imgLogo.setVisibility(View.GONE);
-
                     } else {
                         imgLogo.setVisibility(View.VISIBLE);
                     }

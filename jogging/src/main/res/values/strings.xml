@@ -46,7 +46,8 @@
     <!-- Main Fragment -->
     <string name="main_button_run">Run !</string>
     <string name="main_text_run">I\'m going to run ...</string>
-    <string name="main_half_marathon">Half marathon!</string>
+    <string name="main_text_no_distance">I\'m going to run until I feel tired</string>
+    <string name="main_text_distance">I prefer to select a distance</string>
 
     <!-- Check connections fragment -->
     <string name="check_connection_progress_msg">GPS is obtaining your location</string>
@@ -63,7 +64,8 @@
     <string name="activate_gps_button_no">No</string>
 
     <!-- Jogging fragment -->
-    <string name="jogging_improve_time">Beat your %1$s best time !!!</string>
+    <string name="jogging_cheer_distance">Beat your %d kms best time !!!</string>
+    <string name="jogging_cheer_no_distance">Run as long as you can !!!</string>
     <string name="jogging_on_your_marks">ON YOUR MARKS ...</string>
     <string name="jogging_get_set">... GET SET ...</string>
     <string name="jogging_go">... GO !!!</string>
@@ -97,7 +99,7 @@
     <string name="partial_header">Partial results</string>
     <string name="map_inici">Start</string>
     <string name="share_whatsapp_text">I have ran %1$d meteres in %2$s with \'</string>
-    <string name="share_feed_dialog_name">%1$s went running with %2$s</string>
+    <string name="share_feed_dialog_name">I went running with %s</string>
     <string name="share_feed_dialog_desc">Ran %1$d meters in %2$s</string>
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">You shared your jogging to Facebook</string>

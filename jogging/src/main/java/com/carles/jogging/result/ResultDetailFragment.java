@@ -20,7 +20,6 @@ import com.carles.jogging.jogging.FootingResult;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.util.FormatUtil;
 
-import java.util.List;
 import java.util.concurrent.CancellationException;
 
 /**
@@ -32,7 +31,7 @@ public class ResultDetailFragment extends BaseFragment {
 
     private Context ctx;
     private OnLocationClickedListener callbacks;
-    private boolean hasObtainedLocations;
+    private Boolean hasObtainedLocations;
     private boolean hasWhatsApp;
 
     private FootingResult footingResult = FootingResult.UNKNOWN_ERROR;
@@ -57,13 +56,41 @@ public class ResultDetailFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_result_detail, container, false);
 
-        // obtain extras to show the results
+        // allows this fragment to inflate its own menu in the action bar
+        setHasOptionsMenu(true);
+
+        setHasObtainedLocations();
+
+        loadViews(view);
+
+        getActivity().getIntent().removeExtra(C.EXTRA_RUNNING_SAVED);
+
+        return view;
+    }
+
+    private void setHasObtainedLocations() {
+        if (hasObtainedLocations == null) {
+            JoggingModel jogging = getActivity().getIntent().getExtras().getParcelable(C.EXTRA_JOGGING_TOTAL);
+            hasObtainedLocations = jogging != null && jogging.getPartials() != null && !jogging.getPartials().isEmpty();
+        }
+    }
+
+    private void loadViews(View view) {
+        final TextView txtTitle = (TextView) view.findViewById(R.id.txt_result_title);
+        final TextView txtSubtitle = (TextView) view.findViewById(R.id.txt_result_subtitle);
+        final TextView txtNoLocations = (TextView) view.findViewById(R.id.txt_result_no_locations);
+        final View lytResultData = view.findViewById(R.id.lyt_result_data);
+        final TextView txtTime = (TextView) view.findViewById(R.id.txt_result_time);
+        final TextView txtDistance = (TextView) view.findViewById(R.id.txt_result_distance);
+        final TextView txtSpeed = (TextView) view.findViewById(R.id.txt_result_speed);
+        final TextView txtBestTime = (TextView) view.findViewById(R.id.txt_result_best_time);
+        final ListView list = (ListView) view.findViewById(R.id.list);
+        final TextView txtSaved = (TextView) view.findViewById(R.id.txt_result_saved);
+
         Bundle extras = getActivity().getIntent().getExtras();
         JoggingModel jogging = extras.getParcelable(C.EXTRA_JOGGING_TOTAL);
-        List<JoggingModel> partials = jogging.getPartials();
-        List<JoggingModel> partialsForKm = jogging.getPartialsForKilometer();
 
-        // obtain title and subtitle
+        // show title and subtitle
         String title = "";
         String subtitle = "";
         if (extras.getSerializable(C.EXTRA_FOOTING_RESULT) == null) {
@@ -80,28 +107,10 @@ public class ResultDetailFragment extends BaseFragment {
                 subtitle = getString(getResources().getIdentifier(footingResult.getResourceId(), "string", ctx.getPackageName()));
             }
         }
-
-        hasObtainedLocations = partials != null && !partials.isEmpty() && jogging != null;
-
-        // allows this fragment to inflate its own menu in the action bar
-        setHasOptionsMenu(true);
-
-        // load views
-        final TextView txtTitle = (TextView) view.findViewById(R.id.txt_result_title);
-        final TextView txtSubtitle = (TextView) view.findViewById(R.id.txt_result_subtitle);
-        final TextView txtNoLocations = (TextView) view.findViewById(R.id.txt_result_no_locations);
-        final View lytResultData = view.findViewById(R.id.lyt_result_data);
-        final TextView txtTime = (TextView) view.findViewById(R.id.txt_result_time);
-        final TextView txtDistance = (TextView) view.findViewById(R.id.txt_result_distance);
-        final TextView txtSpeed = (TextView) view.findViewById(R.id.txt_result_speed);
-        final TextView txtBestTime = (TextView) view.findViewById(R.id.txt_result_best_time);
-        final ListView list = (ListView) view.findViewById(R.id.list);
-        final TextView txtSaved = (TextView) view.findViewById(R.id.txt_result_saved);
-
-        // populate views
         txtTitle.setText(title);
         txtSubtitle.setText(subtitle);
 
+        // show jogging data
         if (hasObtainedLocations) {
             txtTime.setText(getString(R.string.result_time, FormatUtil.time(jogging.getGoalTime())));
             txtDistance.setText(getString(R.string.result_distance, (int)jogging.getGoalDistance()));
@@ -122,15 +131,15 @@ public class ResultDetailFragment extends BaseFragment {
                 txtSpeed.setVisibility(View.GONE);
             }
 
-            final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, partialsForKm);
+            final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, jogging.getPartialsForKilometer());
             // add a header with the isSelectable flag to false
-//            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
+            //            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
             list.setAdapter(adapter);
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     if (callbacks != null) {
-//                        callbacks.onLocationClicked(position - 1);
+                        //                        callbacks.onLocationClicked(position - 1);
                         callbacks.onLocationClicked(position);
                     }
                 }
@@ -140,10 +149,6 @@ public class ResultDetailFragment extends BaseFragment {
             lytResultData.setVisibility(View.GONE);
             txtNoLocations.setVisibility(View.VISIBLE);
         }
-
-        getActivity().getIntent().removeExtra(C.EXTRA_RUNNING_SAVED);
-
-        return view;
     }
 
     private Float getSpeed(JoggingModel jogging) {
@@ -156,6 +161,7 @@ public class ResultDetailFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result_detail, menu);
         hasWhatsApp = hasWhatsApp();
+        setHasObtainedLocations();
     }
 
     @Override

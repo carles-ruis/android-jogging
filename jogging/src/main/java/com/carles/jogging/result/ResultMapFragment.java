@@ -159,25 +159,19 @@ public class ResultMapFragment extends SupportMapFragment {
     }
 
     private void centerToPosition() {
-        Log.e("carles","center to position");
         if (map != null && partialsForKm != null) {
             Location location = null;
             int index = 0;
             if (partialsForKm.isEmpty() || position == -1) {
-                Log.e("carles", "partials is empty");
                 location = jogging.getStart();
                 index = 0;
             } else {
-                Log.e("carles","partials is not empty, showing marker #"+(position+1));
                 location = partialsForKm.get(position).getEnd();
                 index = position + 1;
             }
             LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.e("carles", "point coords were obtained:" + point.latitude + ":" + point.longitude);
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, ZOOM));
-            Log.e("carles", "camera has been animated");
             markers.get(index).showInfoWindow();
-            Log.e("carles","window was shown");
             markerWithWindowShown = markers.get(index);
         }
     }

@@ -20,7 +20,7 @@
     <!--</FrameLayout>-->
 
     <TextView
-        android:id="@+id/txt_jogging_improve_time"
+        android:id="@+id/txt_jogging_cheer_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -65,7 +65,7 @@
         android:layout_above="@+id/txt_jogging_time"
         android:layout_centerHorizontal="true"
         style="@style/text_jogging"
-        android:singleLine="true"
+        android:maxLines="1"
         android:ellipsize="end"
         android:visibility="invisible" />
 
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         style="@style/text_jogging"
-        android:singleLine="true"
+        android:maxLines="1"
         android:ellipsize="end"
         android:visibility="invisible" />
 

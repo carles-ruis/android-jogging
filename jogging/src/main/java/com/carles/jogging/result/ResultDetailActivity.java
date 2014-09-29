@@ -169,7 +169,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         Bundle params = new Bundle();
         String user = PrefUtil.getLoggedUser(ctx).getName();
         String appName = getString(R.string.app_name);
-        params.putString("name", getString(R.string.share_feed_dialog_name, user, appName));
+        params.putString("name", getString(R.string.share_feed_dialog_name, appName));
         params.putString("caption", getString(R.string.app_name));
         params.putString("description", getString(R.string.share_feed_dialog_desc,
                 (int) jogging.getGoalDistance(), FormatUtil.time(jogging.getGoalTime())));

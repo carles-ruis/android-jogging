@@ -327,7 +327,7 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         previousLocation = startLocation;
         bestLocation = null;
         currentDistance = 0f;
-        goalDistance = intent.getIntExtra(C.EXTRA_DISTANCE_IN_METERS, C.DEFAULT_DISTANCE);
+        goalDistance = intent.getIntExtra(C.EXTRA_KILOMETERS, 1) * 1000;
         startTime = System.currentTimeMillis();
         // first location time has to be "now" because user starts running now
         previousLocation.setTime(startTime);

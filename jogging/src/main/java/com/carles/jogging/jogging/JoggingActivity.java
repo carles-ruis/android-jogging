@@ -47,7 +47,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
     private boolean isServiceBound = false;
     private LocationServiceConnection serviceConnection = new LocationServiceConnection();
 
-    private TextView txtImproveTime;
+    private TextView txtCheerUp;
     private TextView txtOnYourMarks;
     private TextView txtGetSet;
     private TextView txtGo;
@@ -134,7 +134,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
         getSupportActionBar().setTitle(R.string.title_jogging);
 
         // load views
-        txtImproveTime = (TextView) findViewById(R.id.txt_jogging_improve_time);
+        txtCheerUp = (TextView) findViewById(R.id.txt_jogging_cheer_up);
         txtOnYourMarks = (TextView) findViewById(R.id.txt_jogging_on_your_marks);
         txtGetSet = (TextView)findViewById(R.id.txt_jogging_get_set);
         txtGo = (TextView) findViewById(R.id.txt_jogging_go);
@@ -149,8 +149,12 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             }
         });
 
-        String distanceInTxt = getIntent().getStringExtra(C.EXTRA_DISTANCE_TEXT);
-        txtImproveTime.setText(getString(R.string.jogging_improve_time, distanceInTxt));
+        int kms = getIntent().getIntExtra(C.EXTRA_KILOMETERS, 1);
+        if (kms == C.NO_DISTANCE) {
+            txtCheerUp.setText(getString(R.string.jogging_cheer_no_distance));
+        } else {
+            txtCheerUp.setText(getString(R.string.jogging_cheer_distance, kms));
+        }
 
         // Load the starting sound
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -173,7 +177,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
     }
 
     private void startCountdown() {
-        txtImproveTime.setVisibility(View.VISIBLE);
+        txtCheerUp.setVisibility(View.VISIBLE);
         // handler enqueues messages which will be executed in the UI thread
         handler.postDelayed(countdownOnYourMarksThread, C.COUNTDOWN_STOP_MILLISECONDS);
         handler.postDelayed(countdownGetSetThread, C.COUNTDOWN_STOP_MILLISECONDS * 2);
@@ -280,34 +284,6 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             return dialog;
         }
     }
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//
-//        builder.setTitle(getString(R.string.cancel_run_title));
-//        builder.setMessage(getString(R.string.cancel_run_msg));
-//
-//        builder.setPositiveButton(R.string.cancel_run_button_yes, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                if (checkServiceBound()) {
-//                    service.cancelRun();
-//                }
-//            }
-//        });
-//
-//        builder.setNegativeButton(R.string.cancel_run_button_no, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                dismiss();
-//            }
-//        });
-//
-//        final Dialog dialog = builder.create();
-//        dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
-//        return dialog;
-//    }
-//}
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */

@@ -65,7 +65,7 @@
                 android:hint="@string/login_hint_username"
                 android:inputType="text"
                 style="@style/edit_login"
-                android:singleLine="true" />
+                android:maxLines="1" />
             <!-- android:imeOptions="actionSend" />
                  android:scrollHorizontally="true"
                  android:ellipsize="end" -->

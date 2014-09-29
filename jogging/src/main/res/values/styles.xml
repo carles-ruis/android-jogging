@@ -2,11 +2,15 @@
 
     <!-- THEMES -->
     <style name="Theme.Jogging" parent="@style/Theme.Sherlock.Light">
+
         <!-- Action bar Style Generator and Support Library-->
         <item name="actionBarStyle">@style/Theme.Jogging.ActionBar</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Jogging</item>
         <item name="actionBarItemBackground">@drawable/selectable_background_jogging</item>
         <item name="actionDropDownStyle">@style/DropDownNav.Jogging</item>
+
+        <!-- RadioButtonStyle generated with Android Holo colors  -->
+        <item name="android:radioButtonStyle">@style/RadioButtonAppTheme</item>
     </style>
 
     <style name="Theme.Jogging.ActionBar" parent="Widget.Sherlock.ActionBar">
@@ -26,7 +30,12 @@
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_jogging</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_jogging</item>
     </style>
-    sd
+
+    <!-- RadioButtonStyle generated with Android Holo colors  -->
+    <style name="RadioButtonAppTheme" parent="android:Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/apptheme_btn_radio_holo_light</item>
+        <item name="android:textColor">@color/rb_txt_selector</item>
+    </style>
 
     <!-- ZoomedDialogs are extending DialogFragment, we have to set a theme to set an animation for them -->
     <style name="Theme.Jogging.ZoomedDialog">
@@ -63,10 +72,13 @@
         <item name="android:background">@drawable/btn_selector</item>
     </style>
 
-    <style name="spinner_label">
+    <style name="label_main_kms">
         <item name="android:textSize">@dimen/text_small</item>
         <item name="android:textColor">@color/text_blur</item>
-        <item name="android:capitalize">characters</item>
+    </style>
+
+    <style name="label_main_kms.progress">
+        <item name="android:textColor">@color/red_dark</item>
     </style>
 
     <style name="spinner" parent="@style/DropDownNav.Jogging">
