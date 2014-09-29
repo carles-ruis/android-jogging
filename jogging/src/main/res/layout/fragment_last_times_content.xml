@@ -22,11 +22,11 @@
         android:layout_gravity="center"
         android:text="@string/no_results"/>
 
+    <!-- set listSelector transparent to set a state_selected drawable for each item list -->
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/grey_light"
         android:dividerHeight="1dp"/>
-
 </FrameLayout>

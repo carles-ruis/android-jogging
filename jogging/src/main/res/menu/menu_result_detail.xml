@@ -1,29 +1,23 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/com.carles.jogging">
-    <!--<item-->
-        <!--android:id="@+id/action_share"-->
-        <!--android:icon="@drawable/ic_menu_share"-->
-        <!--android:showAsAction="always"-->
-        <!--android:title="@string/action_share"-->
-        <!--app:actionProviderClass="com.actionbarsherlock.widget.ShareActionProvider" />-->
+<?xml version="1.0" encoding="utf-8"?>
 
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/action_map"
-        android:icon="@drawable/ic_menu_place"
+        android:icon="@drawable/ic_action_place"
         android:showAsAction="always"
         android:title="@string/action_map" />
 
     <item
         android:id="@+id/action_whatsapp"
-        android:icon="@drawable/ic_menu_whatsapp"
+        android:icon="@drawable/ic_action_whatsapp"
         android:showAsAction="ifRoom"
         android:title="@string/action_whatsapp"
-        android:orderInCategory="1"
-        app:actionProviderClass="com.actionbarsherlock.widget.ShareActionProvider" />
+        android:orderInCategory="1" />
+    <!--app:actionProviderClass="com.actionbarsherlock.widget.ShareActionProvider" />-->
 
     <item
         android:id="@+id/action_facebook"
-        android:icon="@drawable/ic_menu_facebook"
+        android:icon="@drawable/ic_action_facebook"
         android:showAsAction="ifRoom"
         android:orderInCategory="2"
         android:title="@string/action_facebook"/>

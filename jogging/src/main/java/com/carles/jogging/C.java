@@ -34,6 +34,7 @@ public class C {
     public static final String TAG_GOOGLE_PLAY_SERVICES_ERROR_DIALOG = "tag_google_error_dialog";
     public static final String TAG_ACTIVATE_GPS_DIALOG = "tag_activate_gps_dialog";
     public static final String TAG_FIRST_LOCATION_NOT_OBTAINED = "tag_first_location_dialog";
+    public static final String TAG_CONFIRM_DELETE_DIALOG = "tag_confirm_delete_dialog";
 
     // sound configuration
     public static final int MAX_SOUND_STREAMS = 1;

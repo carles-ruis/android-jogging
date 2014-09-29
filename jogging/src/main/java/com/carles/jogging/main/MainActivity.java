@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         //                (this, R.array.main_entries_kms, R.layout.sherlock_spinner_dropdown_item);
         final List<CharSequence> options = new ArrayList<CharSequence>();
         options.add("1 Km");
-        for (int i=2; i<=20; i++) {
+        for (int i = 2; i <= 20; i++) {
             options.add(new StringBuilder().append(i).append(" Kms"));
         }
 
@@ -76,6 +76,10 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
             }
         };
         getSupportActionBar().setListNavigationCallbacks(adapter, callback);
+
+        if (getSupportActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
+            getSupportActionBar().setSelectedNavigationItem(PrefUtil.getLastKilometersSelected(ctx) - 1);
+        }
     }
 
     public void setActionBarTitle(String title) {
@@ -106,6 +110,10 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
 
         // Insert the fragment by replacing any existing fragment
         getSupportActionBar().setNavigationMode(navigationMode);
+        if (navigationMode == ActionBar.NAVIGATION_MODE_LIST) {
+            getSupportActionBar().setSelectedNavigationItem(PrefUtil.getLastKilometersSelected(ctx) - 1);
+        }
+
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         setActionBarTitle(title);
     }

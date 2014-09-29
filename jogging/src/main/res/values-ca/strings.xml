@@ -4,6 +4,7 @@
     <!-- app strings -->
     <string name="app_name">Fent Footing</string>
     <string name="ok">OK</string>
+    <string name="yes">Sí</string>
     <string name="no">No</string>
     <string name="progress_loading">Carregant ...</string>
     <string name="progress_waiting">Espera...</string>
@@ -11,12 +12,12 @@
     <string name="hello_kitty">Hello Kitty!!!</string>
 
     <!-- Menu options -->
-    <string name="menu_main">Fes Footing</string>
-    <string name="menu_main_description">Supera el teu rècord!</string>
-    <string name="menu_best">Rècords</string>
-    <string name="menu_best_description">Els teus millors temps</string>
-    <string name="menu_last">Històric</string>
-    <string name="menu_last_description">Tots els teus temps</string>
+    <string name="drawer_main">Fes Footing</string>
+    <string name="drawer_main_desc">Supera el teu rècord!</string>
+    <string name="drawer_best">Rècords</string>
+    <string name="drawer_best_desc">Els teus millors temps</string>
+    <string name="drawer_last">Històric</string>
+    <string name="drawer_last_desc">Tots els teus temps</string>
     <string name="logout">Logout</string>
 
     <!-- Action bar items -->
@@ -25,11 +26,14 @@
     <string name="action_settings">Preferències</string>
     <string name="action_map">Mapa</string>
     <string name="action_whatsapp">Compartir amb WhatsApp</string>
+    <string name="action_delete">Eliminar</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Fent Footing</string>
     <string name="title_best">Rècords</string>
     <string name="title_last">Històric</string>
+    <string name="title_last_contextual_suffix">" elements"</string>
+    <string name="title_last_contextual_suffix_pl">" element"</string>
     <string name="title_check_connections">Buscant posició...</string>
     <string name="title_jogging">Corre !</string>
     <string name="title_result">Resultats</string>
@@ -48,6 +52,11 @@
     <string name="main_text_run">Avui correré ...</string>
     <string name="main_text_no_distance">Avui correré fins que em cansi</string>
     <string name="main_text_distance">Prefereixo seleccionar la distància</string>
+    <!-- Best times fragment & Last times fragment -->
+    <string name="no_results">No hi han temps guardats</string>
+    <string name="best_times_header">Els teus rècords per cada distància</string>
+    <string name="confirm_delete_title">Eliminar selecció</string>
+    <string name="confirm_delete_msg">Les dades que has seleccionat s\'eliminaran. N\'estàs segur?</string>
 
     <!-- Check connections fragment -->
     <string name="check_connection_progress_msg">El GPS està obtenint la teva posició</string>
@@ -79,7 +88,7 @@
 
     <!-- Location service notification -->
     <string name="notification_is_running_title">Corrent...</string>
-    <string name="notification_is_running_text">Encara has de córrer una mica més, ànims!</string>
+    <string name="notification_is_running_text">Estàs Fent Footing. Ànims!</string>
 
     <!-- Result detail fragment -->
     <string name="footing_result_success_title">Footing superat !</string>
@@ -104,10 +113,6 @@
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">Has compartit aquest footing a Facebook</string>
     <string name="facebook_post_failure">Error. No he pogut compartir a Facebook</string>
-
-    <!-- Best times fragment & Last times fragment -->
-    <string name="no_results">No hi han temps guardats</string>
-    <string name="best_times_header">Els teus rècords per cada distància</string>
 
     <!-- Settings -->
 

@@ -1,6 +1,7 @@
 package com.carles.jogging.last_times;
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.carles.jogging.R;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.util.FormatUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,8 +20,12 @@ import java.util.List;
  */
 public class LastTimesAdapter extends ArrayAdapter<JoggingModel> {
 
+    private List<JoggingModel> joggings = new ArrayList<JoggingModel>();
+    private SparseBooleanArray checked = new SparseBooleanArray();
+
     public LastTimesAdapter(Context ctx, List<JoggingModel> joggings) {
         super(ctx, R.layout.item_last_time, joggings);
+        this.joggings = joggings;
     }
 
     @Override
@@ -39,11 +45,25 @@ public class LastTimesAdapter extends ArrayAdapter<JoggingModel> {
             holder = (Holder)convertView.getTag();
         }
 
+        if (checked.get(position)) {
+            convertView.setBackgroundResource(R.drawable.item_checked_list_selector);
+        } else {
+            convertView.setBackgroundResource(R.drawable.item_list_selector);
+        }
+
         holder.txtTime.setText(FormatUtil.time(jogging.getGoalTime()));
         holder.txtDate.setText(FormatUtil.date(jogging.getId()));
         holder.txtHour.setText(FormatUtil.timePattern(jogging.getId()));
 
         return convertView;
+    }
+
+    public void remove(int position) {
+        joggings.remove(getItem(position));
+    }
+
+    public void setChecked(SparseBooleanArray checked) {
+        this.checked = checked;
     }
 
     static class Holder {

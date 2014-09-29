@@ -4,6 +4,7 @@
     <!-- app strings -->
     <string name="app_name">Go Jogging</string>
     <string name="ok">OK</string>
+    <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="progress_loading">Loading ...</string>
     <string name="progress_waiting">Wait...</string>
@@ -11,12 +12,12 @@
     <string name="hello_kitty">Hello Kitty!!!</string>
 
     <!-- Menu options -->
-    <string name="menu_main">Go Jogging</string>
-    <string name="menu_main_description">Beat your best time!</string>
-    <string name="menu_best">Best times</string>
-    <string name="menu_best_description">Your best times for each distance</string>
-    <string name="menu_last">History</string>
-    <string name="menu_last_description">All your results</string>
+    <string name="drawer_main">Go Jogging</string>
+    <string name="drawer_main_desc">Beat your best time!</string>
+    <string name="drawer_best">Best times</string>
+    <string name="drawer_best_desc">Your best times for each distance</string>
+    <string name="drawer_last">History</string>
+    <string name="drawer_last_desc">All your results</string>
     <string name="logout">Logout</string>
 
     <!-- Action bar items -->
@@ -25,11 +26,14 @@
     <string name="action_settings">Preferences</string>
     <string name="action_map">Map</string>
     <string name="action_whatsapp">Share with WhatsApp</string>
+    <string name="action_delete">Delete</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Go Jogging</string>
     <string name="title_best">Best times</string>
     <string name="title_last">History</string>
+    <string name="title_last_contextual_suffix">" selected"</string>
+    <string name="title_last_contextual_suffix_pl">" selected"</string>
     <string name="title_check_connections">Obtaining location...</string>
     <string name="title_jogging">Run !</string>
     <string name="title_result">Results</string>
@@ -43,11 +47,16 @@
     <string name="login_error_new_user">This user already exists</string>
     <string name="login_error_unknown">Unknown error. Try to login with another user</string>
 
-    <!-- Main Fragment -->
+    <!-- Main Activity -->
     <string name="main_button_run">Run !</string>
     <string name="main_text_run">I\'m going to run ...</string>
     <string name="main_text_no_distance">I\'m going to run until I feel tired</string>
     <string name="main_text_distance">I prefer to select a distance</string>
+    <!-- Best times fragment & Last times fragment -->
+    <string name="no_results">No results saved</string>
+    <string name="best_times_header">Your best times for each distance</string>
+    <string name="confirm_delete_title">Delete selection</string>
+    <string name="confirm_delete_msg">Selected joggings will be deleted. Are you sure?</string>
 
     <!-- Check connections fragment -->
     <string name="check_connection_progress_msg">GPS is obtaining your location</string>
@@ -79,7 +88,7 @@
 
     <!-- Location service notification -->
     <string name="notification_is_running_title">Jogging...</string>
-    <string name="notification_is_running_text">Don\'t stop running already, you can do it!</string>
+    <string name="notification_is_running_text">Keep on running with Go Jogging. You can do it!</string>
 
     <!-- Result detail fragment -->
     <string name="footing_result_success_title">Jogging success !</string>
@@ -104,10 +113,6 @@
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">You shared your jogging to Facebook</string>
     <string name="facebook_post_failure">Error while trying to share to Facebook</string>
-
-    <!-- Best times fragment & Last times fragment -->
-    <string name="no_results">No results saved</string>
-    <string name="best_times_header">Your best times for each distance</string>
 
     <!-- Settings -->
 

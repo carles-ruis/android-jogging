@@ -132,14 +132,11 @@ public class ResultDetailFragment extends BaseFragment {
             }
 
             final PartialResultsAdapter adapter = new PartialResultsAdapter(ctx, jogging.getPartialsForKilometer());
-            // add a header with the isSelectable flag to false
-            //            list.addHeaderView(inflater.inflate(R.layout.header_partial_result, list, false), null, false);
             list.setAdapter(adapter);
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     if (callbacks != null) {
-                        //                        callbacks.onLocationClicked(position - 1);
                         callbacks.onLocationClicked(position);
                     }
                 }

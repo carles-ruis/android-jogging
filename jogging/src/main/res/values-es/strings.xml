@@ -4,6 +4,7 @@
     <!-- app strings -->
     <string name="app_name">Go Footing</string>
     <string name="ok">OK</string>
+    <string name="yes">Sí</string>
     <string name="no">No</string>
     <string name="progress_loading">Cargando ...</string>
     <string name="progress_waiting">Espera...</string>
@@ -11,12 +12,12 @@
     <string name="hello_kitty">Hello Kitty!!!</string>
 
     <!-- Menu options -->
-    <string name="menu_main">Go Footing</string>
-    <string name="menu_main_description">¡Supera tu récord!</string>
-    <string name="menu_best">Records</string>
-    <string name="menu_best_description">Tus mejores tiempos</string>
-    <string name="menu_last">Histórico</string>
-    <string name="menu_last_description">Todos tus tiempos</string>
+    <string name="drawer_main">Go Footing</string>
+    <string name="drawer_main_desc">¡Supera tu récord!</string>
+    <string name="drawer_best">Records</string>
+    <string name="drawer_best_desc">Tus mejores tiempos</string>
+    <string name="drawer_last">Histórico</string>
+    <string name="drawer_last_desc">Todos tus tiempos</string>
     <string name="logout">Logout</string>
 
     <!-- Action bar items -->
@@ -25,11 +26,14 @@
     <string name="action_settings">Preferencias</string>
     <string name="action_map">Mapa</string>
     <string name="action_whatsapp">Compartir con WhatsApp</string>
+    <string name="action_delete">Eliminar</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Go Footing</string>
     <string name="title_best">Records</string>
     <string name="title_last">Histórico</string>
+    <string name="title_last_contextual_suffix">" elemento"</string>
+    <string name="title_last_contextual_suffix_pl">" elementos"</string>
     <string name="title_check_connections">Buscando posición...</string>
     <string name="title_jogging">¡Corre!</string>
     <string name="title_result">Resultados</string>
@@ -48,6 +52,11 @@
     <string name="main_text_run">Voy a correr ...</string>
     <string name="main_text_no_distance">Voy a correr hasta que me canse</string>
     <string name="main_text_distance">Prefiero seleccionar una distancia</string>
+    <!-- Best times fragment & Last times fragment -->
+    <string name="no_results">No hay tiempos guardados</string>
+    <string name="best_times_header">Tus mejores tiempos para cada distancia</string>
+    <string name="confirm_delete_title">Eliminar selección</string>
+    <string name="confirm_delete_msg">Los datos seleccionados se eliminarán. ¿Estás seguro?</string>
 
     <!-- Check connections fragment -->
     <string name="check_connection_progress_msg">El GPS está obteniendo tu posición</string>
@@ -79,7 +88,7 @@
 
     <!-- Location service notification -->
     <string name="notification_is_running_title">Corriendo...</string>
-    <string name="notification_is_running_text">!Todavía tienes que correr un poco más, ànimo!</string>
+    <string name="notification_is_running_text">Estás corriendo con Go Footing ¡Ànimo!</string>
 
     <!-- Result detail fragment -->
     <string name="footing_result_success_title">¡ Footing superado !</string>
@@ -104,10 +113,6 @@
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">Has compartido tu footing con Facebook</string>
     <string name="facebook_post_failure">Error. No he podido compartir con Facebook</string>
-
-    <!-- Best times fragment & Last times fragment -->
-    <string name="no_results">No hay tiempos guardados</string>
-    <string name="best_times_header">Tus mejores tiempos para cada distancia</string>
 
     <!-- Settings -->
 

@@ -115,6 +115,13 @@ public class MainFragment extends BaseFragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
+
+        int lastKmsSelected = PrefUtil.getLastKilometersSelected(ctx);
+        if (lastKmsSelected == 1) {
+            txtKms.setText("1 Km");
+        } else {
+            txtKms.setText(new StringBuilder().append(PrefUtil.getLastKilometersSelected(ctx)).append(" Kms"));
+        }
     }
 
     private void createAdRequest() {

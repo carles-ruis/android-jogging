@@ -59,11 +59,15 @@ public class BestTimesFragment extends BaseFragment {
             txtNoResults.setVisibility(View.VISIBLE);
 
         } else {
+            // add a header with the isSelectable flag to false
             list.addHeaderView(LayoutInflater.from(ctx).inflate(R.layout.header_best_times, list, false), null, false);
+
             list.setAdapter(new BestTimesAdapter(ctx, bestTimes));
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                    // substract 1 to position because first position is the header
                     JoggingModel joggingSelected = bestTimes.get(position - 1);
                     List<JoggingModel> partials = JoggingSQLiteHelper.getInstance(ctx).queryPartials(joggingSelected);
                     joggingSelected.setPartialsForKilometer(partials);

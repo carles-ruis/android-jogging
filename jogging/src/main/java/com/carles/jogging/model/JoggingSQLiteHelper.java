@@ -173,6 +173,22 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         return values;
     }
 
+    public void deleteJogging(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            db.delete(TABLE_JOGGING, COLUMN_ID + "=" + id, null);
+            db.delete(TABLE_JOGGING, COLUMN_PARENT_ID + "=" + id, null);
+            db.setTransactionSuccessful(); // marks a commit
+
+        } catch (SQLException e) {
+            Log.e(TAG, "Error deleting jogging from db");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public UserModel queryUser(String name, String password) {
         UserModel ret = null;
         SQLiteDatabase db = getReadableDatabase();

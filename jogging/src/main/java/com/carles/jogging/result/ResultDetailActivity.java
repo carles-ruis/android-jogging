@@ -229,9 +229,6 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     }
 
     private void shareWithWhatsApp() {
-
-//        if (detailFragment != null && detailFragment.getShareActionProvider() != null) {
-
         // populate the share intent with data
         Intent waIntent = new Intent(Intent.ACTION_SEND);
         waIntent.setType("text/plain");
