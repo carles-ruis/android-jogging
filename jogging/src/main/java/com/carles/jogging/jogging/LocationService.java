@@ -45,14 +45,14 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private static final int NOTIFICATION_ID = 1;
     private static final int SOUND_MAX_DURATION = 2000;
 
-    private static final long TIME_BETWEEN_REQUESTS = 20 * 1000;
-    private static final long MIN_REQUEST_TIME = 20 * 1000;
+    private static final long TIME_BETWEEN_REQUESTS = 15 * 1000;
+    private static final long MIN_REQUEST_TIME = 15 * 1000;
     private static final long MAX_REQUEST_TIME = 60 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
     private static final float SMALLEST_DISPLACEMENT = 1.0f;
-    private static final float ACCURACY_LIMIT = 25.0f;
-    private static final float AVERAGE_ACCURACY_LIMIT = 50.0f;
-    private static final float LOW_ACCURACY_LIMIT = 100.0f;
+    private static final float ACCURACY_LIMIT = 30.0f;
+    private static final float AVERAGE_ACCURACY_LIMIT = 60.0f;
+    private static final float LOW_ACCURACY_LIMIT = 120.0f;
 
     private static final String WAKE_LOCK_TAG = "wake_lock_tag";
     private static PowerManager.WakeLock wakelock;

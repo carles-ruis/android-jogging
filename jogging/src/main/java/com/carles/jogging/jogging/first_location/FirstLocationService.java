@@ -35,10 +35,9 @@ public class FirstLocationService extends Service implements GpsConnectivityObse
     private static final String TAG = FirstLocationService.class.getSimpleName();
     private static final int MIN_REQUEST_TIME = 20 * 1000;
     private static final int MAX_REQUEST_TIME = 60 * 1000;
-    private static final int MAX_GPS_CONNECTION_TIME = 60 * 1000;
     private static final long UPDATE_INTERVAL = 2 * 1000;
-    private static final float ACCURACY_LIMIT = 50.0f;
-    private static final float LOW_ACCURACY_LIMIT = 100.0f;
+    private static final float ACCURACY_LIMIT = 60.0f;
+    private static final float LOW_ACCURACY_LIMIT = 120.0f;
 
     private static final String WAKE_LOCK_TAG = "wake_lock_tag";
     private static PowerManager.WakeLock wakelock;
