@@ -156,18 +156,22 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
     private ContentValues getValues(JoggingModel jogging) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, jogging.getId());
-        values.put(COLUMN_START, gson.toJson(jogging.getStart()));
-        values.put(COLUMN_END, gson.toJson(jogging.getEnd()));
-        values.put(COLUMN_USER, jogging.getUser().getName());
-        values.put(COLUMN_REALTIME, jogging.getRealTime());
-        values.put(COLUMN_TOTALTIME, jogging.getGoalTime());
-        values.put(COLUMN_REALDISTANCE, jogging.getRealDistance());
-        values.put(COLUMN_TOTALDISTANCE, jogging.getGoalDistance());
-        values.put(COLUMN_PARENT_ID, jogging.getParentId());
 
-        if (jogging.getFootingResult() != null) {
-            values.put(COLUMN_FOOTING_RESULT, jogging.getFootingResult().toString());
+        values.put(COLUMN_ID, jogging.getId());
+        values.put(COLUMN_PARENT_ID, jogging.getParentId());
+        values.put(COLUMN_END, gson.toJson(new LocationPersisted(jogging.getEnd())));
+        values.put(COLUMN_TOTALTIME, jogging.getGoalTime());
+        values.put(COLUMN_TOTALDISTANCE, jogging.getGoalDistance());
+
+        // TODO alter table, this fields will be null if the jogging is a partial
+        values.put(COLUMN_START, gson.toJson(new LocationPersisted(jogging.getStart())));
+        values.put(COLUMN_REALTIME, jogging.getRealTime());
+        values.put(COLUMN_REALDISTANCE, jogging.getRealDistance());
+
+        if (jogging.getParentId() == 0l) {
+            // values that are only stored if it's a "full" jogging
+            values.put(COLUMN_USER, jogging.getUser().getName());
+             values.put(COLUMN_FOOTING_RESULT, jogging.getFootingResult().toString());
         }
 
         return values;
@@ -224,9 +228,9 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         j.setId(c.getLong(c.getColumnIndex(COLUMN_ID)));
 
         String end = c.getString(c.getColumnIndex(COLUMN_END));
-        j.setEnd(gson.fromJson(end, Location.class));
+        j.setEnd(gson.fromJson(end, LocationPersisted.class).getLocation());
         String start = c.getString(c.getColumnIndex(COLUMN_START));
-        j.setStart(gson.fromJson(start, Location.class));
+        j.setStart(gson.fromJson(start, LocationPersisted.class).getLocation());
 //        String footingResult = c.getString(c.getColumnIndex(COLUMN_FOOTING_RESULT));
         // only successful footings will be saved
         j.setFootingResult(FootingResult.SUCCESS);
@@ -285,4 +289,52 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
+    /*- ********************************************************************************* */
+    /*- ********************************************************************************* */
+    private static class LocationPersisted {
+        private double longitude;
+        private double latitude;
+        private float accuracy;
+
+        public LocationPersisted() {}
+
+        public LocationPersisted(Location location) {
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
+            this.accuracy = location.getAccuracy();
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public float getAccuracy() {
+            return accuracy;
+        }
+
+        public void setAccuracy(float accuracy) {
+            this.accuracy = accuracy;
+        }
+
+        public Location getLocation() {
+            Location ret = new Location("FUSED");
+            ret.setLongitude(longitude);
+            ret.setLatitude(latitude);
+            ret.setAccuracy(accuracy);
+            return ret;
+        }
+
+    }
 }

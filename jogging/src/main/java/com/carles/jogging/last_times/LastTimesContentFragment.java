@@ -210,7 +210,7 @@ public class LastTimesContentFragment extends BaseFragment {
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */
-    public class ConfirmDeleteDialog extends DialogFragment {
+    private class ConfirmDeleteDialog extends DialogFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

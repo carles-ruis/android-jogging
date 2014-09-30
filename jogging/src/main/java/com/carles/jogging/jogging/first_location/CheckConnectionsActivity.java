@@ -20,7 +20,6 @@ import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.jogging.JoggingActivity;
-import com.carles.jogging.util.LocationHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -174,7 +173,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
     @Override
     public void onLocationObtained(Location location) {
-        Log.i(TAG, "First location obtained:" + LocationHelper.toString(location));
+        Log.i(TAG, "First location obtained. Accuracy " + location.getAccuracy());
 
         // destroy the service, stop requesting for location
         if (isServiceBound) {

@@ -114,6 +114,11 @@
     <string name="facebook_post_success">Has compartit aquest footing a Facebook</string>
     <string name="facebook_post_failure">Error. No he pogut compartir a Facebook</string>
 
+    <!-- Feedback -->
+    <string name="feedback_title">Feedback</string>
+    <string name="feedback_msg">Envia\'ns el teu comentari o suggeriment sobre la app. Així la podrem millorar.</string>
+    <string name="feeback_send">Enviar comentari</string>
+
     <!-- Settings -->
 
     <!-- Accessibility -->
