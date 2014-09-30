@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        style="@style/text_result_title"
+        style="@style/text_title"
         android:layout_centerHorizontal="true"/>
 
     <TextView
@@ -80,7 +80,7 @@
             android:text="@string/result_best_time"
             android:maxLines="1"
             android:ellipsize="marquee"
-            style="@style/text_result_title"
+            style="@style/text_title"
             android:visibility="gone"/>
 
         <!-- list of partial results of this footing -->

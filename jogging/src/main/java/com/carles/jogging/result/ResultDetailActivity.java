@@ -9,16 +9,18 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
+import com.carles.jogging.feedback.FeedbackActivity;
+import com.carles.jogging.feedback.MailClientNotAvailableDialog;
 import com.carles.jogging.model.JoggingModel;
 import com.carles.jogging.util.FormatUtil;
 import com.carles.jogging.util.PrefUtil;
@@ -101,6 +103,18 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // returns from ACTION_SENT intent
+        if (requestCode == C.REQUEST_FEEDBACK) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getApplicationContext(), getString(R.string.feedback_sent), Toast.LENGTH_LONG).show();
+            } else if (resultCode == C.RESULT_NO_MAIL_CLIENT) {
+                MailClientNotAvailableDialog.newInstance().show(getSupportFragmentManager(),
+                        C.TAG_MAIL_CLIENT_NOT_AVAILABLE);
+            }
+            return;
+        }
+
+        // returns from a facebook intent
         if (Session.getActiveSession() != null) {
             Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         }
@@ -268,6 +282,11 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
                 shareWithWhatsApp();
                 return true;
 
+            case R.id.action_feedback:
+                startActivityForResult(new Intent(this, FeedbackActivity.class), C.REQUEST_FEEDBACK);
+                overridePendingTransition(R.anim.zoom_in, 0);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -308,8 +327,7 @@ public class ResultDetailActivity extends BaseActivity implements ResultDetailFr
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             Dialog dialog = new Dialog(getActivity());
 
-            final LayoutInflater inflater = getActivity().getLayoutInflater();
-            final View view = inflater.inflate(R.layout.dialog_custom, null);
+            final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_custom, null);
             final TextView title = (TextView) view.findViewById(R.id.dlg_title);
             final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
 

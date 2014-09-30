@@ -27,6 +27,7 @@
     <string name="action_map">Mapa</string>
     <string name="action_whatsapp">Compartir con WhatsApp</string>
     <string name="action_delete">Eliminar</string>
+    <string name="action_feedback">Feedback</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Go Footing</string>
@@ -113,6 +114,14 @@
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">Has compartido tu footing con Facebook</string>
     <string name="facebook_post_failure">Error. No he podido compartir con Facebook</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Contacto</string>
+    <string name="feeback_send">Enviar</string>
+    <string name="feedback_hint">Que te parece la app? Escribe tu opinión y podremos mejorarla</string>
+    <string name="feedback_sent">Tu opinión ha sido enviada. Gracias!</string>
+    <string name="no_mail_client_title">Mail no enviado</string>
+    <string name="no_mail_client_msg">No hay ningún cliente de mail instalado en el dispositivo</string>
 
     <!-- Settings -->
 

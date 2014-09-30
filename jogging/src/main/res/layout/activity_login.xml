@@ -59,12 +59,12 @@
                 android:src="@drawable/ic_user" />
 
             <EditText
-                android:id="@+id/et_username"
+                android:id="@+id/ed_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_hint_username"
                 android:inputType="text"
-                style="@style/edit_login"
+                style="@style/edit"
                 android:maxLines="1" />
             <!-- android:imeOptions="actionSend" />
                  android:scrollHorizontally="true"
@@ -92,11 +92,11 @@
                 android:src="@drawable/ic_password" />
 
             <EditText
-                android:id="@+id/et_password"
+                android:id="@+id/ed_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_hint_password"
-                style="@style/edit_login"
+                style="@style/edit"
                 android:inputType="textPassword" />
         </LinearLayout>
 

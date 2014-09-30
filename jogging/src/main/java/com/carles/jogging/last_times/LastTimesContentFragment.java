@@ -223,10 +223,10 @@ public class LastTimesContentFragment extends BaseFragment {
             final Button btnOk = (Button) view.findViewById(R.id.btn_yes);
             final Button btnNo = (Button) view.findViewById(R.id.btn_no);
 
-            title.setText(getString(R.string.confirm_delete_title));
-            msg.setText(getString(R.string.confirm_delete_msg));
-            btnOk.setText(getString(R.string.yes));
-            btnNo.setText(getString(R.string.no));
+            title.setText(R.string.confirm_delete_title);
+            msg.setText(R.string.confirm_delete_msg);
+            btnOk.setText(R.string.yes);
+            btnNo.setText(R.string.no);
 
             btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override

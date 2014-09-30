@@ -5,15 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.carles.jogging.BaseActivity;
+import com.carles.jogging.C;
 import com.carles.jogging.R;
 import com.carles.jogging.best_times.BestTimesFragment;
+import com.carles.jogging.feedback.FeedbackActivity;
+import com.carles.jogging.feedback.MailClientNotAvailableDialog;
 import com.carles.jogging.last_times.LastTimesContentFragment;
 import com.carles.jogging.login.LoginActivity;
 import com.carles.jogging.util.PrefUtil;
@@ -87,6 +92,20 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == C.REQUEST_FEEDBACK) {
+            if (resultCode == RESULT_OK) {
+                Log.e("carles", "result ok");
+                Toast.makeText(getApplicationContext(), getString(R.string.feedback_sent), Toast.LENGTH_LONG).show();
+            } else if (resultCode == C.RESULT_NO_MAIL_CLIENT) {
+                Log.e("carles", "result no mail client");
+                MailClientNotAvailableDialog.newInstance().show(getSupportFragmentManager(), C.TAG_MAIL_CLIENT_NOT_AVAILABLE);
+            }
+        }
+    }
+
+    @Override
     public void onNavigationDrawerItemSelected(int position) {
 
         DrawerOption option = DrawerOption.values()[position];
@@ -141,6 +160,12 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_feedback) {
+            startActivityForResult(new Intent(this, FeedbackActivity.class), C.REQUEST_FEEDBACK);
+            overridePendingTransition(R.anim.zoom_in, 0);
+            return true;
+        }
+
         // fragment will handle the action bar items
         return super.onOptionsItemSelected(item);
     }

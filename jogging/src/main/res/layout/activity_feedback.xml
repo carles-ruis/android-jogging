@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:layout_marginRight="@dimen/margin_small" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin"
+            android:background="@drawable/shape_window_feedback">
+
+            <TextView
+                android:id="@+id/txt_message"
+                style="@style/dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:text="@string/feedback_title" />
+
+            <include
+                layout="@layout/view_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_height"
+                android:layout_below="@id/txt_message"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small" />
+
+            <EditText
+                android:id="@+id/ed_feedback"
+                style="@style/edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_message"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:hint="@string/feedback_hint"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:minLines="4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_feedback">
+            <Button
+                android:id="@+id/btn_send"
+                style="@style/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin"
+                android:enabled="false"
+                android:onClick="actionSendFeedback"
+                android:text="@string/feeback_send" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/img_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:background="@drawable/shape_btn_cancel"
+            android:padding="@dimen/padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_cancel" />
+
+    </FrameLayout>
+
+</RelativeLayout>

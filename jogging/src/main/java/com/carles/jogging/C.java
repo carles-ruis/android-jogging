@@ -12,8 +12,12 @@ public class C {
     public static final int NO_DISTANCE = 999999;
 
     // request codes for startActivityForResult
-    public static final int REQ_CODE_GOOGLE_CONNECTION_FAILURE = 1;
-    public static final int REQ_CODE_ENABLE_GPS = 2;
+    public static final int REQUEST_GOOGLE_CONNECTION_FAILURE = 1;
+    public static final int REQUEST_CODE_ENABLE_GPS = 2;
+    public static final int REQUEST_FEEDBACK = 1;
+
+    // Result codes for startActivityForResult
+    public static final int RESULT_NO_MAIL_CLIENT = 1;
 
     // arguments passes to activities as extras
     public static final String EXTRA_KILOMETERS = "extra_kilometers";
@@ -35,6 +39,7 @@ public class C {
     public static final String TAG_ACTIVATE_GPS_DIALOG = "tag_activate_gps_dialog";
     public static final String TAG_FIRST_LOCATION_NOT_OBTAINED = "tag_first_location_dialog";
     public static final String TAG_CONFIRM_DELETE_DIALOG = "tag_confirm_delete_dialog";
+    public static final String TAG_MAIL_CLIENT_NOT_AVAILABLE = "tag_mail_client_not_available";
 
     // sound configuration
     public static final int MAX_SOUND_STREAMS = 1;

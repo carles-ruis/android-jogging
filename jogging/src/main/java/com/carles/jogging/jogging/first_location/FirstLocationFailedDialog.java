@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -32,24 +31,23 @@ public class FirstLocationFailedDialog extends DialogFragment {
 
         Dialog dialog = new Dialog(getActivity());
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_custom, null);
+        final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_custom, null);
         final TextView title = (TextView) view.findViewById(R.id.dlg_title);
         final TextView msg = (TextView) view.findViewById(R.id.dlg_msg);
 
-        title.setText(getString(R.string.connection_failed_title));
+        title.setText(R.string.connection_failed_title);
         if (error == Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE) {
-            msg.setText(getString(R.string.connection_failed_google));
+            msg.setText(R.string.connection_failed_google);
         } else if (error == Error.GPS_DISABLED) {
-            msg.setText(getString(R.string.connection_failed_gps));
+            msg.setText(R.string.connection_failed_gps);
         } else if (error==Error.GPS_LOST) {
-            msg.setText(getString(R.string.connection_failed_gps_lost));
+            msg.setText(R.string.connection_failed_gps_lost);
         } else if (error==Error.GPS_NOT_CONNECTED) {
-            msg.setText(getString(R.string.connection_failed_gps_connection));
+            msg.setText(R.string.connection_failed_gps_connection);
         } else if (error==Error.NO_LOCATIONS) {
-            msg.setText(getString(R.string.connection_failed_gps_location));
+            msg.setText(R.string.connection_failed_gps_location);
          } else {
-            msg.setText(getString(R.string.connection_failed_unknown));
+            msg.setText(R.string.connection_failed_unknown);
         }
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -63,8 +61,8 @@ public class FirstLocationFailedDialog extends DialogFragment {
                 getActivity().finish();
             }
         });
-
         dialog.setCanceledOnTouchOutside(true);
+
         dialog.getWindow().getAttributes().windowAnimations = R.style.Theme_Jogging_ZoomedDialog;
         return dialog;
     }

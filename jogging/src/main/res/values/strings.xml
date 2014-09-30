@@ -27,6 +27,7 @@
     <string name="action_map">Map</string>
     <string name="action_whatsapp">Share with WhatsApp</string>
     <string name="action_delete">Delete</string>
+    <string name="action_feedback">Feedback</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Go Jogging</string>
@@ -113,6 +114,14 @@
     <string name="facebook_response_title">Facebook</string>
     <string name="facebook_post_success">You shared your jogging to Facebook</string>
     <string name="facebook_post_failure">Error while trying to share to Facebook</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Feedback</string>
+    <string name="feeback_send">Send</string>
+    <string name="feedback_hint">Give us your opinion about the app and we will improve it</string>
+    <string name="feedback_sent">Your opinion has been sent. Thanks!</string>
+    <string name="no_mail_client_title">Mail not sent</string>
+    <string name="no_mail_client_msg">I have not found any mail client in your device</string>
 
     <!-- Settings -->
 

@@ -30,10 +30,10 @@ public class ActivateGpsDialog extends DialogFragment {
         final Button btnOk = (Button)view.findViewById(R.id.btn_yes);
         final Button btnNo = (Button) view.findViewById(R.id.btn_no);
 
-        title.setText(getString(R.string.activate_gps_title));
-        msg.setText(getString(R.string.activate_gps_msg));
-        btnOk.setText(getString(R.string.activate_gps_button_yes));
-        btnNo.setText(getString(R.string.activate_gps_button_no));
+        title.setText(R.string.activate_gps_title);
+        msg.setText(R.string.activate_gps_msg);
+        btnOk.setText(R.string.activate_gps_button_yes);
+        btnNo.setText(R.string.activate_gps_button_no);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +44,7 @@ public class ActivateGpsDialog extends DialogFragment {
 
                 // Don't invoke directly from the fragment, use getActivity()
                 // If not, requestCode is wrong when onActivityResult() is called
-                getActivity().startActivityForResult(intent, C.REQ_CODE_ENABLE_GPS);
+                getActivity().startActivityForResult(intent, C.REQUEST_CODE_ENABLE_GPS);
             }
         });
 

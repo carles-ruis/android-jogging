@@ -5,6 +5,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -56,6 +58,9 @@ public class ResultMapFragment extends SupportMapFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        // allows this fragment to inflate its own menu in the action bar
+        setHasOptionsMenu(true);
 
         // retrieve arguments
         if (getArguments() != null) {
@@ -191,6 +196,11 @@ public class ResultMapFragment extends SupportMapFragment {
         } else {
             centerToPosition();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_result_map, menu);
     }
 
     /*- ********************************************************************************* */

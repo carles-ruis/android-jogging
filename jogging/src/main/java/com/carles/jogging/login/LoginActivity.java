@@ -39,9 +39,9 @@ public class LoginActivity extends BaseActivity {
     private ViewGroup lytRoot;
     private ImageView imgLogo;
     private ImageView imgUsername;
-    private EditText txtUsername;
+    private EditText edUsername;
     private ImageView imgPassword;
-    private EditText txtPassword;
+    private EditText edPassword;
     private TextView txtError;
     private Button btnLogin;
     private Button btnNewUser;
@@ -58,16 +58,16 @@ public class LoginActivity extends BaseActivity {
             lytRoot = (ViewGroup) findViewById(R.id.lyt_root);
             imgLogo = (ImageView) findViewById(R.id.img_logo);
             imgUsername = (ImageView) findViewById(R.id.img_username);
-            txtUsername = (EditText) findViewById(R.id.et_username);
+            edUsername = (EditText) findViewById(R.id.ed_username);
             imgPassword = (ImageView) findViewById(R.id.img_password);
-            txtPassword = (EditText) findViewById(R.id.et_password);
+            edPassword = (EditText) findViewById(R.id.ed_password);
             txtError = (TextView) findViewById(R.id.txt_error);
             btnLogin = (Button) findViewById(R.id.btn_login);
             btnNewUser = (Button) findViewById(R.id.btn_new_user);
             btnLoginWithUsername = (Button) findViewById(R.id.btn_login_with_username);
 
-            txtUsername.addTextChangedListener(new LoginTextWatcher());
-            txtPassword.addTextChangedListener(new LoginTextWatcher());
+            edUsername.addTextChangedListener(new LoginTextWatcher());
+            edPassword.addTextChangedListener(new LoginTextWatcher());
 
             // perform changes in the view if keyboard is shown
             lytRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -95,7 +95,7 @@ public class LoginActivity extends BaseActivity {
 
             // set and EditorActionListener to perform and action when key pressed, ie
             // EditorInfo.IME_NULL, EditorInfo.IME_ACTION_SEND, or action in imeOptions attr
-            // txtPassword.setOnEditorActionListener(...)
+            // edPassword.setOnEditorActionListener(...)
 
         } else {
             startUserSession();
@@ -104,9 +104,9 @@ public class LoginActivity extends BaseActivity {
 
     public void actionLogin(final View view) {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(txtPassword.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(edPassword.getWindowToken(), 0);
 
-        UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(txtUsername.getText().toString(), txtPassword.getText().toString());
+        UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(edUsername.getText().toString(), edPassword.getText().toString());
 
         if (user != null) {
             PrefUtil.setLoggedUser(ctx, user);
@@ -122,12 +122,12 @@ public class LoginActivity extends BaseActivity {
 
     public void actionNewUser(final View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(txtPassword.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(edPassword.getWindowToken(), 0);
 
         long id;
         UserModel user = new UserModel();
-        user.setName(txtUsername.getText().toString());
-        // user.setPassword(txtPassword.getText().toString());
+        user.setName(edUsername.getText().toString());
+        // user.setPassword(edPassword.getText().toString());
         user.setPassword("");
         user.setEmail("");
         id = JoggingSQLiteHelper.getInstance(ctx).insertUser(user);
@@ -146,14 +146,14 @@ public class LoginActivity extends BaseActivity {
 
     public void actionLoginWithUsername(final View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(txtPassword.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(edPassword.getWindowToken(), 0);
 
-        // UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(txtUsername.getText().toString(), txtPassword.getText().toString());
-        UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(txtUsername.getText().toString(), "");
+        // UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(edUsername.getText().toString(), edPassword.getText().toString());
+        UserModel user = JoggingSQLiteHelper.getInstance(ctx).queryUser(edUsername.getText().toString(), "");
         if (user == null) {
             // new user
             user = new UserModel();
-            user.setName(txtUsername.getText().toString());
+            user.setName(edUsername.getText().toString());
             user.setPassword("");
             user.setEmail("");
 
@@ -194,8 +194,8 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int i, int i2, int i3) {
-            boolean usernameIsEmpty = StringUtils.isBlank(txtUsername.getText().toString());
-            boolean passwordIsEmpty = StringUtils.isBlank(txtPassword.getText().toString());
+            boolean usernameIsEmpty = StringUtils.isBlank(edUsername.getText().toString());
+            boolean passwordIsEmpty = StringUtils.isBlank(edPassword.getText().toString());
 
             // change image color depending on if there's text or not
             if (usernameIsEmpty) {

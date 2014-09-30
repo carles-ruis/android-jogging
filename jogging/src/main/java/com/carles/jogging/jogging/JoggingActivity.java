@@ -151,7 +151,7 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
 
         int kms = getIntent().getIntExtra(C.EXTRA_KILOMETERS, 1);
         if (kms == C.NO_DISTANCE) {
-            txtCheerUp.setText(getString(R.string.jogging_cheer_no_distance));
+            txtCheerUp.setText(R.string.jogging_cheer_no_distance);
         } else {
             txtCheerUp.setText(getString(R.string.jogging_cheer_distance, kms));
         }
@@ -258,10 +258,10 @@ public class JoggingActivity extends BaseActivity implements LocationService.Cli
             final Button btnOk = (Button) view.findViewById(R.id.btn_yes);
             final Button btnNo = (Button) view.findViewById(R.id.btn_no);
 
-            title.setText(getString(R.string.cancel_run_title));
-            msg.setText(getString(R.string.cancel_run_msg));
-            btnOk.setText(getString(R.string.cancel_run_button_yes));
-            btnNo.setText(getString(R.string.cancel_run_button_no));
+            title.setText(R.string.cancel_run_title);
+            msg.setText(R.string.cancel_run_msg);
+            btnOk.setText(R.string.cancel_run_button_yes);
+            btnNo.setText(R.string.cancel_run_button_no);
 
             btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override

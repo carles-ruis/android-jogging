@@ -65,7 +65,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
 
         } else {
             // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this, C.REQ_CODE_GOOGLE_CONNECTION_FAILURE);
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this, C.REQUEST_GOOGLE_CONNECTION_FAILURE);
 
             // If Google Play services can provide an error dialog
             if (errorDialog != null) {
@@ -84,18 +84,18 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case C.REQ_CODE_GOOGLE_CONNECTION_FAILURE:
+            case C.REQUEST_GOOGLE_CONNECTION_FAILURE:
                 if (resultCode == Activity.RESULT_OK) {
-                        /*- at the end device was able to connect */
+                    // at the end device was able to connect
                     checkGpsConnected();
                 } else {
                     Log.i(TAG, "Google Play services not available.");
-                        /*- device was not able to connect to google play services */
+                    // device was not able to connect to google play services
                     FirstLocationFailedDialog.newInstance(Error.GOOGLE_PLAY_SERVICES_UNAVAILABLE).
                             show(getSupportFragmentManager(), C.TAG_CONNECTION_FAILED_DIALOG);
                 }
                 break;
-            case C.REQ_CODE_ENABLE_GPS:
+            case C.REQUEST_CODE_ENABLE_GPS:
                 checkGpsConnected();
                 break;
         }

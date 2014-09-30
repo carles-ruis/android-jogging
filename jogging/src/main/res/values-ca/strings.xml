@@ -27,6 +27,7 @@
     <string name="action_map">Mapa</string>
     <string name="action_whatsapp">Compartir amb WhatsApp</string>
     <string name="action_delete">Eliminar</string>
+    <string name="action_feedback">Feedback</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Fent Footing</string>
@@ -115,9 +116,12 @@
     <string name="facebook_post_failure">Error. No he pogut compartir a Facebook</string>
 
     <!-- Feedback -->
-    <string name="feedback_title">Feedback</string>
-    <string name="feedback_msg">Envia\'ns el teu comentari o suggeriment sobre la app. Així la podrem millorar.</string>
-    <string name="feeback_send">Enviar comentari</string>
+    <string name="feedback_title">Contacte</string>
+    <string name="feeback_send">Enviar</string>
+    <string name="feedback_hint">Què et sembla la app? Escriu la teva opinió i podrem millorar-la</string>
+    <string name="feedback_sent">La teva opinió s\'ha enviat. Gracies!</string>
+    <string name="no_mail_client_title">Mail no enviat</string>
+    <string name="no_mail_client_msg">No hi ha cap client de mail instal·lat al dispositiu</string>
 
     <!-- Settings -->
 
