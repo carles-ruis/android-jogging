@@ -110,9 +110,9 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL(SQL_DROP_JOGGING_TABLE);
-        sqLiteDatabase.execSQL(SQL_DROP_USERS_TABLE);
-        onCreate(sqLiteDatabase);
+//        sqLiteDatabase.execSQL(SQL_DROP_JOGGING_TABLE);
+//        sqLiteDatabase.execSQL(SQL_DROP_USERS_TABLE);
+//        onCreate(sqLiteDatabase);
     }
 
     public long insertUser(UserModel user) {
