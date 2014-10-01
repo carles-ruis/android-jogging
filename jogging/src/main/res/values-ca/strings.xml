@@ -117,8 +117,9 @@
 
     <!-- Feedback -->
     <string name="feedback_title">Contacte</string>
-    <string name="feeback_send">Enviar</string>
-    <string name="feedback_hint">Què et sembla la app? Escriu la teva opinió i podrem millorar-la</string>
+    <string name="feedback_send">Envia</string>
+    <string name="feedback_subject">"La meva opinió sobre "</string>
+    <string name="feedback_hint">Què et sembla la app? Escriu la teva opinió i la podrem millorar</string>
     <string name="feedback_sent">La teva opinió s\'ha enviat. Gracies!</string>
     <string name="no_mail_client_title">Mail no enviat</string>
     <string name="no_mail_client_msg">No hi ha cap client de mail instal·lat al dispositiu</string>

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -96,10 +95,8 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == C.REQUEST_FEEDBACK) {
             if (resultCode == RESULT_OK) {
-                Log.e("carles", "result ok");
                 Toast.makeText(getApplicationContext(), getString(R.string.feedback_sent), Toast.LENGTH_LONG).show();
             } else if (resultCode == C.RESULT_NO_MAIL_CLIENT) {
-                Log.e("carles", "result no mail client");
                 MailClientNotAvailableDialog.newInstance().show(getSupportFragmentManager(), C.TAG_MAIL_CLIENT_NOT_AVAILABLE);
             }
         }

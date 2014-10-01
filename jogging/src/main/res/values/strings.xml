@@ -117,7 +117,8 @@
 
     <!-- Feedback -->
     <string name="feedback_title">Feedback</string>
-    <string name="feeback_send">Send</string>
+    <string name="feedback_send">Send</string>
+    <string name="feedback_subject">"My opinion about "</string>
     <string name="feedback_hint">Give us your opinion about the app and we will improve it</string>
     <string name="feedback_sent">Your opinion has been sent. Thanks!</string>
     <string name="no_mail_client_title">Mail not sent</string>

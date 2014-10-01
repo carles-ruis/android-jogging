@@ -93,10 +93,6 @@ public class LoginActivity extends BaseActivity {
                 }
             });
 
-            // set and EditorActionListener to perform and action when key pressed, ie
-            // EditorInfo.IME_NULL, EditorInfo.IME_ACTION_SEND, or action in imeOptions attr
-            // edPassword.setOnEditorActionListener(...)
-
         } else {
             startUserSession();
         }
