@@ -71,7 +71,7 @@ public class CheckConnectionsActivity extends BaseActivity implements FirstLocat
             if (errorDialog != null) {
                 GooglePlayServicesErrorDialogFragment errorFragment = new GooglePlayServicesErrorDialogFragment();
                 errorFragment.setDialog(errorDialog);
-                /*- no need to use getSupportFragmentManager inside a v4.Fragment */
+                // no need to use getSupportFragmentManager inside a v4.Fragment
                 errorFragment.show(getSupportFragmentManager(), C.TAG_GOOGLE_PLAY_SERVICES_ERROR_DIALOG);
             }
             return false;

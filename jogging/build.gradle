@@ -15,18 +15,19 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 19
-        versionCode 3
-        versionName '1.2'
+        versionCode 4
+        versionName 'dev'
     }
+    // last versionName '1.2'
 
     buildTypes {
         debug {
-            runProguard false
+
         }
 
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            runProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
         }
     }

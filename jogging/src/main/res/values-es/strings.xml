@@ -27,7 +27,7 @@
     <string name="action_map">Mapa</string>
     <string name="action_whatsapp">Compartir con WhatsApp</string>
     <string name="action_delete">Eliminar</string>
-    <string name="action_feedback">Feedback</string>
+    <string name="action_feedback">Contacto</string>
 
     <!-- Fragment titles -->
     <string name="title_main">Go Footing</string>

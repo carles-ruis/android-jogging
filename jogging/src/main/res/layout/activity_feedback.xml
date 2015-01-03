@@ -9,6 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <RelativeLayout
             android:id="@+id/lyt_container"
             android:layout_width="wrap_content"
@@ -47,6 +50,7 @@
                 android:onClick="actionSendFeedback"
                 android:text="@string/feedback_send" />
         </RelativeLayout>
+        </ScrollView>
 
         <ImageView
             android:id="@+id/img_cancel"

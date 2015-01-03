@@ -15,7 +15,7 @@
     <string name="drawer_main">Go Jogging</string>
     <string name="drawer_main_desc">Beat your best time!</string>
     <string name="drawer_best">Best times</string>
-    <string name="drawer_best_desc">Your best times for each distance</string>
+    <string name="drawer_best_desc">For each distance</string>
     <string name="drawer_last">History</string>
     <string name="drawer_last_desc">All your results</string>
     <string name="logout">Logout</string>

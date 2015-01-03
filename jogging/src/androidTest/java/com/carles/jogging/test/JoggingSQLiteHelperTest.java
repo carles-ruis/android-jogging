@@ -90,12 +90,12 @@ public class JoggingSQLiteHelperTest extends AndroidTestCase {
     }
 
     public void testInsertJogging() {
-        assertFalse(helper.insertJogging(j11, null) == -1);
-        assertFalse(helper.insertJogging(j12, null) == -1);
-        assertFalse(helper.insertJogging(j13, null) == -1);
-        assertFalse(helper.insertJogging(j21, null) == -1);
-        assertTrue(helper.insertJogging(j11, null) == -1);
-        assertTrue(helper.insertJogging(jError, null) == -1);
+        assertFalse(helper.insertJogging(j11) == -1);
+        assertFalse(helper.insertJogging(j12) == -1);
+        assertFalse(helper.insertJogging(j13) == -1);
+        assertFalse(helper.insertJogging(j21) == -1);
+        assertTrue(helper.insertJogging(j11) == -1);
+        assertTrue(helper.insertJogging(jError) == -1);
     }
 
     public void testQueryLastTimes() {
@@ -140,16 +140,16 @@ public class JoggingSQLiteHelperTest extends AndroidTestCase {
     private void insertAll() {
         helper.insertUser(u1);
         helper.insertUser(u2);
-        helper.insertJogging(j11, null);
-        helper.insertJogging(j12, null);
-        helper.insertJogging(j13, null);
-        helper.insertJogging(j14, null);
-        helper.insertJogging(j21, null);
-        helper.insertJogging(p111, null);
-        helper.insertJogging(p112, null);
-        helper.insertJogging(p113, null);
-        helper.insertJogging(p114, null);
-        helper.insertJogging(p211, null);
+        helper.insertJogging(j11);
+        helper.insertJogging(j12);
+        helper.insertJogging(j13);
+        helper.insertJogging(j14);
+        helper.insertJogging(j21);
+        helper.insertJogging(p111);
+        helper.insertJogging(p112);
+        helper.insertJogging(p113);
+        helper.insertJogging(p114);
+        helper.insertJogging(p211);
     }
 
 }

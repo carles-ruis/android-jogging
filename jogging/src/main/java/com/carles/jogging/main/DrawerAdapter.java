@@ -43,11 +43,11 @@ public class DrawerAdapter extends ArrayAdapter<DrawerOption> {
         img.setImageDrawable(ctx.getResources().getDrawable(item.iconId));
 
         final TextView txtTitle = (TextView) convertView.findViewById(R.id.txt_item_title);
-        txtTitle.setText(ctx.getString(item.menuId));
+        txtTitle.setText(item.menuId);
 //        txtTitle.setCompoundDrawablesWithIntrinsicBounds(item.iconId, 0, 0, 0);
 
         final TextView txtSubtitle = (TextView) convertView.findViewById(R.id.txt_item_subtitle);
-        txtSubtitle.setText(ctx.getString(item.menuDescriptionId));
+        txtSubtitle.setText(item.menuDescriptionId);
 
         return convertView;
     }

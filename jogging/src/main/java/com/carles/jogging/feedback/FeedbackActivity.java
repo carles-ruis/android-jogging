@@ -8,10 +8,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -19,7 +17,6 @@ import com.actionbarsherlock.view.Window;
 import com.carles.jogging.BaseActivity;
 import com.carles.jogging.C;
 import com.carles.jogging.R;
-import com.carles.jogging.util.ViewUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,19 +46,39 @@ public class FeedbackActivity extends BaseActivity {
         final ImageView imgCancel = (ImageView) findViewById(R.id.img_cancel);
         final Button btnSend = (Button) findViewById(R.id.btn_send);
 
-        // event listeners
-        lytContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int height = lytContainer.getHeight();
-                int minPixels = ViewUtil.dpsToPx(FeedbackActivity.this, MIN_CONTAINER_HEIGHT_IN_DPS);
-                if (height < minPixels) {
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) lytContainer.getLayoutParams();
-                    params.height = minPixels;
-                    lytContainer.setLayoutParams(params);
-                }
-            }
-        });
+//        // event listeners
+//        lytContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//
+//                float dimenMargin = getResources().getDimension(R.dimen.margin);
+//                float dimenPadding = getResources().getDimension(R.dimen.padding);
+//                int txtMessageHeight = findViewById(R.id.txt_message).getHeight();
+//                int edFeedbackHeight = edFeedback.getHeight();
+//                int btnHeight = btnSend.getHeight();
+//                Log.e("carles", "***************************************");
+////                Log.e("carles", "layout top margin is "+dimenMargin);
+////                Log.e("carles", "layout bottom margin is " + dimenMargin);
+//                Log.e("carles", "layout top padding is "+dimenPadding);
+//                Log.e("carles", "layout bottom padding is " + dimenPadding);
+//                Log.e("carles", "txt message height is " + txtMessageHeight);
+//                Log.e("carles", "ed feedback height is " + edFeedbackHeight);
+//                Log.e("carles", "btn height is " + btnHeight);
+//                Log.e("carles", "all heights added are " + (float)(dimenPadding + dimenPadding + (float)txtMessageHeight + (float)edFeedbackHeight + (float)btnHeight));
+//
+//                int height = lytContainer.getHeight();
+//                Log.e("carles", "***************************************");
+//                Log.e("carles", "container is " + height);
+//                Log.e("carles", "***************************************");
+//
+//                int minPixels = ViewUtil.dpsToPx(FeedbackActivity.this, MIN_CONTAINER_HEIGHT_IN_DPS);
+//                if (height < minPixels) {
+//                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) lytContainer.getLayoutParams();
+//                    params.height = minPixels;
+//                    lytContainer.setLayoutParams(params);
+//                }
+//            }
+//        });
 
         edFeedback.addTextChangedListener(new TextWatcher() {
             @Override

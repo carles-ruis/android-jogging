@@ -36,7 +36,6 @@
         <!-- android:name="com.google.android.backup.api_key" -->
         <!-- android:value="@string/backup_key"/> -->
 
-
         <!--
         alwaysRetainTaskState to keep the task state when is destroyed after some time
         unactive, usually around 30 minutes
@@ -44,6 +43,7 @@
         <activity
             android:name=".login.LoginActivity"
             android:alwaysRetainTaskState="true"
+            android:icon="@drawable/ic_running_girl"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Jogging.NoActionBar"
@@ -57,21 +57,17 @@
 
         <activity
             android:name=".main.MainActivity"
-            android:icon="@drawable/ic_running_girl"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".jogging.first_location.CheckConnectionsActivity"
-            android:icon="@drawable/ic_running_girl"
-            android:screenOrientation="portrait" />
+             android:screenOrientation="portrait" />
         <activity
             android:name=".jogging.JoggingActivity"
-            android:icon="@drawable/ic_running_girl"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".result.ResultDetailActivity"
-            android:icon="@drawable/ic_running_girl"
             android:screenOrientation="portrait" />
 
         <activity

@@ -27,9 +27,9 @@
     <string name="action_map">Mapa</string>
     <string name="action_whatsapp">Compartir amb WhatsApp</string>
     <string name="action_delete">Eliminar</string>
-    <string name="action_feedback">Feedback</string>
+    <string name="action_feedback">Contacte</string>
 
-    <!-- Fragment titles -->
+    <!-- Action bar titles -->
     <string name="title_main">Fent Footing</string>
     <string name="title_best">Rècords</string>
     <string name="title_last">Històric</string>
@@ -120,7 +120,7 @@
     <string name="feedback_send">Envia</string>
     <string name="feedback_subject">"La meva opinió sobre "</string>
     <string name="feedback_hint">Què et sembla la app? Escriu la teva opinió i la podrem millorar</string>
-    <string name="feedback_sent">La teva opinió s\'ha enviat. Gracies!</string>
+    <string name="feedback_sent">La teva opinió s\'ha enviat. Gràcies!</string>
     <string name="no_mail_client_title">Mail no enviat</string>
     <string name="no_mail_client_msg">No hi ha cap client de mail instal·lat al dispositiu</string>
 

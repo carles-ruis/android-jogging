@@ -87,7 +87,7 @@ public class JoggingSQLiteHelper extends SQLiteOpenHelper {
     private static final String SQL_QUERY_PARTIALS = "SELECT * FROM " + TABLE_JOGGING +
             " WHERE parent_id=? ORDER BY id ASC ";
 
-    public static synchronized JoggingSQLiteHelper getInstance(Context ctx) {
+    public static JoggingSQLiteHelper getInstance(Context ctx) {
         synchronized (lock) {
             if (INSTANCE == null) {
                 // Use the application context, which will ensure that you

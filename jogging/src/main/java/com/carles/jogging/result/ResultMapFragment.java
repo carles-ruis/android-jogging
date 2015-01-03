@@ -75,6 +75,15 @@ public class ResultMapFragment extends SupportMapFragment {
         return view;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (map == null) {
+            initMap();
+        }
+    }
+
     private void initMap() {
         map = getMap();
 
@@ -153,14 +162,6 @@ public class ResultMapFragment extends SupportMapFragment {
                 map.setOnCameraChangeListener(null);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (map == null) {
-            initMap();
-        }
     }
 
     private void centerToPosition() {

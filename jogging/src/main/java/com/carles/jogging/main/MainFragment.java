@@ -28,7 +28,6 @@ public class MainFragment extends BaseFragment {
 
     private static final int MIN_WINDOW_VISIBLE_SPACE_TO_SHOW_IMAGE = 600;
 
-    private Context ctx;
     private AdView adView;
 
     public static MainFragment newInstance() {
@@ -39,7 +38,6 @@ public class MainFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
-        ctx = getActivity();
 
         loadViews(view);
 
@@ -57,6 +55,7 @@ public class MainFragment extends BaseFragment {
         final TextView txtKms = (TextView) view.findViewById(R.id.txt_kms);
         adView = (AdView) view.findViewById(R.id.adView);
 
+        final Context ctx = getActivity().getApplicationContext();
         // run button
         btnRun.setOnClickListener(new View.OnClickListener() {
             @Override

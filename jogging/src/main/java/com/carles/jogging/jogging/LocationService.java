@@ -50,8 +50,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
     private static final long MAX_REQUEST_TIME = 60 * 1000;
     private static final long UPDATE_INTERVAL = 4 * 1000;
     private static final float SMALLEST_DISPLACEMENT = 1.0f;
-    private static final float ACCURACY_LIMIT = 30.0f;
-    private static final float AVERAGE_ACCURACY_LIMIT = 60.0f;
+    private static final float ACCURACY_LIMIT = 25.0f;
+    private static final float AVERAGE_ACCURACY_LIMIT = 50.0f;
     private static final float LOW_ACCURACY_LIMIT = 120.0f;
 
     private static final String WAKE_LOCK_TAG = "wake_lock_tag";
@@ -92,6 +92,8 @@ public class LocationService extends Service implements GpsConnectivityObserver,
 
         // configuring accuracy of timing of requests to gps
         locationRequest = LocationRequest.create();
+        // priority BALANCED uses gps when app is in background and WIFI and 3G if background
+
         // use PRIORITY_HIGH_ACCURACY to use all location providers
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(UPDATE_INTERVAL);
@@ -111,6 +113,11 @@ public class LocationService extends Service implements GpsConnectivityObserver,
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG);
         wakelock.acquire();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override

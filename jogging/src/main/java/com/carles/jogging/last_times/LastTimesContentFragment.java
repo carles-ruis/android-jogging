@@ -1,5 +1,6 @@
 package com.carles.jogging.last_times;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -210,6 +211,7 @@ public class LastTimesContentFragment extends BaseFragment {
 
     /*- ********************************************************************************* */
     /*- ********************************************************************************* */
+    @SuppressLint("ValidFragment")
     private class ConfirmDeleteDialog extends DialogFragment {
 
         @Override

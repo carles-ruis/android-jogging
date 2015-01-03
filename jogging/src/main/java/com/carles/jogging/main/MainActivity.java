@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         navigationDrawerView = findViewById(R.id.navigation_drawer);
         mTitle = getTitle();
 
-        // Set up the drawer.
+         // Set up the drawer.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         // this allows to override the drawer behaviour when back button is pressed
         drawerLayout.setFocusableInTouchMode(false);
@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         getSupportActionBar().setListNavigationCallbacks(adapter, callback);
 
         if (getSupportActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
-            getSupportActionBar().setSelectedNavigationItem(PrefUtil.getLastKilometersSelected(ctx) - 1);
+            getSupportActionBar().setSelectedNavigationItem(PrefUtil.getLastKilometersSelected(this) - 1);
         }
     }
 
@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity implements NavigationDrawerFragme
         // Insert the fragment by replacing any existing fragment
         getSupportActionBar().setNavigationMode(navigationMode);
         if (navigationMode == ActionBar.NAVIGATION_MODE_LIST) {
-            getSupportActionBar().setSelectedNavigationItem(PrefUtil.getLastKilometersSelected(ctx) - 1);
+            getSupportActionBar().setSelectedNavigationItem(PrefUtil.getLastKilometersSelected(this) - 1);
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
