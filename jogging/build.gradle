@@ -10,11 +10,11 @@ android {
         }
     }
 
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 23
         versionCode 4
         versionName 'dev'
     }
@@ -49,8 +49,9 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:4.3.23'
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
+    compile 'com.android.support:support-v4:23.1.1'
+
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'joda-time:joda-time:2.3@jar'
     compile 'org.apache.commons:commons-lang3:3.3.2'
